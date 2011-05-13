@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+     <extension point="org.eclipse.ui.editors">
+      <editor name="OWL Graphic Editor"
+              extensions="ogeditor"
+              icon="ogeditor.gif"
+              default="true"
+              class="cn.edu.pku.ogeditor.ShapesEditor"
+              contributorClass="cn.edu.pku.ogeditor.ShapesEditorActionBarContributor"
+              id="OWL Graphic Editor">
+      </editor>
+   </extension>
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="cn.edu.pku.ogeditore"
+            name="OWL Graphic Editor"/>
+      <wizard name="OWL Graphic Editor"
+              icon="ogeditor.gif"
+              category="cn.edu.pku.ogeditore"
+              class="cn.edu.pku.ogeditor.ShapesCreationWizard"
+              id="cn.edu.pku.ogeditor.ShapesCreationWizard">
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="cn.edu.pku.ogeditor.views"
+            name="OWL Graphic Editor">
+      </category>
+         <view
+               category="cn.edu.pku.ogeditor.views"
+               class="cn.edu.pku.ogeditor.views.DecriptionView"
+               id="cn.edu.pku.ogeditor.views.descriptionView"
+               name="Description">
+         </view>
+         <view
+               category="cn.edu.pku.ogeditor.views"
+               class="cn.edu.pku.ogeditor.views.HierarchyView"
+               id="hierarchyView"
+               name="Hierarchy"
+               restorable="true">
+         </view>
+   </extension>
+</plugin>
