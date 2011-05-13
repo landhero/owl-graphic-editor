@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="lib/arq-extra.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/arq.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/icu4j_3_4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/iri.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jena.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jenatest.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/json.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/junit-4.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.12.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-core-2.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-1.5.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/slf4j-log4j12-1.5.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/stax-api-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/wstx-asl-3.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xercesImpl.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.4"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.core.commands_3.6.0.I20100512-1500.jar"/>
+	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.core.runtime_3.6.0.v20100505.jar"/>
+	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.equinox.common_3.6.0.v20100503.jar"/>
+	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.equinox.registry_3.5.0.v20100503.jar"/>
+	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.swt_3.6.2.v3659c.jar"/>
+	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.workbench_3.6.2.M20110210-1200.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JenaLIb"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
