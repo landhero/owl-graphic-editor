@@ -58,6 +58,7 @@ public ShapeCreateCommand(Shape newShape, ShapesDiagram parent, Rectangle bounds
 	newShapeParent.getChildren().add(newShape);
 	this.parent = parent;
 	this.bounds = bounds;
+	
 	setLabel("shape creation");
 }
 
