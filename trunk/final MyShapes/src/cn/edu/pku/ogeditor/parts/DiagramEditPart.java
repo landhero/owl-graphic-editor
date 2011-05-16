@@ -25,8 +25,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.LayerConstants;
-import org.eclipse.gef.Request;
-import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
@@ -36,7 +34,6 @@ import org.eclipse.gef.requests.CreateRequest;
 
 import cn.edu.pku.ogeditor.commands.ShapeCreateCommand;
 import cn.edu.pku.ogeditor.commands.ShapeSetConstraintCommand;
-import cn.edu.pku.ogeditor.model.EllipseShape;
 import cn.edu.pku.ogeditor.model.ModelElement;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
@@ -163,7 +160,7 @@ private static class ShapesXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	 */
 	protected Command getCreateCommand(CreateRequest request) {
 		Object childClass = request.getNewObjectType();
-		if(childClass == EllipseShape.class)
+		if(childClass == Shape.class)
 			// return a command that can add a Shape to a ShapesDiagram 
 			return new ShapeCreateCommand((Shape)request.getNewObject(), 
 					(ShapesDiagram)getHost().getModel(), (Rectangle)getConstraintFor(request));

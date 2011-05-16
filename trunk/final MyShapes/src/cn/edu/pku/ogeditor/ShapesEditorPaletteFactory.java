@@ -26,7 +26,6 @@ import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import cn.edu.pku.ogeditor.model.Connection;
-import cn.edu.pku.ogeditor.model.EllipseShape;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
@@ -178,7 +177,7 @@ public final class ShapesEditorPaletteFactory {
 			CombinedTemplateCreationEntry component = new CombinedTemplateCreationEntry(
 					shape.getName(), 
 					"Create a " + shape.getName(), 
-					EllipseShape.class,
+					Shape.class,
 					new ShapesCreationFactory(shape.getName()),
 					ImageDescriptor.createFromFile(ShapesPlugin.class,
 					"icons/ellipse16.gif"), 
