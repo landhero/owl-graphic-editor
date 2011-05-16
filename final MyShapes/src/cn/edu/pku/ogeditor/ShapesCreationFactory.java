@@ -2,7 +2,7 @@ package cn.edu.pku.ogeditor;
 
 import org.eclipse.gef.requests.CreationFactory;
 
-import cn.edu.pku.ogeditor.model.EllipseShape;
+import cn.edu.pku.ogeditor.model.Shape;
 
 public class ShapesCreationFactory implements CreationFactory {
 
@@ -16,7 +16,7 @@ public class ShapesCreationFactory implements CreationFactory {
 	public Object getNewObject() {
 		// TODO Auto-generated method stub
 		try {
-			EllipseShape newShape = EllipseShape.class.newInstance();
+			Shape newShape = Shape.class.newInstance();
 			newShape.setName(shapeName);
 			return newShape;
 		} catch (Exception exc) {
@@ -27,7 +27,7 @@ public class ShapesCreationFactory implements CreationFactory {
 	@Override
 	public Object getObjectType() {
 		// TODO Auto-generated method stub
-		return EllipseShape.class;
+		return Shape.class;
 	}
 
 }

@@ -17,7 +17,6 @@ import org.eclipse.ui.part.ViewPart;
 import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.ShapesEditorPaletteFactory;
 import cn.edu.pku.ogeditor.model.Connection;
-import cn.edu.pku.ogeditor.model.EllipseShape;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.parts.ShapesEditPartFactory;
 
@@ -95,7 +94,7 @@ public class HierarchyView extends ViewPart {
 				ShapesEditorPaletteFactory.RemoveShapeTool();
 				ShapesEditorPaletteFactory.RemoveRequiredConnectionTool();
 				ShapesEditorPaletteFactory.RemoveElectiveConnectionTool();
-				Shape rootShape=new EllipseShape();
+				Shape rootShape=new Shape();
 
 				rootShape.setName("Thing");
 				ShapesEditorPaletteFactory.AddShapeTool(rootShape);

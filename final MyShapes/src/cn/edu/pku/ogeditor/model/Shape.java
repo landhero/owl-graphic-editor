@@ -31,15 +31,18 @@ import cn.edu.pku.ogeditor.ShapesPlugin;
  * @see org.eclipse.gef.examples.shapes.model.EllipticalShape
  * @author Elias Volanakis
  */
-public abstract class Shape extends ModelElement {
+public class Shape extends ModelElement {
 
 private static IPropertyDescriptor[] descriptors;
+private static final Image RECTANGLE_ICON = createImage("icons/ellipse16.gif");
+private static final long serialVersionUID = 1;
+
 public  static final String NAME_PROP = "Shape.Name";
 public static final String LOCATION_PROP = "Shape.Location";
-private static final long serialVersionUID = 1;
 public static final String SIZE_PROP = "Shape.Size";
 public static final String SOURCE_CONNECTIONS_PROP = "Shape.SourceConn";
 public static final String TARGET_CONNECTIONS_PROP = "Shape.TargetConn";
+
 
 /** Location of this shape. */
 private Point location = new Point(0, 0);
@@ -120,7 +123,13 @@ void addConnection(Connection conn) {
  * Children should override this method and return an appropriate Image.
  * @return a 16x16 Image or null
  */
-public abstract Image getIcon();
+public Image getIcon() {
+	return RECTANGLE_ICON;
+}
+
+public String toString() {
+	return this.getName();
+}
 
 /**
  * Return the Location of this shape.
