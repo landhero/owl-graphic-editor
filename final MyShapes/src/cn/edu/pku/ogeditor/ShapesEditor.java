@@ -76,6 +76,7 @@ import cn.edu.pku.ogeditor.model.ShapesDiagram;
 import cn.edu.pku.ogeditor.parts.ShapesEditPartFactory;
 import cn.edu.pku.ogeditor.parts.ShapesTreeEditPartFactory;
 import cn.edu.pku.ogeditor.views.DecriptionView;
+import cn.edu.pku.ogeditor.views.HierarchyView;
 
 import com.hp.hpl.jena.ontology.AllValuesFromRestriction;
 import com.hp.hpl.jena.ontology.DatatypeProperty;
@@ -499,10 +500,13 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 	}
 
 	public Object getAdapter(Class type) {
+		myselfShapesEditor = this;
 		if (type == IContentOutlinePage.class)
 			return new ShapesOutlinePage(new TreeViewer());
 		else if (type == ZoomManager.class) 
-			return ((ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager(); 
+			return ((ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
+		else if (type == HierarchyView.class) 
+			return new HierarchyView();
 		return super.getAdapter(type);
 	}
 
