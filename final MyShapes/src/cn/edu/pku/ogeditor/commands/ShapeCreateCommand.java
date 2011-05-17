@@ -19,7 +19,7 @@ import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 
 import cn.edu.pku.ogeditor.ShapesEditor;
-import cn.edu.pku.ogeditor.ShapesEditorPaletteFactory;
+import cn.edu.pku.ogeditor.ShapesEditorPaletteRoot;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
@@ -49,11 +49,12 @@ private Rectangle bounds;
  */
 public ShapeCreateCommand(Shape newShape, ShapesDiagram parent, Rectangle bounds) {
 	this.newShape = newShape;
-	PaletteViewer paletteViewer=ShapesEditor.paletteViewer;
+	PaletteViewer paletteViewer=ShapesEditor.myselfShapesEditor.paletteViewer;
 	ToolEntry  selected=paletteViewer.getActiveTool();
-	List<?> children=ShapesEditorPaletteFactory.getShapeDrawer().getChildren();
+	ShapesEditorPaletteRoot curPaletteRoot = (ShapesEditorPaletteRoot)ShapesEditor.myselfShapesEditor.getPaletteRoot();
+	List<?> children=curPaletteRoot.getShapeDrawer().getChildren();
 	int index=children.indexOf(selected);
-	Shape newShapeParent=ShapesEditorPaletteFactory.getUplevelAllShapes().get(index);
+	Shape newShapeParent=curPaletteRoot.getUplevelAllShapes().get(index);
 	this.newShape.setParent(newShapeParent);
 	newShapeParent.getChildren().add(newShape);
 	this.parent = parent;

@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.part.ViewPart;
 
 import cn.edu.pku.ogeditor.ShapesEditor;
-import cn.edu.pku.ogeditor.ShapesEditorPaletteFactory;
+import cn.edu.pku.ogeditor.ShapesEditorPaletteRoot;
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.parts.ShapesEditPartFactory;
@@ -90,41 +90,42 @@ public class HierarchyView extends ViewPart {
 			int selectedIndex=table.getSelectionIndex();
 			ShapesEditor.myselfShapesEditor.getDiagram().changeShapes(selectedIndex);
 			ShapesEditPartFactory.diagramEditPart.refresh();
+			ShapesEditorPaletteRoot curPaletteRoot = (ShapesEditorPaletteRoot)ShapesEditor.myselfShapesEditor.getPaletteRoot();
 			if(selectedIndex==0){
-				ShapesEditorPaletteFactory.RemoveShapeTool();
-				ShapesEditorPaletteFactory.RemoveRequiredConnectionTool();
-				ShapesEditorPaletteFactory.RemoveElectiveConnectionTool();
+				curPaletteRoot.RemoveShapeTool();
+				curPaletteRoot.RemoveRequiredConnectionTool();
+				curPaletteRoot.RemoveElectiveConnectionTool();
 				Shape rootShape=new Shape();
 
 				rootShape.setName("Thing");
-				ShapesEditorPaletteFactory.AddShapeTool(rootShape);
+				curPaletteRoot.AddShapeTool(rootShape);
 
 				Connection requiredRootConnection=new Connection("RequiredRoot");//注意，以后可能要修改@吴韬
 				requiredRootConnection.setName("RequiredRelation");
 				requiredRootConnection.setRequired(true);
-				ShapesEditorPaletteFactory.AddRequiredConnectionTool(requiredRootConnection);
+				curPaletteRoot.AddRequiredConnectionTool(requiredRootConnection);
 
 				Connection electiveRootConnection=new Connection("ElectiveRoot");//注意，以后可能要修改@吴韬
 				electiveRootConnection.setName("ElectiveRelation");
 				electiveRootConnection.setRequired(false);
-				ShapesEditorPaletteFactory.AddElectiveConnectionTool(electiveRootConnection);
+				curPaletteRoot.AddElectiveConnectionTool(electiveRootConnection);
 
 			}
 			else{
-				ShapesEditorPaletteFactory.RemoveShapeTool();
-				ShapesEditorPaletteFactory.RemoveRequiredConnectionTool();
-				ShapesEditorPaletteFactory.RemoveElectiveConnectionTool();
+				curPaletteRoot.RemoveShapeTool();
+				curPaletteRoot.RemoveRequiredConnectionTool();
+				curPaletteRoot.RemoveElectiveConnectionTool();
 				ArrayList<Shape> shapes=(ArrayList<Shape>) ShapesEditor.myselfShapesEditor.getDiagram().getShapesList().get(selectedIndex-1);
 				Connection tempConnection;
 				for(int i=0;i<shapes.size();i++){
 					Shape shapeTemp=(Shape)shapes.get(i);
-					ShapesEditorPaletteFactory.AddShapeTool(shapeTemp);
+					curPaletteRoot.AddShapeTool(shapeTemp);
 					for(int j=0;j<shapeTemp.getSourceConnections().size();j++){
 						tempConnection=(Connection)shapeTemp.getSourceConnections().get(j);
 						if(tempConnection.isRequired())
-							ShapesEditorPaletteFactory.AddRequiredConnectionTool(tempConnection);
+							curPaletteRoot.AddRequiredConnectionTool(tempConnection);
 						else 
-							ShapesEditorPaletteFactory.AddElectiveConnectionTool(tempConnection);
+							curPaletteRoot.AddElectiveConnectionTool(tempConnection);
 					}
 				}
 			}

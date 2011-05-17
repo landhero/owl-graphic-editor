@@ -17,7 +17,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.palette.ToolEntry;
 
 import cn.edu.pku.ogeditor.ShapesEditor;
-import cn.edu.pku.ogeditor.ShapesEditorPaletteFactory;
+import cn.edu.pku.ogeditor.ShapesEditorPaletteRoot;
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
 
@@ -92,17 +92,18 @@ public boolean canExecute() {
 }
 
 private Connection getParent(){
-	ToolEntry  selectedTool=ShapesEditor.paletteViewer.getActiveTool();
+	ToolEntry  selectedTool=ShapesEditor.myselfShapesEditor.paletteViewer.getActiveTool();
 	Connection newConnectionParent;
-	List<?> children=(List<?>) ShapesEditorPaletteFactory.getRequiredConnectionDrawer().getChildren();
+	ShapesEditorPaletteRoot curPaletteRoot = (ShapesEditorPaletteRoot)ShapesEditor.myselfShapesEditor.getPaletteRoot();
+	List<?> children=(List<?>) curPaletteRoot.getRequiredConnectionDrawer().getChildren();
 	int index=0;
 	index=children.indexOf(selectedTool);
 	if(index==-1){
-		children=(List<?>) ShapesEditorPaletteFactory.getElectiveConnectionDrawer().getChildren();
+		children=(List<?>) curPaletteRoot.getElectiveConnectionDrawer().getChildren();
 		index=children.indexOf(selectedTool);
 
-		newConnectionParent=ShapesEditorPaletteFactory.getUplevelAllElectiveConnections().get(index);
-	}else newConnectionParent=ShapesEditorPaletteFactory.getUplevelAllRequiredConnections().get(index);
+		newConnectionParent=curPaletteRoot.getUplevelAllElectiveConnections().get(index);
+	}else newConnectionParent=curPaletteRoot.getUplevelAllRequiredConnections().get(index);
 	return newConnectionParent;
 }
 
