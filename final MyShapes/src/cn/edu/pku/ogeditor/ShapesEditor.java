@@ -648,6 +648,9 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 			bars.setGlobalActionHandler(id, registry.getAction(id));
 			id = ActionFactory.DELETE.getId();
 			bars.setGlobalActionHandler(id, registry.getAction(id));
+			
+			
+			
 		}
 	}
 }
