@@ -623,7 +623,7 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 			// unhook outline viewer
 			getSelectionSynchronizer().removeViewer(getViewer());
 			// dispose
-			super.dispose();
+			super.dispose(); 
 		}
 
 
