@@ -102,10 +102,10 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 	private static final long serialVersionUID = 1L;
 	/** This is the root of the editor's model. */
 	private ShapesDiagram diagram;
-	public static PaletteViewer paletteViewer;
+	public PaletteViewer paletteViewer;
 	/** Palette component, holding the tools and shapes. */
-	private static PaletteRoot PALETTE_MODEL;
-	private static String selectedDragSourceToolLabel;
+	private PaletteRoot PALETTE_MODEL;
+	private String selectedDragSourceToolLabel;
 	public static ShapesEditor myselfShapesEditor;
 	/** Create a new ShapesEditor instance. This is called by the Workspace. */
 	public ShapesEditor() {
@@ -202,8 +202,8 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 							.get(0);
 					Object model = editpart.getModel();
 					if (model instanceof PaletteEntry)
-						ShapesEditor.selectedDragSourceToolLabel = ((PaletteEntry) model).getLabel();
-					else ShapesEditor.selectedDragSourceToolLabel = "Error";
+						ShapesEditor.myselfShapesEditor.selectedDragSourceToolLabel = ((PaletteEntry) model).getLabel();
+					else ShapesEditor.myselfShapesEditor.selectedDragSourceToolLabel = "Error";
 				}
 			}
 		};
@@ -216,7 +216,7 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 	private TransferDropTargetListener createTransferDropTargetListener() {
 		return new TemplateTransferDropTargetListener(getGraphicalViewer()) {
 			protected CreationFactory getFactory(Object template) {
-				return new ShapesCreationFactory(ShapesEditor.selectedDragSourceToolLabel);
+				return new ShapesCreationFactory(ShapesEditor.myselfShapesEditor.selectedDragSourceToolLabel);
 			}
 		};
 	}
@@ -513,9 +513,9 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot()
 	 */
-	protected PaletteRoot getPaletteRoot() {
+	public PaletteRoot getPaletteRoot() {
 		if (PALETTE_MODEL == null)
-			PALETTE_MODEL = ShapesEditorPaletteFactory.createPalette();
+			PALETTE_MODEL = new ShapesEditorPaletteRoot();
 		return PALETTE_MODEL;
 	}
 	private void handleLoadException(Exception e) {
@@ -559,7 +559,7 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 			diagram = (ShapesDiagram) in.readObject();
 			in.close();
 			setPartName(file.getName());
-			ShapesEditorPaletteFactory.refresh(diagram);
+			((ShapesEditorPaletteRoot)getPaletteRoot()).refresh(diagram);
 		} catch (IOException e) { 
 			handleLoadException(e); 
 		} catch (CoreException e) { 

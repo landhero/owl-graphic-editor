@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2008 Elias Volanakis and others.
-?* All rights reserved. This program and the accompanying materials
-?* are made available under the terms of the Eclipse Public License v1.0
-?* which accompanies this distribution, and is available at
-?* http://www.eclipse.org/legal/epl-v10.html
-?*
-?* Contributors:
-?*????Elias Volanakis - initial API and implementation
-?*******************************************************************************/
 package cn.edu.pku.ogeditor;
 
 import java.util.ArrayList;
@@ -15,7 +5,6 @@ import java.util.ArrayList;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.MarqueeToolEntry;
-import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
@@ -29,38 +18,36 @@ import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
-/**
- * Utility class that can create a GEF Palette.
- * 
- * @see #createPalette()
- */
-public final class ShapesEditorPaletteFactory {
-
-	private static PaletteRoot palette = null;
-	private static ArrayList<Connection> allUplevelRequiredConnections = new ArrayList<Connection>();
-	private static PaletteDrawer requiredConnectionDrawer;
-	private static ArrayList<Connection> allUplevelElectiveConnections = new ArrayList<Connection>();
-	private static PaletteDrawer electiveConnectionDrawer;
-	private static ArrayList<Shape> allUplevelShapes=new ArrayList<Shape>();
-	private static PaletteDrawer conceptDrawer;
+public class ShapesEditorPaletteRoot extends PaletteRoot {
+	public ShapesEditorPaletteRoot(){
+		super();
+		createToolsGroup();
+		init();
+	}
+	private ArrayList<Connection> allUplevelRequiredConnections = new ArrayList<Connection>();
+	private PaletteDrawer requiredConnectionDrawer;
+	private ArrayList<Connection> allUplevelElectiveConnections = new ArrayList<Connection>();
+	private PaletteDrawer electiveConnectionDrawer;
+	private ArrayList<Shape> allUplevelShapes=new ArrayList<Shape>();
+	private PaletteDrawer conceptDrawer;
 	/**
 	 * @return the allConnectionTool
 	 */
-	public static ArrayList<Connection> getUplevelAllRequiredConnections() {
+	public ArrayList<Connection> getUplevelAllRequiredConnections() {
 		return allUplevelRequiredConnections;
 	}
-	public static ArrayList<Connection> getUplevelAllElectiveConnections() {
+	public ArrayList<Connection> getUplevelAllElectiveConnections() {
 		return allUplevelElectiveConnections;
 	}
 	/**
 	 * @return the allShapeTool
 	 */
-	public static ArrayList<Shape> getUplevelAllShapes() {
+	public ArrayList<Shape> getUplevelAllShapes() {
 		return allUplevelShapes;
 	}
 
 	//	private static boolean dirty = false;
-	public static PaletteDrawer getShapeDrawer(){
+	public PaletteDrawer getShapeDrawer(){
 		return conceptDrawer;
 	}
 
@@ -70,41 +57,30 @@ public final class ShapesEditorPaletteFactory {
 	 * 
 	 * @return a new PaletteRoot
 	 */
-	static PaletteRoot createPalette() {
-		if (palette == null) {
-			palette = new PaletteRoot();
-			palette.add(createToolsGroup(palette));
-			init();
-		}
-		// SimpleFactory a = new SimpleFactory(null);
-		return palette;
-	}
-
 	/** Create the "Tools" group. */
-	private static PaletteContainer createToolsGroup(PaletteRoot palette) {
+	private void createToolsGroup() {
 		PaletteToolbar toolbar = new PaletteToolbar("Tools");
 
 		// Add a selection tool to the group
 		ToolEntry tool = new PanningSelectionToolEntry();
 		toolbar.add(tool);
-		palette.setDefaultEntry(tool);
+		setDefaultEntry(tool);
 
 		// Add a marquee tool to the group
 		toolbar.add(new MarqueeToolEntry());
-
-		return toolbar;
+		add(toolbar);
 	}
 	
-	private static void init() {
+	private void init() {
 		conceptDrawer = new PaletteDrawer("Concepts");
 		requiredConnectionDrawer=new PaletteDrawer("Required Ralations");
 		electiveConnectionDrawer=new PaletteDrawer("Elective Ralations");
-		palette.add(conceptDrawer);
-		palette.add(requiredConnectionDrawer);
-		palette.add(electiveConnectionDrawer);
+		add(conceptDrawer);
+		add(requiredConnectionDrawer);
+		add(electiveConnectionDrawer);
 	}
 
-	public static void RemoveRequiredConnectionTool() {
+	public void RemoveRequiredConnectionTool() {
 		int size = requiredConnectionDrawer.getChildren().size();
 		for (int i = 0; i < size; i++) {
 			requiredConnectionDrawer.remove((PaletteEntry) requiredConnectionDrawer
@@ -113,7 +89,7 @@ public final class ShapesEditorPaletteFactory {
 		}
 	}
 
-	public static void RemoveElectiveConnectionTool() {
+	public void RemoveElectiveConnectionTool() {
 		int size = electiveConnectionDrawer.getChildren().size();
 		for (int i = 0; i < size; i++) {
 			electiveConnectionDrawer.remove((PaletteEntry) electiveConnectionDrawer
@@ -121,7 +97,7 @@ public final class ShapesEditorPaletteFactory {
 			allUplevelElectiveConnections.remove(0);
 		}
 	}
-	public static void AddRequiredConnectionTool(final Connection connection) {
+	public void AddRequiredConnectionTool(final Connection connection) {
 		allUplevelRequiredConnections.add(connection);
 		if (requiredConnectionDrawer != null) {
 			ImageDescriptor newConnectionDescriptor = ImageDescriptor
@@ -142,7 +118,7 @@ public final class ShapesEditorPaletteFactory {
 		}
 		else System.err.println("Drawer is null!");
 	}
-	public static void AddElectiveConnectionTool(final Connection connectionTool) {
+	public void AddElectiveConnectionTool(final Connection connectionTool) {
 		allUplevelElectiveConnections.add(connectionTool);
 		if (electiveConnectionDrawer != null) {
 			ImageDescriptor newConnectionDescriptor = ImageDescriptor
@@ -164,14 +140,14 @@ public final class ShapesEditorPaletteFactory {
 		else System.err.println("Drawer is null!");
 	}
 
-	public static void RemoveShapeTool() {
+	public void RemoveShapeTool() {
 		int size = conceptDrawer.getChildren().size();
 		for (int i = 0; i < size; i++) {
 			conceptDrawer.remove((PaletteEntry) conceptDrawer.getChildren().get(0));
 			allUplevelShapes.remove(0);
 		}
 	}
-	public static void AddShapeTool(final Shape shape) {
+	public void AddShapeTool(final Shape shape) {
 		allUplevelShapes.add(shape);
 		if (conceptDrawer != null) {
 			CombinedTemplateCreationEntry component = new CombinedTemplateCreationEntry(
@@ -186,19 +162,19 @@ public final class ShapesEditorPaletteFactory {
 			conceptDrawer.add(component);
 		}
 	}
-	public static void refresh(ShapesDiagram _diagram) {
+	public void refresh(ShapesDiagram _diagram) {
 		allUplevelRequiredConnections = new ArrayList<Connection>();
 		allUplevelElectiveConnections = new ArrayList<Connection>();
-		palette.remove(conceptDrawer);
-		palette.remove(requiredConnectionDrawer);
-		palette.remove(electiveConnectionDrawer);
+		remove(conceptDrawer);
+		remove(requiredConnectionDrawer);
+		remove(electiveConnectionDrawer);
 		init();
 
 	}
-	public static PaletteDrawer getRequiredConnectionDrawer() {
+	public PaletteDrawer getRequiredConnectionDrawer() {
 		return requiredConnectionDrawer;
 	}
-	public static PaletteDrawer getElectiveConnectionDrawer() {
+	public PaletteDrawer getElectiveConnectionDrawer() {
 		return electiveConnectionDrawer;
 	}
 }
