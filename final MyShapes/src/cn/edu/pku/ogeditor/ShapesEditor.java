@@ -76,7 +76,6 @@ import cn.edu.pku.ogeditor.model.ShapesDiagram;
 import cn.edu.pku.ogeditor.parts.ShapesEditPartFactory;
 import cn.edu.pku.ogeditor.parts.ShapesTreeEditPartFactory;
 import cn.edu.pku.ogeditor.views.DecriptionView;
-import cn.edu.pku.ogeditor.views.HierarchyView;
 
 import com.hp.hpl.jena.ontology.AllValuesFromRestriction;
 import com.hp.hpl.jena.ontology.DatatypeProperty;
@@ -107,6 +106,7 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 	/** Palette component, holding the tools and shapes. */
 	private PaletteRoot PALETTE_MODEL;
 	private String selectedDragSourceToolLabel;
+	private boolean dirty = false;
 	public static ShapesEditor myselfShapesEditor;
 	/** Create a new ShapesEditor instance. This is called by the Workspace. */
 	public ShapesEditor() {
@@ -175,7 +175,10 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 
 	private void createOutputStream(OutputStream os) throws IOException {
 		ObjectOutputStream oos = new ObjectOutputStream(os);
-		oos.writeObject(getModel());
+		ShapesDiagram tempDiagram = getModel();
+		while(tempDiagram.getFather() != null)
+			tempDiagram = tempDiagram.getFather();
+		oos.writeObject(tempDiagram);
 		oos.close();
 	}
 
@@ -230,13 +233,13 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 		try {
 			createOutputStream(out);
 			IFile file = ((IFileEditorInput) getEditorInput()).getFile();
-
 			file.setContents(
 					new ByteArrayInputStream(out.toByteArray()), 
 					true,  // keep saving, even if IFile is out of sync with the Workspace
 					false, // dont keep history
 					monitor); // progress monitor
 			getCommandStack().markSaveLocation();
+			setDirty(false);
 		} catch (CoreException ce) { 
 			ce.printStackTrace();
 		} catch (IOException ioe) {
@@ -500,13 +503,11 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 	}
 
 	public Object getAdapter(Class type) {
-		myselfShapesEditor = this;
+		myselfShapesEditor= this;
 		if (type == IContentOutlinePage.class)
 			return new ShapesOutlinePage(new TreeViewer());
 		else if (type == ZoomManager.class) 
-			return ((ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
-		else if (type == HierarchyView.class) 
-			return new HierarchyView();
+			return ((ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager(); 
 		return super.getAdapter(type);
 	}
 
@@ -549,7 +550,7 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 
 	public boolean isDirty()
 	{
-		return getCommandStack().isDirty() ;
+		return getCommandStack().isDirty() || dirty;
 	}
 
 	/* (non-Javadoc)
@@ -563,7 +564,7 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 			diagram = (ShapesDiagram) in.readObject();
 			in.close();
 			setPartName(file.getName());
-			((ShapesEditorPaletteRoot)getPaletteRoot()).refresh(diagram);
+			((ShapesEditorPaletteRoot)getPaletteRoot()).refresh();
 		} catch (IOException e) { 
 			handleLoadException(e); 
 		} catch (CoreException e) { 
@@ -647,10 +648,20 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 			id = ActionFactory.REDO.getId();
 			bars.setGlobalActionHandler(id, registry.getAction(id));
 			id = ActionFactory.DELETE.getId();
-			bars.setGlobalActionHandler(id, registry.getAction(id));
-			
-			
-			
+			bars.setGlobalActionHandler(id, registry.getAction(id));			
 		}
+	}
+
+
+	public void setDirty(boolean d) {
+		// TODO Auto-generated method stub
+		dirty = d;
+	}
+
+	public void refreshModel(ShapesDiagram diagram) {
+		// TODO Auto-generated method stub
+		this.diagram = diagram;
+		getGraphicalViewer().setContents(getModel());
+		((ShapesEditorPaletteRoot)getPaletteRoot()).refresh();
 	}
 }

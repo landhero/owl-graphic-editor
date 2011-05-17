@@ -1,58 +1,62 @@
 package cn.edu.pku.ogeditor.views;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.part.ViewPart;
 
 import cn.edu.pku.ogeditor.ShapesEditor;
-import cn.edu.pku.ogeditor.ShapesEditorPaletteRoot;
-import cn.edu.pku.ogeditor.model.Connection;
-import cn.edu.pku.ogeditor.model.Shape;
-import cn.edu.pku.ogeditor.parts.ShapesEditPartFactory;
+import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
 public class HierarchyView extends ViewPart {
 
-	private Table table;
+	private TreeViewer viewer;
+
+	public HierarchyView() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
 	public void createPartControl(Composite parent) {
-		table=new Table(parent,SWT.FULL_SELECTION);
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
-		TableColumn col1=new TableColumn(table,SWT.NONE);
-		col1.setText("Levels");
-		col1.setWidth(200);
-		int cengshu = 0;
-		if(ShapesEditor.myselfShapesEditor != null)
-		{
-			cengshu = ShapesEditor.myselfShapesEditor.getDiagram().getShapesList().size();
-			for(int index=0;index<cengshu;index++){
-				TableItem item=new TableItem(table,0);
-				item.setText("Level "+(index+1));
-			}
-		}
+		// TODO Auto-generated method stub
 
-		table.addSelectionListener(new LevelChangeListener());
-		
-		Composite composite=new Composite(parent,SWT.NONE);
-		composite.setLayout(new RowLayout());
-		Button addButton=new Button(composite,SWT.NONE);
-		addButton.setText("Add One Level");
-		addButton.addSelectionListener(new AddLevelListener(cengshu));
-
-		Button deleteButton=new Button(composite,SWT.NONE);
-		deleteButton.setText("Delete One Level");
-		deleteButton.addSelectionListener(new RemoveLevelListener(cengshu));
-
-
+		viewer = new TreeViewer (parent, SWT.SINGLE);
+		final Tree tree = viewer.getTree();
+		tree.setHeaderVisible(true);
+		tree.setLinesVisible(true);
+		viewer.setLabelProvider(new HierarchyLabelProvider());
+		viewer.setContentProvider(new HierarchyContentProvider());
+		List<ShapesDiagram> diagrams = new ArrayList<ShapesDiagram>();
+		diagrams.add(ShapesEditor.myselfShapesEditor.getDiagram());
+		viewer.setInput(diagrams.toArray());
+		viewer.addSelectionChangedListener(new LevelChangeListener());
+		getSite().setSelectionProvider(viewer);
+		Menu menu = new Menu(parent);
+		tree.setMenu(menu);
+		MenuItem menuItem1 = new MenuItem(menu, SWT.NONE);
+		menuItem1.setText("Add Lower Level Ontology");
+		menuItem1.addSelectionListener(new AddChildListener());
+		MenuItem menuItem2 = new MenuItem(menu, SWT.NONE);
+		menuItem2.setText("Remove Ontology");
+		menuItem2.addSelectionListener(new RemoveChildListener());
+		MenuItem menuItem3 = new MenuItem(menu, SWT.NONE);
+		menuItem3.setText("Rename");
+		menuItem3.addSelectionListener(new RenameChildListener());
 	}
 
 	@Override
@@ -60,81 +64,90 @@ public class HierarchyView extends ViewPart {
 		// TODO Auto-generated method stub
 
 	}
-	private class AddLevelListener extends SelectionAdapter {
-		int i;
 
-		private AddLevelListener(int cengshu) {
-			i = cengshu;
-		}
-
-		public void widgetSelected(SelectionEvent e){
-			i++;
-			TableItem item=new TableItem(table,0);
-			item.setText("Level "+i);
-			ShapesEditor.myselfShapesEditor.getDiagram().addShapes(i);
-		}
-	}
-
-	//not completed
-	private class RemoveLevelListener extends SelectionAdapter {
-		private RemoveLevelListener(int cengshu) {
-		}
-	}
-
-	private class LevelChangeListener implements SelectionListener
+	private class LevelChangeListener implements ISelectionChangedListener
 	{
-
 		@Override
-		public void widgetSelected(SelectionEvent e) {
+		public void selectionChanged(SelectionChangedEvent event) {
 			// TODO Auto-generated method stub
-			int selectedIndex=table.getSelectionIndex();
-			ShapesEditor.myselfShapesEditor.getDiagram().changeShapes(selectedIndex);
-			ShapesEditPartFactory.diagramEditPart.refresh();
-			ShapesEditorPaletteRoot curPaletteRoot = (ShapesEditorPaletteRoot)ShapesEditor.myselfShapesEditor.getPaletteRoot();
-			if(selectedIndex==0){
-				curPaletteRoot.RemoveShapeTool();
-				curPaletteRoot.RemoveRequiredConnectionTool();
-				curPaletteRoot.RemoveElectiveConnectionTool();
-				Shape rootShape=new Shape();
-
-				rootShape.setName("Thing");
-				curPaletteRoot.AddShapeTool(rootShape);
-
-				Connection requiredRootConnection=new Connection("RequiredRoot");//注意，以后可能要修改@吴韬
-				requiredRootConnection.setName("RequiredRelation");
-				requiredRootConnection.setRequired(true);
-				curPaletteRoot.AddRequiredConnectionTool(requiredRootConnection);
-
-				Connection electiveRootConnection=new Connection("ElectiveRoot");//注意，以后可能要修改@吴韬
-				electiveRootConnection.setName("ElectiveRelation");
-				electiveRootConnection.setRequired(false);
-				curPaletteRoot.AddElectiveConnectionTool(electiveRootConnection);
-
-			}
-			else{
-				curPaletteRoot.RemoveShapeTool();
-				curPaletteRoot.RemoveRequiredConnectionTool();
-				curPaletteRoot.RemoveElectiveConnectionTool();
-				ArrayList<Shape> shapes=(ArrayList<Shape>) ShapesEditor.myselfShapesEditor.getDiagram().getShapesList().get(selectedIndex-1);
-				Connection tempConnection;
-				for(int i=0;i<shapes.size();i++){
-					Shape shapeTemp=(Shape)shapes.get(i);
-					curPaletteRoot.AddShapeTool(shapeTemp);
-					for(int j=0;j<shapeTemp.getSourceConnections().size();j++){
-						tempConnection=(Connection)shapeTemp.getSourceConnections().get(j);
-						if(tempConnection.isRequired())
-							curPaletteRoot.AddRequiredConnectionTool(tempConnection);
-						else 
-							curPaletteRoot.AddElectiveConnectionTool(tempConnection);
-					}
-				}
-			}
+			TreeSelection curSelection = (TreeSelection) viewer.getSelection();
+			final ShapesDiagram curDiagram = (ShapesDiagram) curSelection.getFirstElement();
+			if(curDiagram == null)
+				return;
+			ShapesEditor.myselfShapesEditor.refreshModel(curDiagram);
 		}
+	}
 
-		@Override
-		public void widgetDefaultSelected(SelectionEvent e) {
-			// TODO Auto-generated method stub
-
+	private class AddChildListener extends SelectionAdapter
+	{
+		public void widgetSelected(SelectionEvent event){
+			//System.out.println(viewer.getSelection().toString());
+			TreeSelection curSelection = (TreeSelection) viewer.getSelection();
+			final ShapesDiagram curDiagram = (ShapesDiagram) curSelection.getFirstElement();
+			if(curDiagram == null)
+				return;
+			final Shell tempShell = new Shell();
+			tempShell.setText("Create Lower Level Ontology");
+			tempShell.setSize(350, 120);
+			Label label = new Label(tempShell, SWT.NONE);
+			label.setText("Please input the name of the new Ontology");
+			label.setLocation(5, 5);
+			label.setSize(350,15);
+			final Text text = new Text(tempShell, SWT.NONE);
+			text.setLocation(5, 30);
+			text.setSize(200, 13);
+			Button button = new Button(tempShell, SWT.NONE);
+			button.setLocation(5, 53);
+			button.setSize(100, 25);
+			button.setText("OK");
+			button.addSelectionListener(new SelectionAdapter(){
+				public void widgetSelected(SelectionEvent e) {
+					String childName = text.getText();
+					ShapesDiagram childDiagram = new ShapesDiagram();
+					childDiagram.setName(childName);
+					curDiagram.addLowLevelDiagram(childDiagram);
+					viewer.refresh(curDiagram);
+					ShapesEditor.myselfShapesEditor.setDirty(true);
+					tempShell.dispose();
+				}
+			});
+			tempShell.open();
+		}
+	}
+	private class RemoveChildListener extends SelectionAdapter
+	{
+		public void widgetSelected(SelectionEvent event){
+			//System.out.println(viewer.getSelection().toString());
+			TreeSelection curSelection = (TreeSelection) viewer.getSelection();
+			final ShapesDiagram curDiagram = (ShapesDiagram) curSelection.getFirstElement();
+			if(curDiagram == null)
+				return;
+			ShapesDiagram curDiagramFather = curDiagram.getFather();
+			if(curDiagramFather == null)
+				return;
+			curDiagramFather.removeLowLevelDiagram(curDiagram);
+			viewer.refresh(curDiagramFather);
+			ShapesEditor.myselfShapesEditor.refreshModel(curDiagramFather);
+			ShapesEditor.myselfShapesEditor.setDirty(true);
+		}
+	}
+	private class RenameChildListener extends SelectionAdapter
+	{
+		public void widgetSelected(SelectionEvent event){
+			//System.out.println(viewer.getSelection().toString());
+			TreeSelection curSelection = (TreeSelection) viewer.getSelection();
+			viewer.editElement(curSelection.getFirstElement(),0);
+//			final ShapesDiagram curDiagram = (ShapesDiagram) curSelection.getFirstElement();
+//			if(curDiagram == null)
+//				return;
+//			ShapesDiagram curDiagramFather = curDiagram.getFather();
+//			if(curDiagramFather == null)
+//				return;
+//			curDiagramFather.removeLowLevelDiagram(curDiagram);
+//			viewer.refresh(curDiagramFather);
+//			ShapesEditor.myselfShapesEditor.refreshModel(curDiagramFather);
+//			ShapesEditor.myselfShapesEditor.setDirty(true);
 		}
 	}
 }
+

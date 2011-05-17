@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.model.Shape;
 
 import org.eclipse.core.runtime.Assert;
@@ -142,23 +143,31 @@ implements PropertyChangeListener {
 
 	protected void refreshChildren() {
 
-		ShapesDiagram shapesDiagram = getCastedModel();
-
-		int currentCengciIndex;
-		List<ArrayList<Shape>> ShapesList = shapesDiagram.getShapesList();
-		currentCengciIndex = ShapesList.indexOf(shapesDiagram.getChildren());
-		int size;
-		size = ShapesList.size();
-		for (int i = size - 1; i >= 0; i--) {// 如果i从0往上增加原则上也没有问题，只不过增加的顺序在outline里面显示出来就是倒过来的
-			shapesDiagram.changeShapes(i);
-			_refreshChildren();
-		}
-		for (int i = 0; i < getChildren().size(); i++) {
-			EditPart editPart = (EditPart) getChildren().get(i);
-			addChildVisual(editPart, i);
-			editPart.refresh();
-		}
-		shapesDiagram.changeShapes(currentCengciIndex);
+//		ShapesDiagram curDiagram = ShapesEditor.myselfShapesEditor.getDiagram();
+//		while(curDiagram.getFather() != null)
+//		{
+//			this.setModel(curDiagram);
+//			_refreshChildren();
+//			curDiagram = curDiagram.getFather();
+//		}
+//		this.setModel(curDiagram);
+//		_refreshChildren();
+		
+//		int currentCengciIndex;
+//		List<ArrayList<Shape>> ShapesList = curDiagram.getShapesList();
+//		currentCengciIndex = ShapesList.indexOf(shapesDiagram.getChildren());
+//		int size;
+//		size = ShapesList.size();
+//		for (int i = size - 1; i >= 0; i--) {// 如果i从0往上增加原则上也没有问题，只不过增加的顺序在outline里面显示出来就是倒过来的
+//			shapesDiagram.changeShapes(i);
+//			_refreshChildren();
+//		}
+//		for (int i = 0; i < getChildren().size(); i++) {
+//			EditPart editPart = (EditPart) getChildren().get(i);
+//			addChildVisual(editPart, i);
+//			editPart.refresh();
+//		}
+//		shapesDiagram.changeShapes(currentCengciIndex);
 
 	}
 

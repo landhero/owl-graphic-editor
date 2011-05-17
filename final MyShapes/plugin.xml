@@ -39,7 +39,7 @@
          <view
                category="cn.edu.pku.ogeditor.views"
                class="cn.edu.pku.ogeditor.views.HierarchyView"
-               id="hierarchyView"
+               id="cn.edu.pku.ogeditor.views.hierarchyView"
                name="Hierarchy"
                restorable="true">
          </view>
