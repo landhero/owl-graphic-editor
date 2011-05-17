@@ -1,6 +1,7 @@
 package cn.edu.pku.ogeditor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
@@ -19,17 +20,19 @@ import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
 public class ShapesEditorPaletteRoot extends PaletteRoot {
-	public ShapesEditorPaletteRoot(){
-		super();
-		createToolsGroup();
-		init();
-	}
+	
 	private ArrayList<Connection> allUplevelRequiredConnections = new ArrayList<Connection>();
 	private PaletteDrawer requiredConnectionDrawer;
 	private ArrayList<Connection> allUplevelElectiveConnections = new ArrayList<Connection>();
 	private PaletteDrawer electiveConnectionDrawer;
 	private ArrayList<Shape> allUplevelShapes=new ArrayList<Shape>();
 	private PaletteDrawer conceptDrawer;
+	
+	public ShapesEditorPaletteRoot(){
+		super();
+		createToolsGroup();
+		init();
+	}
 	/**
 	 * @return the allConnectionTool
 	 */
@@ -162,14 +165,44 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 			conceptDrawer.add(component);
 		}
 	}
-	public void refresh(ShapesDiagram _diagram) {
-		allUplevelRequiredConnections = new ArrayList<Connection>();
-		allUplevelElectiveConnections = new ArrayList<Connection>();
-		remove(conceptDrawer);
-		remove(requiredConnectionDrawer);
-		remove(electiveConnectionDrawer);
-		init();
+	public void refresh() {
+		ShapesDiagram curDiagram = ShapesEditor.myselfShapesEditor.getModel();
+		RemoveShapeTool();
+		RemoveRequiredConnectionTool();
+		RemoveElectiveConnectionTool();
+		if(curDiagram.getFather() == null)
+		{
+			Shape rootShape=new Shape();
 
+			rootShape.setName("Thing");
+			AddShapeTool(rootShape);
+
+			Connection requiredRootConnection=new Connection("RequiredRoot");
+			requiredRootConnection.setName("RequiredRelation");
+			requiredRootConnection.setRequired(true);
+			AddRequiredConnectionTool(requiredRootConnection);
+
+			Connection electiveRootConnection=new Connection("ElectiveRoot");
+			electiveRootConnection.setName("ElectiveRelation");
+			electiveRootConnection.setRequired(false);
+			AddElectiveConnectionTool(electiveRootConnection);
+		}
+		else
+		{
+			List<Shape> concepts = curDiagram.getFather().getChildren();
+			Connection tempConnection;
+			for(int i=0;i<concepts.size();i++){
+				Shape shapeTemp=(Shape)concepts.get(i);
+				AddShapeTool(shapeTemp);
+				for(int j=0;j<shapeTemp.getSourceConnections().size();j++){
+					tempConnection=(Connection)shapeTemp.getSourceConnections().get(j);
+					if(tempConnection.isRequired())
+						AddRequiredConnectionTool(tempConnection);
+					else 
+						AddElectiveConnectionTool(tempConnection);
+				}
+			}
+		}
 	}
 	public PaletteDrawer getRequiredConnectionDrawer() {
 		return requiredConnectionDrawer;

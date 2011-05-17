@@ -27,38 +27,59 @@ public static final String CHILD_ADDED_PROP = "ShapesDiagram.ChildAdded";
 public static final String CHILD_REMOVED_PROP = "ShapesDiagram.ChildRemoved";
 public static final String ALLCHILDREN_RELOCATED_PROP = "ShapesDiagram.AllChildrenRelocated";
 private static final long serialVersionUID = 1;
-private List<ArrayList<Shape>> shapesList;
+//private List<ArrayList<Shape>> shapesList;
 private List<Shape> shapes;
-
+private String name;
+private List<ShapesDiagram> lowerLevelDiagrams;
+private ShapesDiagram father;
 
 public ShapesDiagram(){
-	shapesList=new ArrayList<ArrayList<Shape>>();
 	shapes=new ArrayList<Shape>();
-	if(shapesList.indexOf(shapes)==-1){
-		shapesList.add((ArrayList<Shape>) shapes);
-	}
+	lowerLevelDiagrams = new ArrayList<ShapesDiagram>();
+	setName("New Ontology");
+	setFather(null);
+	
 }
-public void addShapes(int i){
-	shapesList.add(new ArrayList<Shape>());
+public void setName(String name) {
+	this.name = name;
+}
+public String getName() {
+	return name;
+}
+public void setFather(ShapesDiagram father) {
+	this.father = father;
+}
+public ShapesDiagram getFather() {
+	return father;
 }
 
-public void changeShapes(int i){
-	List<Shape> shapesSelected=(List<Shape>)shapesList.get(i);
-	if(shapesSelected == shapes)
-		return;
-	shapes=shapesSelected;
+public void setLowLevelDiagrams(List<ShapesDiagram> lowLevelDiagrams) {
+	this.lowerLevelDiagrams = lowLevelDiagrams;
 }
+public List<ShapesDiagram> getLowLevelDiagrams() {
+	return lowerLevelDiagrams;
+}
+public void addLowLevelDiagram(ShapesDiagram childDiagram) {
+	// TODO Auto-generated method stub
+	if(lowerLevelDiagrams.add(childDiagram))
+		childDiagram.setFather(this);
+	else 
+		System.err.println("Can't add to lowerLevelDiagrams");
+}
+
+public void removeLowLevelDiagram(ShapesDiagram childDiagram) {
+	// TODO Auto-generated method stub
+	if(lowerLevelDiagrams.remove(childDiagram))
+		childDiagram.setFather(null);
+	else 
+		System.err.println("Can't add to lowerLevelDiagrams");
+}
+
 /** Return a List of Shapes in this diagram.  The returned List should not be modified. */
 public List<Shape> getChildren() {
 	return shapes;
 }
 
-/**
- * @return the shapesList
- */
-public List<ArrayList<Shape>> getShapesList() {
-	return shapesList;
-}
 /** 
  * Add a shape to this diagram.
  * @param s a non-null shape instance
@@ -197,5 +218,6 @@ public void relocatedAll(Rectangle rect){
 		allocated[i] = choose;
 	}
 }
+
 
 }
