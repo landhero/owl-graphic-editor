@@ -100,7 +100,7 @@ import com.hp.hpl.jena.vocabulary.XSD;
 public class ShapesEditor 
 extends GraphicalEditorWithFlyoutPalette implements Serializable
 {
-	private static final long serialVersionUID = 1L; //a
+	private static final long serialVersionUID = 1L; //ÐÏÑ©Ô´
 	/** This is the root of the editor's model. */
 	private ShapesDiagram diagram;
 	public PaletteViewer paletteViewer;
