@@ -57,8 +57,10 @@ private String name;
 private String description;
 private Shape parent;
 private ArrayList<Shape> children;
-
+private boolean root=false;
 private boolean temporarily=false;
+
+
 public boolean isTemporarily() {
 	return temporarily;
 }
@@ -66,7 +68,7 @@ public boolean isTemporarily() {
 public void setTemporarily(boolean temporarily) {
 	this.temporarily = temporarily;
 }
-private boolean root=false;
+
 
 public boolean isRoot() {
 	return root;
