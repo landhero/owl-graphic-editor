@@ -41,6 +41,7 @@ public class Connection extends ModelElement {
 	 * Create a (solid) connection between two distinct shapes.
 	 * @param source a source endpoint for this connection (non null)
 	 * @param target a target endpoint for this connection (non null)
+	 * @param name 
 	 * @throws IllegalArgumentException if any of the parameters are null or source == target
 	 * @see #setLineStyle(int) 
 	 */

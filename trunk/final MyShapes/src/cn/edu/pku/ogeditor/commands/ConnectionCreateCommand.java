@@ -50,6 +50,7 @@ private Connection connection;
 private final Shape source;
 /** Target endpoint for the connection. */
 private Shape target;
+private String name;
 
 
 /**
@@ -65,6 +66,7 @@ public ConnectionCreateCommand(Shape source, String lineName) {
 	}
 	setLabel("connection creation");
 	this.source = source;
+	this.name = lineName;
 }
 
 /* (non-Javadoc)
@@ -119,7 +121,7 @@ public void execute() {
 			return;
 
 	connection = new Connection(source, target);
-
+	connection.setName(name);
 	Connection newConnectionParent;
 	newConnectionParent=getParent();
 	connection.setParent(newConnectionParent);

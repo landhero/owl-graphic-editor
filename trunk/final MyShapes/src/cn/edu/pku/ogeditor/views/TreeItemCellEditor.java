@@ -1,33 +1,22 @@
 package cn.edu.pku.ogeditor.views;
 
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.TreeViewer;
 
-public class TreeItemCellEditor extends CellEditor {
+public class TreeItemCellEditor extends TextCellEditor {
 
-	@Override
-	protected Control createControl(Composite parent) {
-		// TODO Auto-generated method stub
-		return null;
+	public TreeItemCellEditor(TreeViewer viewer) {
+		// TODO Auto-generated constructor stub
+//		getCellEditor() != null
+//		return;
+//		Composite composite = (Composite) source.getViewer().getControl();
+//		setCellEditor(createCellEditorOn(composite));
+//		if (getCellEditor() == null)
+//			return;
+//		initCellEditor();
+//		getCellEditor().activate();
+//		placeCellEditor();
+//		getControl().setVisible(true);
+//		getCellEditor().setFocus();
 	}
-
-	@Override
-	protected Object doGetValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void doSetFocus() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void doSetValue(Object value) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
