@@ -73,7 +73,7 @@ public class HierarchyView extends ViewPart {
 			TreeSelection curSelection = (TreeSelection) viewer.getSelection();
 			final ShapesDiagram curDiagram = (ShapesDiagram) curSelection.getFirstElement();
 			if(curDiagram == null)
-				return;
+				return; 
 			ShapesEditor.myselfShapesEditor.refreshModel(curDiagram);
 		}
 	}
