@@ -27,6 +27,9 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 	private PaletteDrawer electiveConnectionDrawer;
 	private ArrayList<Shape> allUplevelShapes=new ArrayList<Shape>();
 	private PaletteDrawer conceptDrawer;
+	private Shape rootShape;
+	private Connection requiredRootConnection;
+	private Connection electiveRootConnection;
 	
 	public ShapesEditorPaletteRoot(){
 		super();
@@ -81,6 +84,19 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 		add(conceptDrawer);
 		add(requiredConnectionDrawer);
 		add(electiveConnectionDrawer);
+		rootShape=new Shape();
+		rootShape.setName("Thing");
+		AddShapeTool(rootShape);
+
+		requiredRootConnection=new Connection("RequiredRoot");
+		requiredRootConnection.setName("RequiredRelation");
+		requiredRootConnection.setRequired(true);
+		AddRequiredConnectionTool(requiredRootConnection);
+
+		electiveRootConnection=new Connection("ElectiveRoot");
+		electiveRootConnection.setName("ElectiveRelation");
+		electiveRootConnection.setRequired(false);
+		AddElectiveConnectionTool(electiveRootConnection);
 	}
 
 	public void RemoveRequiredConnectionTool() {
@@ -173,18 +189,10 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 		//请注意下面这段代码，里面有错误，其实每次进入下面这个if循环都会创建新的rootShape和两种rootConnection,日不过软件在目前的使用中没有表现出来罢了@吴韬
 		if(curDiagram.getFather() == null)
 		{
-			Shape rootShape=new Shape();
-			rootShape.setName("Thing");
 			AddShapeTool(rootShape);
 
-			Connection requiredRootConnection=new Connection("RequiredRoot");
-			requiredRootConnection.setName("RequiredRelation");
-			requiredRootConnection.setRequired(true);
 			AddRequiredConnectionTool(requiredRootConnection);
 
-			Connection electiveRootConnection=new Connection("ElectiveRoot");
-			electiveRootConnection.setName("ElectiveRelation");
-			electiveRootConnection.setRequired(false);
 			AddElectiveConnectionTool(electiveRootConnection);
 		}
 		else
