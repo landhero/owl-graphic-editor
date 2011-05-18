@@ -13,6 +13,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * @author zhanghao
@@ -39,6 +40,10 @@ public class ShapeFigure extends Figure {
 		this.add(labelParent);
 		this.add(label);
 
+	}
+	//下面的方法把继承下来的方法覆盖了
+	public void setBackgroundColor(Color color){
+		ellipseFigure.setBackgroundColor(color);
 	}
 
 	public Label getLabel() {

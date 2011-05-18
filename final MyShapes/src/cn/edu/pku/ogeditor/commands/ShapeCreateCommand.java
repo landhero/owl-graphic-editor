@@ -10,9 +10,14 @@
 ?*******************************************************************************/
 package cn.edu.pku.ogeditor.commands;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+
 
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.palette.ToolEntry;
@@ -20,6 +25,7 @@ import org.eclipse.gef.ui.palette.PaletteViewer;
 
 import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.ShapesEditorPaletteRoot;
+import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
@@ -70,7 +76,7 @@ public ShapeCreateCommand(Shape newShape, ShapesDiagram parent, Rectangle bounds
 public boolean canExecute() {
 	return newShape != null && parent != null && bounds != null;
 }
-
+//private ArrayList<Shape> requiredParents = new ArrayList<Shape>();
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#execute()
  */
@@ -80,7 +86,41 @@ public void execute() {
 	if (size.width > 0 && size.height > 0)
 		newShape.setSize(size);
 	redo();
+	createRequiredShape(newShape);
 }
+public void createRequiredShape(Shape shape) {
+	if(shape.isRoot())return;
+	//if (shape == newShape)requiredParents.add(shape.getParent());
+	List<Connection> sourceConnection=shape.getParent().getSourceConnections();
+	Shape defaultShape;
+	for(int i=0;i<sourceConnection.size();i++){
+		if(!sourceConnection.get(i).isRequired())continue;
+		Shape parentShape=sourceConnection.get(i).getTarget();
+		//if(requiredParents.indexOf(parentShape)!=-1)continue;
+		//requiredParents.add(parentShape);
+		defaultShape=new Shape();
+		defaultShape.setParent(parentShape);
+		parentShape.getChildren().add(defaultShape);
+		defaultShape.setName("ȱʡ "+parentShape.getName());
+		defaultShape.setTemporarily(true);
+		Point location;
+		location=new Point(bounds.getLocation());
+		location.x+=300*((new Random()).nextDouble()-0.5);
+		location.y+=300*((new Random()).nextDouble()-0.5);
+		defaultShape.setLocation(location);
+		Dimension size = bounds.getSize();
+		if (size.width > 0 && size.height > 0)
+			defaultShape.setSize(size);
+		parent.addChild(defaultShape);
+		Connection defaultConnection=new Connection(shape, defaultShape);
+		defaultConnection.setName("ȱʡ "+sourceConnection.get(i).getName());
+		defaultConnection.setParent(sourceConnection.get(i));
+		sourceConnection.get(i).getChildren().add(defaultConnection);
+		defaultConnection.reconnect();
+		createRequiredShape(defaultShape);
+	}
+}
+
 
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#redo()
