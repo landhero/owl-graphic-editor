@@ -11,12 +11,13 @@
 package cn.edu.pku.ogeditor.commands;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.gef.commands.Command;
 
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
-
+import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
 /**
  * A command to reconnect a connection to a different start point or end point.
@@ -27,17 +28,20 @@ import cn.edu.pku.ogeditor.model.Shape;
  * </p>
  * <ol>
  * <li>Create a subclass of GraphicalNodeEditPolicy.</li>
- * <li>Override the <tt>getReconnectSourceCommand(...)</tt> method.
- * Here you need to obtain the Connection model element from the ReconnectRequest,
- * create a new ConnectionReconnectCommand, set the new connection <i>source</i> by calling
- * the <tt>setNewSource(Shape)</tt> method and return the command instance.
+ * <li>Override the <tt>getReconnectSourceCommand(...)</tt> method. Here you
+ * need to obtain the Connection model element from the ReconnectRequest, create
+ * a new ConnectionReconnectCommand, set the new connection <i>source</i> by
+ * calling the <tt>setNewSource(Shape)</tt> method and return the command
+ * instance.
  * <li>Override the <tt>getReconnectTargetCommand(...)</tt> method.</li>
- * Here again you need to obtain the Connection model element from the ReconnectRequest,
- * create a new ConnectionReconnectCommand, set the new connection <i>target</i> by calling
- * the <tt>setNewTarget(Shape)</tt> method and return the command instance.</li>
+ * Here again you need to obtain the Connection model element from the
+ * ReconnectRequest, create a new ConnectionReconnectCommand, set the new
+ * connection <i>target</i> by calling the <tt>setNewTarget(Shape)</tt> method
+ * and return the command instance.</li>
  * </ol>
+ * 
  * @see cn.edu.pku.ogeditor.parts.ShapeEditPart#createEditPolicies() for an
- * 			 example of the above procedure.
+ *      example of the above procedure.
  * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy
  * @see #setNewSource(Shape)
  * @see #setNewTarget(Shape)
@@ -45,145 +49,203 @@ import cn.edu.pku.ogeditor.model.Shape;
  */
 public class ConnectionReconnectCommand extends Command {
 
-/** The connection instance to reconnect. */
-private Connection connection;
-/** The new source endpoint. */
-private Shape newSource;
-/** The new target endpoint. */
-private Shape newTarget;
-/** The original source endpoint. */
-private final Shape oldSource;
-/** The original target endpoint. */
-private final Shape oldTarget;
-
-/**
- * Instantiate a command that can reconnect a Connection instance to a different source
- * or target endpoint.
- * @param conn the connection instance to reconnect (non-null)
- * @throws IllegalArgumentException if conn is null
- */
-public ConnectionReconnectCommand(Connection conn) {
-	if (conn == null) {
-		throw new IllegalArgumentException();
+	/** The connection instance to reconnect. */
+	private Connection connection;
+	/** The new source endpoint. */
+	private Shape newSource;
+	/** The new target endpoint. */
+	private Shape newTarget;
+	/** The original source endpoint. */
+	private final Shape oldSource;
+	/** The original target endpoint. */
+	private final Shape oldTarget;
+	private ShapesDiagram shapesDiagram;
+private Shape removedShape;
+	/**
+	 * Instantiate a command that can reconnect a Connection instance to a
+	 * different source or target endpoint.
+	 * 
+	 * @param conn
+	 *            the connection instance to reconnect (non-null)
+	 * @throws IllegalArgumentException
+	 *             if conn is null
+	 */
+	public ConnectionReconnectCommand(Connection conn,
+			ShapesDiagram shapesDiagram) {
+		if (conn == null) {
+			throw new IllegalArgumentException();
+		}
+		this.connection = conn;
+		this.oldSource = conn.getSource();
+		this.oldTarget = conn.getTarget();
+		this.shapesDiagram = shapesDiagram;
 	}
-	this.connection = conn;
-	this.oldSource = conn.getSource();
-	this.oldTarget = conn.getTarget();
-}
 
-/* (non-Javadoc)
- * @see org.eclipse.gef.commands.Command#canExecute()
- */
-public boolean canExecute() {
-	if (newSource != null) {
-		return checkSourceReconnection();
-	} else if (newTarget != null) {
-		return checkTargetReconnection();
-	}
-	return false;
-}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.gef.commands.Command#canExecute()
+	 */
+	public boolean canExecute() {
+		Connection parentConnection = connection.getParent();
+		if (newSource != null) {
+			if (!parentConnection.isRoot())
+				if (!parentConnection.isRequired()) {
+					if (newSource.getParent().getSourceConnections()
+							.indexOf(parentConnection) == -1)
+						return false;
+				} else {
+					if (newSource.getParent().getSourceConnections()
+							.indexOf(parentConnection) == -1)
+						return false;
+					
+				}
 
-/**
- * Return true, if reconnecting the connection-instance to newSource is allowed.
- */
-private boolean checkSourceReconnection() {
-	// connection endpoints must be different Shapes
-	if (newSource.equals(oldTarget)) {
+			return checkSourceReconnection();
+		} else if (newTarget != null) {
+			if (!parentConnection.isRoot())
+				if (!parentConnection.isRequired()) {
+					if (newTarget.getParent().getTargetConnections()
+							.indexOf(parentConnection) == -1)
+						return false;
+				} else {
+					if (newTarget.getParent().getTargetConnections()
+							.indexOf(parentConnection) == -1)
+						return false;
+					else if (newTarget.isTemporarily()) {
+						this.removedShape=newTarget;
+					}
+				}
+			return checkTargetReconnection();
+		}
 		return false;
 	}
-	// return false, if the connection exists already
-	for (Iterator<Connection> iter = newSource.getSourceConnections().iterator(); iter.hasNext();) {
-		Connection conn = (Connection) iter.next();
-		// return false if a newSource -> oldTarget connection exists already
-		// and it is a different instance than the connection-field
-		if (conn.getTarget().equals(oldTarget) &&  !conn.equals(connection)) {
-			return false;
+
+	private void removeConnections(List<Connection> connections) {
+		for (Iterator<Connection> iter = connections.iterator(); iter.hasNext();) {
+			Connection conn = (Connection) iter.next();
+			conn.disconnect();
 		}
 	}
-	return true;
-}
 
-/**
- * Return true, if reconnecting the connection-instance to newTarget is allowed. 
- */
-private boolean checkTargetReconnection() {
-	// connection endpoints must be different Shapes
-	if (newTarget.equals(oldSource)) {
-		return false;
-	}
-	// return false, if the connection exists already
-	for (Iterator<Connection> iter = newTarget.getTargetConnections().iterator(); iter.hasNext();) {
-		Connection conn = (Connection) iter.next();
-		// return false if a oldSource -> newTarget connection exists already
-		// and it is a differenct instance that the connection-field
-		if (conn.getSource().equals(oldSource) && !conn.equals(connection)) {
+	/**
+	 * Return true, if reconnecting the connection-instance to newSource is
+	 * allowed.
+	 */
+	private boolean checkSourceReconnection() {
+		// connection endpoints must be different Shapes
+		if (newSource.equals(oldTarget)) {
 			return false;
 		}
+		// return false, if the connection exists already
+		for (Iterator<Connection> iter = newSource.getSourceConnections()
+				.iterator(); iter.hasNext();) {
+			Connection conn = (Connection) iter.next();
+			// return false if a newSource -> oldTarget connection exists
+			// already
+			// and it is a different instance than the connection-field
+			if (conn.getTarget().equals(oldTarget) && !conn.equals(connection)) {
+				return false;
+			}
+		}
+		return true;
 	}
-	return true;
-}
 
-/**
- * Reconnect the connection to newSource (if setNewSource(...) was invoked before)
- * or newTarget (if setNewTarget(...) was invoked before).
- */
-public void execute() {
-	if (newSource != null) {
-		connection.reconnect(newSource, oldTarget);
-	} else if (newTarget != null) {
-		connection.reconnect(oldSource, newTarget);
-	} else {
-		throw new IllegalStateException("Should not happen");
+	/**
+	 * Return true, if reconnecting the connection-instance to newTarget is
+	 * allowed.
+	 */
+	private boolean checkTargetReconnection() {
+		// connection endpoints must be different Shapes
+		if (newTarget.equals(oldSource)) {
+			return false;
+		}
+		// return false, if the connection exists already
+		for (Iterator<Connection> iter = newTarget.getTargetConnections()
+				.iterator(); iter.hasNext();) {
+			Connection conn = (Connection) iter.next();
+			// return false if a oldSource -> newTarget connection exists
+			// already
+			// and it is a differenct instance that the connection-field
+			if (conn.getSource().equals(oldSource) && !conn.equals(connection)) {
+				return false;
+			}
+		}
+		return true;
 	}
-}
 
-/**
- * Set a new source endpoint for this connection.
- * When execute() is invoked, the source endpoint of the connection will be attached
- * to the supplied Shape instance.
- * <p>
- * Note: Calling this method, deactivates reconnection of the <i>target</i> endpoint.
- * A single instance of this command can only reconnect either the source or the target 
- * endpoint.
- * </p>
- * @param connectionSource a non-null Shape instance, to be used as a new source endpoint
- * @throws IllegalArgumentException if connectionSource is null
- */
-public void setNewSource(Shape connectionSource) {
-	if (connectionSource == null) {
-		throw new IllegalArgumentException();
+	/**
+	 * Reconnect the connection to newSource (if setNewSource(...) was invoked
+	 * before) or newTarget (if setNewTarget(...) was invoked before).
+	 */
+	public void execute() {
+		if(this.removedShape!=null){
+			shapesDiagram.removeChild(removedShape);
+			removeConnections(removedShape.getSourceConnections());
+			removeConnections(removedShape.getTargetConnections());
+		}
+		if (newSource != null) {
+			connection.reconnect(newSource, oldTarget);
+		} else if (newTarget != null) {
+			connection.reconnect(oldSource, newTarget);
+		} else {
+			throw new IllegalStateException("Should not happen");
+		}
 	}
-	setLabel("move connection startpoint");
-	newSource = connectionSource;
-	newTarget = null;
-}
 
-/**
- * Set a new target endpoint for this connection
- * When execute() is invoked, the target endpoint of the connection will be attached
- * to the supplied Shape instance.
- * <p>
- * Note: Calling this method, deactivates reconnection of the <i>source</i> endpoint.
- * A single instance of this command can only reconnect either the source or the target 
- * endpoint.
- * </p>
- * @param connectionTarget a non-null Shape instance, to be used as a new target endpoint
- * @throws IllegalArgumentException if connectionTarget is null
- */
-public void setNewTarget(Shape connectionTarget) {
-	if (connectionTarget == null) {
-		throw new IllegalArgumentException();
+	/**
+	 * Set a new source endpoint for this connection. When execute() is invoked,
+	 * the source endpoint of the connection will be attached to the supplied
+	 * Shape instance.
+	 * <p>
+	 * Note: Calling this method, deactivates reconnection of the <i>target</i>
+	 * endpoint. A single instance of this command can only reconnect either the
+	 * source or the target endpoint.
+	 * </p>
+	 * 
+	 * @param connectionSource
+	 *            a non-null Shape instance, to be used as a new source endpoint
+	 * @throws IllegalArgumentException
+	 *             if connectionSource is null
+	 */
+	public void setNewSource(Shape connectionSource) {
+		if (connectionSource == null) {
+			throw new IllegalArgumentException();
+		}
+		setLabel("move connection startpoint");
+		newSource = connectionSource;
+		newTarget = null;
 	}
-	setLabel("move connection endpoint");
-	newSource = null;
-	newTarget = connectionTarget;
-}
 
-/**
- * Reconnect the connection to its original source and target endpoints.
- */
-public void undo() {
-	connection.reconnect(oldSource, oldTarget);
-}
-	
+	/**
+	 * Set a new target endpoint for this connection When execute() is invoked,
+	 * the target endpoint of the connection will be attached to the supplied
+	 * Shape instance.
+	 * <p>
+	 * Note: Calling this method, deactivates reconnection of the <i>source</i>
+	 * endpoint. A single instance of this command can only reconnect either the
+	 * source or the target endpoint.
+	 * </p>
+	 * 
+	 * @param connectionTarget
+	 *            a non-null Shape instance, to be used as a new target endpoint
+	 * @throws IllegalArgumentException
+	 *             if connectionTarget is null
+	 */
+	public void setNewTarget(Shape connectionTarget) {
+		if (connectionTarget == null) {
+			throw new IllegalArgumentException();
+		}
+		setLabel("move connection endpoint");
+		newSource = null;
+		newTarget = connectionTarget;
+	}
+
+	/**
+	 * Reconnect the connection to its original source and target endpoints.
+	 */
+	public void undo() {
+		connection.reconnect(oldSource, oldTarget);
+	}
+
 }

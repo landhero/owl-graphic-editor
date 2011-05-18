@@ -14,6 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
@@ -39,6 +40,7 @@ import cn.edu.pku.ogeditor.figures.ShapeFigure;
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.ModelElement;
 import cn.edu.pku.ogeditor.model.Shape;
+import cn.edu.pku.ogeditor.model.ShapesDiagram;
 import cn.edu.pku.ogeditor.policies.ShapeComponentEditPolicy;
 import cn.edu.pku.ogeditor.policies.ShapeDirectEditPolicy;
 
@@ -63,7 +65,18 @@ public void activate() {
 	if (!isActive()) {
 		super.activate();
 		((ModelElement) getModel()).addPropertyChangeListener(this);
+		setTemporarily(isTemporarily());
 	}
+}
+
+public boolean isTemporarily() {
+	return ((Shape)this.getModel()).isTemporarily();
+}
+
+public void setTemporarily(boolean temporarily) {
+	((Shape)this.getModel()).setTemporarily(temporarily);
+	if(temporarily==false)this.getFigure().setBackgroundColor(ColorConstants.orange);
+	else this.getFigure().setBackgroundColor(ColorConstants.red);
 }
 
 //改变ShapeFigure的大小，但是这个函数还没有调试好
@@ -101,7 +114,7 @@ protected void createEditPolicies() {
 		protected Command getReconnectSourceCommand(ReconnectRequest request) {
 			Connection conn = (Connection) request.getConnectionEditPart().getModel();
 			Shape newSource = (Shape) getHost().getModel();
-			ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn);
+			ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn,(ShapesDiagram) this.getHost().getParent().getModel());
 			cmd.setNewSource(newSource);
 			return cmd;
 		}
@@ -109,7 +122,7 @@ protected void createEditPolicies() {
 		protected Command getReconnectTargetCommand(ReconnectRequest request) {
 			Connection conn = (Connection) request.getConnectionEditPart().getModel();
 			Shape newTarget = (Shape) getHost().getModel();
-			ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn);
+			ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn,(ShapesDiagram) this.getHost().getParent().getModel());
 			cmd.setNewTarget(newTarget);
 			return cmd;
 		}

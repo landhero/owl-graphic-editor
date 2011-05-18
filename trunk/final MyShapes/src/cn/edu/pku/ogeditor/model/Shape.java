@@ -58,6 +58,22 @@ private String description;
 private Shape parent;
 private ArrayList<Shape> children;
 
+private boolean temporarily=false;
+public boolean isTemporarily() {
+	return temporarily;
+}
+
+public void setTemporarily(boolean temporarily) {
+	this.temporarily = temporarily;
+}
+private boolean root=false;
+
+public boolean isRoot() {
+	return root;
+}
+public void setRoot(boolean root) {
+	this.root = root;
+}
 public Shape()
 {
 	super();
