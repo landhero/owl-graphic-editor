@@ -26,6 +26,7 @@ import cn.edu.pku.ogeditor.model.ShapesDiagram;
 public class HierarchyView extends ViewPart {
 
 	private TreeViewer viewer;
+	private TreeItemCellEditor ce;
 
 	public HierarchyView() {
 		// TODO Auto-generated constructor stub
@@ -47,6 +48,8 @@ public class HierarchyView extends ViewPart {
 		viewer.addSelectionChangedListener(new LevelChangeListener());
 		getSite().setSelectionProvider(viewer);
 		Menu menu = new Menu(parent);
+		if(ce == null)
+			ce = new TreeItemCellEditor(viewer);
 		tree.setMenu(menu);
 		MenuItem menuItem1 = new MenuItem(menu, SWT.NONE);
 		menuItem1.setText("Add Lower Level Ontology");
