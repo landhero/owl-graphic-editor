@@ -95,8 +95,8 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 	
 	private void init() {
 		conceptDrawer = new PaletteDrawer("Concepts");
-		requiredConnectionDrawer=new PaletteDrawer("Required Ralations");
-		electiveConnectionDrawer=new PaletteDrawer("Elective Ralations");
+		requiredConnectionDrawer=new PaletteDrawer("Required Relations");
+		electiveConnectionDrawer=new PaletteDrawer("Elective Relations");
 		add(conceptDrawer);
 		add(requiredConnectionDrawer);
 		add(electiveConnectionDrawer);
