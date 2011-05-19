@@ -27,8 +27,7 @@ import cn.edu.pku.ogeditor.ShapesPlugin;
  * Has a size (width and height), a location (x and y position) and a list of incoming
  * and outgoing connections. Use subclasses to instantiate a specific shape.
  * @see cn.edu.pku.ogeditor.model.EllipseShape
- * @see org.eclipse.gef.examples.shapes.model.EllipticalShape
- * @author Elias Volanakis
+ * @see org.eclipse.gef.examples.shapes.model.Shape
  */
 public class Shape extends ModelElement {
 
@@ -47,15 +46,14 @@ public static final String TARGET_CONNECTIONS_PROP = "Shape.TargetConn";
 private Point location = new Point(0, 0);
 /** Size of this shape. */
 private Dimension size = new Dimension(100, 60);
-/** List of outgoing Connections. */
-private List<Connection> sourceConnections = new ArrayList<Connection>();
-/** List of incoming Connections. */
-private List<Connection> targetConnections = new ArrayList<Connection>();
 
 private String name;
-private String description;
 private Shape parent;
 private ArrayList<Shape> children;
+private List<Connection> sourceConnections;
+private List<Connection> targetConnections;
+
+private String description;
 private boolean root=false;
 private boolean temporarily=false;
 
@@ -67,7 +65,6 @@ public boolean isTemporarily() {
 public void setTemporarily(boolean temporarily) {
 	this.temporarily = temporarily;
 }
-
 
 public boolean isRoot() {
 	return root;
@@ -81,6 +78,8 @@ public Shape()
 	name = new String();
 	description = new String();
 	children=new ArrayList<Shape>();
+	sourceConnections = new ArrayList<Connection>();
+	targetConnections = new ArrayList<Connection>();
 }
 
 public ArrayList<Shape> getChildren() {

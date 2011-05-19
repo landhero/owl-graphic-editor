@@ -61,17 +61,6 @@ public class ShapeFigure extends Figure {
 		setBounds(rect);
 	}
 
-	//没有实现
-	public void refreshBounds(int x, int y) {
-		Rectangle size = label.getTextBounds();
-		Rectangle parentSize = labelParent.getTextBounds();
-		Rectangle rect = new Rectangle(getBounds());
-		rect.width = y+100;
-		// rect.height = size.height > parentSize.height? size.height :
-		// parentSize.height;
-		setSize(x+100,y+100);
-	}
-
 	public void setBounds(Rectangle rect) {
 		super.setBounds(rect);
 		Rectangle rectParentLabel = new Rectangle(rect);
