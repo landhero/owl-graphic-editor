@@ -75,16 +75,20 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 		entries.add(tool);
 		setDefaultEntry(tool);
 
-		PaletteStack marqueeStack = new PaletteStack("cn.edu.pku.ogeditor.MarqueeStack", "", null); //$NON-NLS-1$
-		marqueeStack.add(new MarqueeToolEntry());
+		PaletteStack marqueeStack = new PaletteStack("cn.edu.p$ku.ogeditor.MarqueeStack", "", null);
 		MarqueeToolEntry marquee = new MarqueeToolEntry();
+		marquee.setLabel("Marquee Concepts");
+		marqueeStack.add(marquee);
+		marquee = new MarqueeToolEntry();
 		marquee.setToolProperty(MarqueeSelectionTool.PROPERTY_MARQUEE_BEHAVIOR, 
 				new Integer(MarqueeSelectionTool.BEHAVIOR_CONNECTIONS_TOUCHED));
+		marquee.setLabel("Marquee Relations");
 		marqueeStack.add(marquee);
 		marquee = new MarqueeToolEntry();
 		marquee.setToolProperty(MarqueeSelectionTool.PROPERTY_MARQUEE_BEHAVIOR, 
 				new Integer(MarqueeSelectionTool.BEHAVIOR_CONNECTIONS_TOUCHED 
 				| MarqueeSelectionTool.BEHAVIOR_NODES_CONTAINED));
+		marquee.setLabel("Marquee All");
 		marqueeStack.add(marquee);
 		marqueeStack.setUserModificationPermission(PaletteEntry.PERMISSION_NO_MODIFICATION);
 		entries.add(marqueeStack);

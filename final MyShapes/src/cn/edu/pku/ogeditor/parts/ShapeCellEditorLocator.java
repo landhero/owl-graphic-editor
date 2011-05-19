@@ -21,7 +21,8 @@ public class ShapeCellEditorLocator implements CellEditorLocator{
 		// TODO Auto-generated method stub
 	      Text text = (Text) celleditor.getControl();
 	      //Point pref = text.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-	      Rectangle rect = this.shapeFigure.getLabel().getTextBounds();
+	      Rectangle rect = shapeFigure.getLabel().getTextBounds();
+	      shapeFigure.getLabel().translateToAbsolute(rect);
 	      text.setBounds(rect.x - 1, rect.y - 1, rect.width + 1, rect.height + 1);
 	}
 
