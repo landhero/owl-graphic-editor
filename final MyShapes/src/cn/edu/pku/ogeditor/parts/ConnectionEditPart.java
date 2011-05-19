@@ -12,6 +12,8 @@ package cn.edu.pku.ogeditor.parts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
@@ -19,6 +21,7 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MidpointLocator;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
+import org.eclipse.draw2d.RelativeBendpoint;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
@@ -29,10 +32,13 @@ import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.jface.viewers.TextCellEditor;
 
+
 import cn.edu.pku.ogeditor.anchor.BorderAnchor;
 import cn.edu.pku.ogeditor.commands.ConnectionDeleteCommand;
 import cn.edu.pku.ogeditor.model.Connection;
+import cn.edu.pku.ogeditor.model.ConnectionBendpoint;
 import cn.edu.pku.ogeditor.model.ModelElement;
+import cn.edu.pku.ogeditor.policies.ConnectionBendPointEditPolicy;
 import cn.edu.pku.ogeditor.policies.ConnectionDirectEditPolicy;
 
 //import com.example.policies.NodeDirectEditPolicy;
@@ -100,6 +106,8 @@ implements PropertyChangeListener {
 			}
 		});
 		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new ConnectionDirectEditPolicy());
+		installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE,
+				new ConnectionBendPointEditPolicy());
 	}
 
 	/* (non-Javadoc)
@@ -138,6 +146,28 @@ implements PropertyChangeListener {
 		if (Connection.LINENAME_PROP.equals(property)){
 			label.setText(getCastedModel().getName());
 		}
+		if (Connection.PROP_BENDPOINT.equals(property)) {
+			refreshBendpoints();
+		}
+	}
+	public void refresh(){
+		super.refresh();
+		refreshBendpoints();
+	}
+	protected void refreshBendpoints() {
+		Connection conn = (Connection) getModel();
+		List modelConstraint = conn.getBendpoints();
+		List figureConstraint = new ArrayList();
+		for (int i = 0; i < modelConstraint.size(); i++) {
+			ConnectionBendpoint cbp = (ConnectionBendpoint) modelConstraint
+					.get(i);
+			RelativeBendpoint rbp = new RelativeBendpoint(getConnectionFigure());
+			rbp.setRelativeDimensions(cbp.getFirstRelativeDimension(), cbp
+					.getSecondRelativeDimension());
+			rbp.setWeight((i + 1) / ((float) modelConstraint.size() + 1));
+			figureConstraint.add(rbp);
+		}
+		getConnectionFigure().setRoutingConstraint(figureConstraint);
 	}
 	public void  performRequest(Request req){
 		if (req.getType().equals(RequestConstants.REQ_OPEN)){

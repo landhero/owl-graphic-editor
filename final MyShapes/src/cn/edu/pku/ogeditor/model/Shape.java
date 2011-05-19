@@ -117,18 +117,29 @@ protected static Image createImage(String name) {
 
 
 /**
- * Add an incoming or outgoing connection to this shape.
+ * Add an outgoing connection to this shape.
  * @param conn a non-null connection instance
  * @throws IllegalArgumentException if the connection is null or has not distinct endpoints
  */
-void addConnection(Connection conn) {
-	if (conn == null || conn.getSource() == conn.getTarget()) {
+void addSourceConnection(Connection conn) {
+	if (conn == null ) {
 		throw new IllegalArgumentException();
 	}
 	if (conn.getSource() == this) {
 		sourceConnections.add(conn);
 		firePropertyChange(SOURCE_CONNECTIONS_PROP, null, conn);
-	} else if (conn.getTarget() == this) {
+	} 
+}
+/**
+ * Add an incoming connection to this shape.
+ * @param conn a non-null connection instance
+ * @throws IllegalArgumentException if the connection is null or has not distinct endpoints
+ */
+void addTargetConnection(Connection conn) {
+	if (conn == null ) {
+		throw new IllegalArgumentException();
+	}
+	if (conn.getTarget() == this) {
 		targetConnections.add(conn);
 		firePropertyChange(TARGET_CONNECTIONS_PROP, null, conn);
 	}

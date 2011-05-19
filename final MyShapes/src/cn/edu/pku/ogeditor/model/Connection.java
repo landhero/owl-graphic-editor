@@ -11,9 +11,12 @@
 package cn.edu.pku.ogeditor.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+
 
 public class Connection extends ModelElement {
 	public static final String LINENAME_PROP = "LineName";
@@ -22,6 +25,8 @@ public class Connection extends ModelElement {
 	private boolean isRoot=false;
 	/** True, if the connection is attached to its endpoints. */ 
 	private boolean isConnected;
+	protected List bendpoints = new ArrayList();
+	final public static String PROP_BENDPOINT = "BENDPOINT";
 
 	/** Connection's source endpoint. */
 	private Shape source;
@@ -48,7 +53,33 @@ public class Connection extends ModelElement {
 	public Connection(Shape source, Shape target) {
 		reconnect(source, target);
 	}
+	public void addBendpoint(int index, ConnectionBendpoint point) {
+		getBendpoints().add(index, point);
+		firePropertyChange(PROP_BENDPOINT, null, null);
+	}
+	/**
+	 * zhanghao: 为了在更新两个dimension后能发送事件，在MoveBendpointCommand要在用这个方法设置新坐标，
+	 * 而不是直接用BendPoint里的方法。
+	 */
+	public void setBendpointRelativeDimensions(int index, Dimension d1,
+			Dimension d2) {
+		ConnectionBendpoint cbp = (ConnectionBendpoint) getBendpoints().get(
+				index);
+		cbp.setRelativeDimensions(d1, d2);
+		firePropertyChange(PROP_BENDPOINT, null, null);
+	}
 
+	public void removeBendpoint(int index) {
+		getBendpoints().remove(index);
+		firePropertyChange(PROP_BENDPOINT, null, null);
+	}
+	public List getBendpoints() {
+		return bendpoints;
+	}
+
+	public void setBendpoints(List bendpoints) {
+		this.bendpoints = bendpoints;
+	}
 	public Connection(String string){
 		if(!string.equals("ElectiveRoot")&&!string.equals("RequiredRoot"))
 			System.err.println("Construct an incorrect connection!");
@@ -134,8 +165,8 @@ public class Connection extends ModelElement {
 	 */  
 	public void reconnect() {
 		if (!isConnected) {
-			source.addConnection(this);
-			target.addConnection(this);
+			source.addSourceConnection(this);
+			target.addTargetConnection(this);
 			isConnected = true;
 		}
 	}
@@ -149,7 +180,7 @@ public class Connection extends ModelElement {
 	 * @throws IllegalArgumentException if any of the paramers are null or newSource == newTarget
 	 */
 	public void reconnect(Shape newSource, Shape newTarget) {
-		if (newSource == null || newTarget == null || newSource == newTarget) {
+		if (newSource == null || newTarget == null ) {
 			throw new IllegalArgumentException();
 		}
 		disconnect();
