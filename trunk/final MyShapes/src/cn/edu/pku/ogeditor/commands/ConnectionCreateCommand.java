@@ -13,12 +13,14 @@ package cn.edu.pku.ogeditor.commands;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.palette.ToolEntry;
 
 import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.ShapesEditorPaletteRoot;
 import cn.edu.pku.ogeditor.model.Connection;
+import cn.edu.pku.ogeditor.model.ConnectionBendpoint;
 import cn.edu.pku.ogeditor.model.Shape;
 
 
@@ -74,9 +76,9 @@ public ConnectionCreateCommand(Shape source, String lineName) {
  */
 public boolean canExecute() {
 	// disallow source -> source connections
-	if (source.equals(target)) {
+	/*if (source.equals(target)) {
 		return false;
-	}
+	}*/
 	// return false, if the source -> target connection exists already
 	for (Iterator<Connection> iter = source.getSourceConnections().iterator(); iter.hasNext();) {
 		Connection conn = (Connection) iter.next();
@@ -121,6 +123,19 @@ public void execute() {
 			return;
 
 	connection = new Connection(source, target);
+	if (source == target) {
+        //The start and end points of our connection are both at the center of the rectangle,
+        //so the two relative dimensions are equal.
+        ConnectionBendpoint cbp = new ConnectionBendpoint();
+        cbp.setRelativeDimensions(new Dimension(0, -60), new Dimension(0, -60));
+        connection.addBendpoint(0, cbp);
+        ConnectionBendpoint cbp2 = new ConnectionBendpoint();
+        cbp2.setRelativeDimensions(new Dimension(100, -60), new Dimension(100, -60));
+        connection.addBendpoint(1, cbp2);
+        ConnectionBendpoint cbp3 = new ConnectionBendpoint();
+        cbp3.setRelativeDimensions(new Dimension(100, 0), new Dimension(100, 0));
+        connection.addBendpoint(2, cbp3);
+    }
 	connection.setName(name);
 	Connection newConnectionParent;
 	newConnectionParent=getParent();

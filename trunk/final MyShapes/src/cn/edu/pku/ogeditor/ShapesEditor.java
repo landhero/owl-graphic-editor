@@ -651,9 +651,9 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 	}
 
 
-	public void setDirty(boolean d) {
+	public void setDirty(boolean dirty) {
 		// TODO Auto-generated method stub
-		dirty = d;
+		this.dirty = dirty;
 	}
 
 	public void refreshModel(ShapesDiagram diagram) {
