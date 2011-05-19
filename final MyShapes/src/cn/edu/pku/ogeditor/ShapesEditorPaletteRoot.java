@@ -8,11 +8,13 @@ import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.MarqueeToolEntry;
 import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteEntry;
+import org.eclipse.gef.palette.PaletteGroup;
 import org.eclipse.gef.palette.PaletteRoot;
-import org.eclipse.gef.palette.PaletteToolbar;
+import org.eclipse.gef.palette.PaletteStack;
 import org.eclipse.gef.palette.PanningSelectionToolEntry;
 import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.requests.CreationFactory;
+import org.eclipse.gef.tools.MarqueeSelectionTool;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import cn.edu.pku.ogeditor.model.Connection;
@@ -65,16 +67,30 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 	 */
 	/** Create the "Tools" group. */
 	private void createToolsGroup() {
-		PaletteToolbar toolbar = new PaletteToolbar("Tools");
+		PaletteGroup controlGroup = new PaletteGroup("cn.edu.pku.ogeditor.paletteGroup");
 
-		// Add a selection tool to the group
+		List<PaletteEntry> entries = new ArrayList<PaletteEntry>();
+
 		ToolEntry tool = new PanningSelectionToolEntry();
-		toolbar.add(tool);
+		entries.add(tool);
 		setDefaultEntry(tool);
 
-		// Add a marquee tool to the group
-		toolbar.add(new MarqueeToolEntry());
-		add(toolbar);
+		PaletteStack marqueeStack = new PaletteStack("cn.edu.pku.ogeditor.MarqueeStack", "", null); //$NON-NLS-1$
+		marqueeStack.add(new MarqueeToolEntry());
+		MarqueeToolEntry marquee = new MarqueeToolEntry();
+		marquee.setToolProperty(MarqueeSelectionTool.PROPERTY_MARQUEE_BEHAVIOR, 
+				new Integer(MarqueeSelectionTool.BEHAVIOR_CONNECTIONS_TOUCHED));
+		marqueeStack.add(marquee);
+		marquee = new MarqueeToolEntry();
+		marquee.setToolProperty(MarqueeSelectionTool.PROPERTY_MARQUEE_BEHAVIOR, 
+				new Integer(MarqueeSelectionTool.BEHAVIOR_CONNECTIONS_TOUCHED 
+				| MarqueeSelectionTool.BEHAVIOR_NODES_CONTAINED));
+		marqueeStack.add(marquee);
+		marqueeStack.setUserModificationPermission(PaletteEntry.PERMISSION_NO_MODIFICATION);
+		entries.add(marqueeStack);
+		
+		controlGroup.addAll(entries);
+		add(controlGroup);
 	}
 	
 	private void init() {
