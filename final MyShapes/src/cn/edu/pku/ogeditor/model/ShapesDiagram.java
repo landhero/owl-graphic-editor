@@ -53,10 +53,10 @@ public class ShapesDiagram extends ModelElement {
 		return father;
 	}
 
-	public void setLowLevelDiagrams(List<ShapesDiagram> lowLevelDiagrams) {
+	public void setLowerLevelDiagrams(List<ShapesDiagram> lowLevelDiagrams) {
 		this.lowerLevelDiagrams = lowLevelDiagrams;
 	}
-	public List<ShapesDiagram> getLowLevelDiagrams() {
+	public List<ShapesDiagram> getLowerLevelDiagrams() {
 		return lowerLevelDiagrams;
 	}
 	public void addLowLevelDiagram(ShapesDiagram childDiagram) {
