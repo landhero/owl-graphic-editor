@@ -17,28 +17,33 @@ import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
-
 /**
- * Factory that maps model elements to TreeEditParts.
- * TreeEditParts are used in the outline view of the ShapesEditor.
+ * Factory that maps model elements to TreeEditParts. TreeEditParts are used in
+ * the outline view of the ShapesEditor.
+ * 
  * @author Elias Volanakis
  */
 public class ShapesTreeEditPartFactory implements EditPartFactory {
 
-/* (non-Javadoc)
- * @see org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart, java.lang.Object)
- */
-public EditPart createEditPart(EditPart context, Object model) {
-	if (model instanceof Shape) {
-		return new ShapeTreeEditPart((Shape) model);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart,
+	 * java.lang.Object)
+	 */
+	public EditPart createEditPart(EditPart context, Object model) {
+		if (model instanceof Shape) {
+			return new ShapeTreeEditPart((Shape) model);
+		}
+		if (model instanceof ShapesDiagram) {
+			return new DiagramTreeEditPart((ShapesDiagram) model);
+		}
+		if (model instanceof Connection) {
+			return new ConnectionTreeEditPart((Connection) model);
+		}
+		return null; // will not show an entry for the corresponding model
+						// instance
 	}
-	if (model instanceof ShapesDiagram) {
-		return new DiagramTreeEditPart((ShapesDiagram) model);
-	}
-	if(model instanceof Connection){
-		return new ConnectionTreeEditPart((Connection)model);
-	}
-	return null; // will not show an entry for the corresponding model instance
-}
 
 }

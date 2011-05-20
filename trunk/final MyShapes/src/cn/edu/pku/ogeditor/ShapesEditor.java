@@ -71,6 +71,7 @@ import cn.edu.pku.ogeditor.actions.ReviewAction;
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
+import cn.edu.pku.ogeditor.parts.DiagramTreeEditPart;
 import cn.edu.pku.ogeditor.parts.ShapesEditPartFactory;
 import cn.edu.pku.ogeditor.parts.ShapesTreeEditPartFactory;
 import cn.edu.pku.ogeditor.views.DecriptionView;
