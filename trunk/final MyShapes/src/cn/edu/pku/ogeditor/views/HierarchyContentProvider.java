@@ -9,7 +9,7 @@ public class HierarchyContentProvider extends ArrayContentProvider implements
 ITreeContentProvider {
 	public Object[] getChildren(Object parentElement) {
 		ShapesDiagram diagram = (ShapesDiagram) parentElement;
-		return diagram.getLowLevelDiagrams().toArray();
+		return diagram.getLowerLevelDiagrams().toArray();
 	}
 
 	public Object getParent(Object element) {
@@ -19,6 +19,6 @@ ITreeContentProvider {
 
 	public boolean hasChildren(Object element) {
 		ShapesDiagram diagram = (ShapesDiagram) element;
-		return diagram.getLowLevelDiagrams()!= null && diagram.getLowLevelDiagrams().size() > 0;
+		return diagram.getLowerLevelDiagrams()!= null && diagram.getLowerLevelDiagrams().size() > 0;
 	}
 }

@@ -54,7 +54,7 @@ public class ShapeComponentEditPolicy extends ComponentEditPolicy {
 		Command returnedCommand=new CompoundCommand();
 		if (parentShape.getChildren().size() > 0) {
 			ArrayList<Shape> children = parentShape.getChildren();
-			List<ShapesDiagram> childShapesDiagramList = parentShapesDiagram.getLowLevelDiagrams();
+			List<ShapesDiagram> childShapesDiagramList = parentShapesDiagram.getLowerLevelDiagrams();
 			
 			/*
 			for (int j = 0; j < childShapesDiagramList.size(); j++) {
