@@ -206,7 +206,6 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 		RemoveShapeTool();
 		RemoveRequiredConnectionTool();
 		RemoveElectiveConnectionTool();
-		//请注意下面这段代码，里面有错误，其实每次进入下面这个if循环都会创建新的rootShape和两种rootConnection,日不过软件在目前的使用中没有表现出来罢了@吴韬
 		if(curDiagram.getFather() == null)
 		{
 			AddShapeTool(rootShape);

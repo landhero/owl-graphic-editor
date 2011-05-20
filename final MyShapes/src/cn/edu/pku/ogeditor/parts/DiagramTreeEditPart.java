@@ -43,9 +43,8 @@ import cn.edu.pku.ogeditor.model.ShapesDiagram;
  * </p>
  * 
  */
-class DiagramTreeEditPart extends AbstractTreeEditPart
+public class DiagramTreeEditPart extends AbstractTreeEditPart
 implements PropertyChangeListener {
-
 	/**
 	 * Create a new instance of this edit part using the given model element.
 	 * 
@@ -142,32 +141,25 @@ implements PropertyChangeListener {
 	}
 
 	protected void refreshChildren() {
-
-//		ShapesDiagram curDiagram = ShapesEditor.myselfShapesEditor.getDiagram();
-//		while(curDiagram.getFather() != null)
-//		{
-//			this.setModel(curDiagram);
-//			_refreshChildren();
-//			curDiagram = curDiagram.getFather();
-//		}
-//		this.setModel(curDiagram);
-//		_refreshChildren();
+		ShapesDiagram currentDiagram;
+		ShapesDiagram shapesDiagram = ShapesEditor.myselfShapesEditor.getDiagram();
+		currentDiagram=shapesDiagram;
+		while(shapesDiagram != null)
+		{
+			this.setModel(shapesDiagram);
+			_refreshChildren();
+			for (int i = 0; i < getChildren().size(); i++) {
+				EditPart editPart = (EditPart) getChildren().get(i);
+				addChildVisual(editPart, i);
+				editPart.refresh();
+			}
+			
+			shapesDiagram = shapesDiagram.getFather();
+		}
 		
-//		int currentCengciIndex;
-//		List<ArrayList<Shape>> ShapesList = curDiagram.getShapesList();
-//		currentCengciIndex = ShapesList.indexOf(shapesDiagram.getChildren());
-//		int size;
-//		size = ShapesList.size();
-//		for (int i = size - 1; i >= 0; i--) {// 如果i从0往上增加原则上也没有问题，只不过增加的顺序在outline里面显示出来就是倒过来的
-//			shapesDiagram.changeShapes(i);
-//			_refreshChildren();
-//		}
-//		for (int i = 0; i < getChildren().size(); i++) {
-//			EditPart editPart = (EditPart) getChildren().get(i);
-//			addChildVisual(editPart, i);
-//			editPart.refresh();
-//		}
-//		shapesDiagram.changeShapes(currentCengciIndex);
+		this.setModel(currentDiagram);//重新设置回来
+
+
 
 	}
 
@@ -241,7 +233,7 @@ implements PropertyChangeListener {
 		Shape parentShape = ((Shape) childEditPart.getModel()).getParent();
 		if (parentShape.getParent() == null) {
 			widget = getWidget();
-			item = new TreeItem((Tree) widget, 0);
+			item = new TreeItem((Tree) widget, 0);//到时候要修改，要改成树而不是现在的树林@吴韬
 
 		} else {
 			widget = ((TreeEditPart) modelToEditPart.get(parentShape)).getWidget();

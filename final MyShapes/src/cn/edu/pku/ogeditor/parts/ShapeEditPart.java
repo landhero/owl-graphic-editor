@@ -114,7 +114,7 @@ protected void createEditPolicies() {
 		protected Command getReconnectSourceCommand(ReconnectRequest request) {
 			Connection conn = (Connection) request.getConnectionEditPart().getModel();
 			Shape newSource = (Shape) getHost().getModel();
-			ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn,(ShapesDiagram) this.getHost().getParent().getModel());
+			ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn,(DiagramEditPart) this.getHost().getParent());
 			cmd.setNewSource(newSource);
 			return cmd;
 		}
@@ -122,7 +122,7 @@ protected void createEditPolicies() {
 		protected Command getReconnectTargetCommand(ReconnectRequest request) {
 			Connection conn = (Connection) request.getConnectionEditPart().getModel();
 			Shape newTarget = (Shape) getHost().getModel();
-			ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn,(ShapesDiagram) this.getHost().getParent().getModel());
+			ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn,(DiagramEditPart) this.getHost().getParent());
 			cmd.setNewTarget(newTarget);
 			return cmd;
 		}

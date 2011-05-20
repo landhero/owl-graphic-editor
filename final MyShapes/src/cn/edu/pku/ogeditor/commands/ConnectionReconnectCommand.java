@@ -18,6 +18,7 @@ import org.eclipse.gef.commands.Command;
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
+import cn.edu.pku.ogeditor.parts.DiagramEditPart;
 
 /**
  * A command to reconnect a connection to a different start point or end point.
@@ -59,8 +60,8 @@ public class ConnectionReconnectCommand extends Command {
 	private final Shape oldSource;
 	/** The original target endpoint. */
 	private final Shape oldTarget;
-	private ShapesDiagram shapesDiagram;
-private Shape removedShape;
+	private DiagramEditPart diagramEditPart;
+
 	/**
 	 * Instantiate a command that can reconnect a Connection instance to a
 	 * different source or target endpoint.
@@ -71,14 +72,14 @@ private Shape removedShape;
 	 *             if conn is null
 	 */
 	public ConnectionReconnectCommand(Connection conn,
-			ShapesDiagram shapesDiagram) {
+			DiagramEditPart diagramEditPart) {
 		if (conn == null) {
 			throw new IllegalArgumentException();
 		}
 		this.connection = conn;
 		this.oldSource = conn.getSource();
 		this.oldTarget = conn.getTarget();
-		this.shapesDiagram = shapesDiagram;
+		this.diagramEditPart = diagramEditPart;
 	}
 
 	/*
@@ -98,7 +99,7 @@ private Shape removedShape;
 					if (newSource.getParent().getSourceConnections()
 							.indexOf(parentConnection) == -1)
 						return false;
-					
+
 				}
 
 			return checkSourceReconnection();
@@ -112,9 +113,6 @@ private Shape removedShape;
 					if (newTarget.getParent().getTargetConnections()
 							.indexOf(parentConnection) == -1)
 						return false;
-					else if (newTarget.isTemporarily()) {
-						this.removedShape=newTarget;
-					}
 				}
 			return checkTargetReconnection();
 		}
@@ -179,15 +177,18 @@ private Shape removedShape;
 	 * before) or newTarget (if setNewTarget(...) was invoked before).
 	 */
 	public void execute() {
-		if(this.removedShape!=null){
-			shapesDiagram.removeChild(removedShape);
-			removeConnections(removedShape.getSourceConnections());
-			removeConnections(removedShape.getTargetConnections());
-		}
+
 		if (newSource != null) {
 			connection.reconnect(newSource, oldTarget);
+			
 		} else if (newTarget != null) {
 			connection.reconnect(oldSource, newTarget);
+			if (oldTarget.isTemporarily()) {
+				((ShapesDiagram) diagramEditPart.getModel()).removeChild(oldTarget);
+				removeConnections(oldTarget.getSourceConnections());
+				removeConnections(oldTarget.getTargetConnections());
+				//diagramEditPart.refresh();
+			}
 		} else {
 			throw new IllegalStateException("Should not happen");
 		}

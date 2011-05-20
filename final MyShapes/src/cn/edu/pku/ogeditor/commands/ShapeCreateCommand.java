@@ -76,7 +76,6 @@ public ShapeCreateCommand(Shape newShape, ShapesDiagram parent, Rectangle bounds
 public boolean canExecute() {
 	return newShape != null && parent != null && bounds != null;
 }
-//private ArrayList<Shape> requiredParents = new ArrayList<Shape>();
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#execute()
  */
@@ -88,17 +87,23 @@ public void execute() {
 	redo();
 	createRequiredShape(newShape);
 }
+private ArrayList<Shape> requiredShapes = new ArrayList<Shape>();
 public void createRequiredShape(Shape shape) {
 	if(shape.isRoot())return;
-	//if (shape == newShape)requiredParents.add(shape.getParent());
+	if (shape == newShape)requiredShapes.add(shape);
 	List<Connection> sourceConnection=shape.getParent().getSourceConnections();
 	Shape defaultShape;
 	for(int i=0;i<sourceConnection.size();i++){
 		if(!sourceConnection.get(i).isRequired())continue;
 		Shape parentShape=sourceConnection.get(i).getTarget();
-		//if(requiredParents.indexOf(parentShape)!=-1)continue;
-		//requiredParents.add(parentShape);
+		int j;
+		for(j=0;j<requiredShapes.size();j++){
+			if(requiredShapes.get(j).getParent()==parentShape)break;
+		}
+		if(j==requiredShapes.size())//如果parentShape的子类还没有被创建
+		{ 
 		defaultShape=new Shape();
+		requiredShapes.add(defaultShape);
 		defaultShape.setParent(parentShape);
 		parentShape.getChildren().add(defaultShape);
 		defaultShape.setName("缺省 "+parentShape.getName());
@@ -112,12 +117,15 @@ public void createRequiredShape(Shape shape) {
 		if (size.width > 0 && size.height > 0)
 			defaultShape.setSize(size);
 		parent.addChild(defaultShape);
+		createRequiredShape(defaultShape);
+		}
+		else defaultShape=requiredShapes.get(j);//如果parentShape的子类已经被创建，那么用它来建立新的Connection
 		Connection defaultConnection=new Connection(shape, defaultShape);
 		defaultConnection.setName("缺省 "+sourceConnection.get(i).getName());
 		defaultConnection.setParent(sourceConnection.get(i));
 		sourceConnection.get(i).getChildren().add(defaultConnection);
 		defaultConnection.reconnect();
-		createRequiredShape(defaultShape);
+		
 	}
 }
 
@@ -127,6 +135,8 @@ public void createRequiredShape(Shape shape) {
  */
 public void redo() {
 	parent.addChild(newShape);
+	
+
 	
 }
 
