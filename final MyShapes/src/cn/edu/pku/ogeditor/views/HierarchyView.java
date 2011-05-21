@@ -119,7 +119,7 @@ public class HierarchyView extends ViewPart {
 					String childName = text.getText();
 					ShapesDiagram childDiagram = new ShapesDiagram();
 					childDiagram.setName(childName);
-					curDiagram.addLowLevelDiagram(childDiagram);
+					curDiagram.addLowerLevelDiagram(childDiagram);
 					viewer.refresh(curDiagram);
 					ShapesEditor.myselfShapesEditor.setDirty(true);
 					tempShell.dispose();
@@ -140,7 +140,7 @@ public class HierarchyView extends ViewPart {
 			ShapesDiagram curDiagramFather = curDiagram.getFather();
 			if(curDiagramFather == null)
 				return;
-			curDiagramFather.removeLowLevelDiagram(curDiagram);
+			curDiagramFather.removeLowerLevelDiagram(curDiagram);
 			viewer.refresh(curDiagramFather);
 			ShapesEditor.myselfShapesEditor.refreshModel(curDiagramFather);
 			ShapesEditor.myselfShapesEditor.setDirty(true);

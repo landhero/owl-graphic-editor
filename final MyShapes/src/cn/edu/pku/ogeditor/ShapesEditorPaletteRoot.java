@@ -106,6 +106,7 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 		add(electiveConnectionDrawer);
 		rootShape=new Shape();
 		rootShape.setName("Thing");
+		rootShape.setRoot(true);	//Thing为根，但从未在Diagram里创建
 		AddShapeTool(rootShape);
 
 		requiredRootConnection=new Connection("RequiredRoot");

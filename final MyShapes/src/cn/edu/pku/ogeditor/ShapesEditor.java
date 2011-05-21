@@ -71,24 +71,17 @@ import cn.edu.pku.ogeditor.actions.ReviewAction;
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
-import cn.edu.pku.ogeditor.parts.DiagramTreeEditPart;
 import cn.edu.pku.ogeditor.parts.ShapesEditPartFactory;
 import cn.edu.pku.ogeditor.parts.ShapesTreeEditPartFactory;
 import cn.edu.pku.ogeditor.views.DecriptionView;
 
-import com.hp.hpl.jena.ontology.AllValuesFromRestriction;
-import com.hp.hpl.jena.ontology.DatatypeProperty;
-import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.Ontology;
-import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFList;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
-import com.hp.hpl.jena.vocabulary.XSD;
 
 /**
  * A graphical editor with flyout palette that can edit .shapes files.
@@ -99,6 +92,7 @@ public class ShapesEditor
 extends GraphicalEditorWithFlyoutPalette implements Serializable
 {
 	private static final long serialVersionUID = 1L;
+	private static final String NS = "http://ogeidtor/concept-ont#";
 	/** This is the root of the editor's model. */
 	private ShapesDiagram diagram;
 	public PaletteViewer paletteViewer;
@@ -106,6 +100,7 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 	private PaletteRoot PALETTE_MODEL;
 	private String selectedDragSourceToolLabel;
 	private boolean dirty = false;
+	private OntModel ontModel;
 	public static ShapesEditor myselfShapesEditor;
 	/** Create a new ShapesEditor instance. This is called by the Workspace. */
 	public ShapesEditor() {
@@ -266,9 +261,9 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 			if(fileextension.equals("owl") || fileextension.equals("rdf") || fileextension.equals("ttl")){
 				System.out.println("dosaveas: is .owl");
 				System.out.println("path:"+filepath);
-				//System.out.println("ws: "+ResourcesPlugin.getWorkspace());
+				System.out.println("ws: "+ResourcesPlugin.getWorkspace());
 
-				//SaveAsOWL(filepath,fileextension);
+				SaveAsOWL(filepath,fileextension);
 
 			}
 			else{
@@ -315,190 +310,75 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 		/* Creat Ontology classes and properties for sh
 		 */ 
 		//base namespace, not a real URI
-		String NS="http://somewhere/concept-ont#"; //base namespace
 
 		//base model
 		System.out.println("saveasowl:no modelfactory");	
-		OntModel ontM = ModelFactory.createOntologyModel();
+		ontModel = ModelFactory.createOntologyModel();
 		System.out.println("saveasowl:create modelfactory");	
 		//creat ontology
-		Ontology shOnt = ontM.createOntology(NS);
+		Ontology shOnt = ontModel.createOntology(NS);
 		shOnt.addProperty(RDFS.comment, "This is an ontology for a process-oriented requirement modeling tool.");
 		shOnt.addProperty(RDFS.label, "Concept Ontology");
 		shOnt.addProperty(OWL.versionInfo, "$serialVersionUID:1.0 Dec. 2010$");
-
-
-		//creat classes
-		OntClass shape = ontM.createClass(NS+"Concept");
-		OntClass connection = ontM.createClass(NS+"Relation");
-		System.out.println("----------------URI:"+shape.getURI());
-
-
-		OntClass ellip = ontM.createClass(NS+"ProcessShape");shape.addSubClass(ellip);
-		OntClass rect = ontM.createClass(NS+"DataShape");shape.addSubClass(rect);
-		OntClass tri= ontM.createClass(NS+"ActorShape");shape.addSubClass(tri);
-		//
-
-		//creat properties
-		//properties of the class Shape
-		//sname
-		DatatypeProperty sname = ontM.createDatatypeProperty(NS+"conceptName"); 
-		sname.addDomain(shape);
-		sname.addRange(XSD.xstring);
-		//sdes
-		DatatypeProperty sdes = ontM.createDatatypeProperty(NS+"conceptDescription");
-		sdes.addDomain(shape);
-		sdes.addRange(XSD.xstring);
-		//ssize
-		DatatypeProperty ssize = ontM.createDatatypeProperty(NS+"shapeSize");
-		//sloc
-		DatatypeProperty sloc = ontM.createDatatypeProperty(NS+"shapeLocation");
-		//sheight
-		DatatypeProperty sheight = ontM.createDatatypeProperty(NS+"shapeHeight");
-		sheight.addDomain(shape);
-		sheight.addRange(XSD.xdouble);
-		//swidth
-		DatatypeProperty swidth = ontM.createDatatypeProperty(NS+"shapeWidth");
-		swidth.addDomain(shape);
-		swidth.addRange(XSD.xdouble);
-		//xloc
-		DatatypeProperty xloc = ontM.createDatatypeProperty(NS+"xLoc");
-		xloc.addDomain(shape);
-		xloc.addRange(XSD.xdouble);
-		//yloc
-		DatatypeProperty yloc = ontM.createDatatypeProperty(NS+"yLoc");
-		yloc.addDomain(shape);
-		yloc.addRange(XSD.xdouble);
-		//subPropertyOf
-		ssize.addSubProperty(sheight);ssize.addSubProperty(swidth);
-		sloc.addSubProperty(xloc);sloc.addSubProperty(yloc);
-		//isSourceOf && isTargetOf
-		ObjectProperty isSourceOf = ontM.createObjectProperty(NS+"isSourceOf");
-		isSourceOf.addDomain(shape);
-		isSourceOf.addRange(connection);
-		ObjectProperty isTargetOf = ontM.createObjectProperty(NS+"isTargetOf");
-		isTargetOf.addDomain(shape);
-		isTargetOf.addRange(connection);
-
-		//properties of the class Connection
-		//cname
-		DatatypeProperty cname = ontM.createDatatypeProperty(NS+"relationName");
-		cname.addDomain(connection);
-		cname.addRange(XSD.xstring);
-		//cstyle
-		DatatypeProperty cstyle = ontM.createDatatypeProperty(NS+"relationStyle");
-		cstyle.addDomain(connection);
-		cstyle.addRange(XSD.integer);
-		RDFList vlist = ontM.createList(new Literal[]{ontM.createTypedLiteral(0),
-				ontM.createTypedLiteral(1),
-				ontM.createTypedLiteral(2)});
-		AllValuesFromRestriction avr = ontM.createAllValuesFromRestriction(null, cstyle, vlist);
-		//csource
-		ObjectProperty csource = ontM.createObjectProperty(NS+"relationSource");
-		csource.addDomain(connection);
-		csource.addRange(shape);
-		//ctarget
-		ObjectProperty ctarget = ontM.createObjectProperty(NS+"relationTarget");
-		ctarget.addDomain(connection);
-		ctarget.addRange(shape);
-
-
-
-		/* Get list of shapes in the diagram to sh
-		 */ 
-		List<Shape> sh = new ArrayList<Shape>();
-		sh.addAll(diagram.getChildren());
-
-
-		/* Lead sh to OntModel ontM
-		 */ 
-		//the index for connection individuals
-		int cindex = 0;
-		//list of cname and cURI
-		List<Integer> chashlist = new ArrayList<Integer>();
-		List<String>  curilist  = new ArrayList<String>();
-
-		//add shape individuals and connection individuals
-		for(int i=0; i<sh.size(); i++){
-			Shape stemp = sh.get(i);
-			//create a shape individual
-			Individual ind = shape.createIndividual(NS+"conceptInd-"+stemp.hashCode());
-
-			//add property value
-			ind.addLiteral(sname,stemp.getName());
-			ind.addLiteral(sdes, stemp.getDescription());
-			ind.addLiteral(sheight, stemp.getSize().height);
-			ind.addLiteral(swidth, stemp.getSize().width);
-			ind.addLiteral(xloc, stemp.getLocation().x);
-			ind.addLiteral(yloc, stemp.getLocation().y);
-
-			List<Connection> sCons = stemp.getSourceConnections();
-			List<Connection> tCons = stemp.getTargetConnections();
-			for(int j=0; j<sCons.size(); j++){
-				Connection ctemp = sCons.get(j);
-				//the connection individual has exisited
-				if(chashlist.contains(ctemp.hashCode())){
-					//get the exisited connection individual
-					Individual conInd = ontM.getIndividual(curilist.get(chashlist.indexOf(ctemp.hashCode())));
-					//ind.addLiteral(isSourceOf, conInd);
-					ind.addProperty(isSourceOf, conInd);
-					conInd.addProperty(csource, ind);//
-					continue;
-				}
-				//if the connection is not exisit: creat new connection individual			
-				Individual conInd = connection.createIndividual(NS+"relationInd-"+ctemp.hashCode());
-				conInd.addLiteral(cname, ctemp.getName());
-				/*for anchor conInd.addLiteral(cstyle, ctemp.getLineStyle());*/
-				//add the conInd name and curilist
-				chashlist.add(cindex, ctemp.hashCode());
-				curilist.add(cindex, conInd.getURI());
-				//add the connection to isSourceOf
-				ind.addProperty(isSourceOf, conInd);
-				//add ind to csource
-				conInd.addProperty(csource, ind);
-				cindex++;
-			}
-			for(int j=0; j<tCons.size(); j++){
-				Connection ctemp = tCons.get(j);
-				//the connection individual has exisited
-				if(chashlist.contains(ctemp.hashCode())){
-					//get the exisited connection individual
-					Individual conInd = ontM.getIndividual(curilist.get(chashlist.indexOf(ctemp.hashCode())));
-					ind.addProperty(isTargetOf, conInd);
-					conInd.addProperty(ctarget, ind);
-					continue;
-				}
-				//if the connection is not exisit: creat new connection individual			
-				Individual conInd = connection.createIndividual(NS+"relationInd-"+ctemp.hashCode());
-				conInd.addLiteral(cname, ctemp.getName());
-				/*for anchor conInd.addLiteral(cstyle, ctemp.getLineStyle());*/
-				//add the conInd name and curilist
-				chashlist.add(cindex, ctemp.hashCode());
-				curilist.add(cindex, conInd.getURI());
-				//add the connection to isSourceOf
-				ind.addProperty(isTargetOf, conInd);
-				//add ind to csource
-				conInd.addProperty(ctarget, ind);
-				cindex++;
-			}
-		}
-
-
+		
+		ShapesDiagram rootDiagram = diagram.getRootDiagram();
+		createOntologyForDiagram(rootDiagram);
+	
 		/* Save OntModel ontM to the OWL file
 		 */ 
 		try{	
 
 			FileOutputStream out = new FileOutputStream(filepath);
 			if(fileextension.equals("owl") || fileextension.equals("rdf"))
-				ontM.write(out);
+				ontModel.write(out);
 			else if(fileextension.equals("ttl"))
-				ontM.write(out,"Turtle");
+				ontModel.write(out,"Turtle");
 			System.out.println("has written to "+filepath);
 
 		}catch(IOException e){
 			e.printStackTrace();
 		}
 
+	}
+
+	private void createOntologyForDiagram(ShapesDiagram curDiagram) {
+		// TODO Auto-generated method stub
+		List<Shape> curShapes = curDiagram.getChildren();
+		//add shape individuals and connection individuals
+		for(int i=0; i<curShapes.size(); i++){
+			Shape curShape = curShapes.get(i);
+			//不进行是否有重复的判断的前提是本体中所有类的名字都是唯一的
+			OntClass curClass = ontModel.createClass(NS+curShape.getName());
+			Shape parentShape = curShape.getParent();
+			OntClass parentClass = ontModel.getOntClass(NS+parentShape.getName());
+			if(parentClass == null)
+				continue;
+			parentClass.addSubClass(curClass);
+		}
+		for(int i=0; i<curShapes.size(); i++){
+			Shape curShape = curShapes.get(i);
+			//create a shape individual
+			OntClass srcClass = ontModel.getOntClass(NS+curShape.getName());
+			OntClass tarClass ;
+
+			List<Connection> sCons = curShape.getSourceConnections();
+			//List<Connection> tCons = curShape.getTargetConnections();
+			for(int j=0; j<sCons.size(); j++){
+				Connection curCon = sCons.get(j);
+				Shape tarShape = curCon.getTarget();
+				tarClass = ontModel.getOntClass(NS+tarShape.getName()); 
+
+				ObjectProperty curOP = ontModel.getObjectProperty(NS+curCon.getName());
+				if(curOP == null)
+					curOP = ontModel.createObjectProperty(NS+curCon.getName());
+				curOP.addDomain(srcClass);
+				curOP.addRange(tarClass);
+			}
+		}
+		for(int i = 0;i<curDiagram.getLowerLevelDiagrams().size();i++)
+		{
+			createOntologyForDiagram(curDiagram.getLowerLevelDiagrams().get(i));
+		}
 	}
 
 	public Object getAdapter(Class type) {

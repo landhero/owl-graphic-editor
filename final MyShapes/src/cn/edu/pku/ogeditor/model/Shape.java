@@ -54,7 +54,7 @@ private List<Connection> sourceConnections;
 private List<Connection> targetConnections;
 
 private String description;
-private boolean root=false;
+private boolean isRoot=false;
 private boolean temporarily=false;
 
 
@@ -67,10 +67,10 @@ public void setTemporarily(boolean temporarily) {
 }
 
 public boolean isRoot() {
-	return root;
+	return isRoot;
 }
 public void setRoot(boolean root) {
-	this.root = root;
+	this.isRoot = root;
 }
 public Shape()
 {
