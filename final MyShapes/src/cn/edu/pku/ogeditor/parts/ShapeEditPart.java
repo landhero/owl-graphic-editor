@@ -68,8 +68,10 @@ public boolean isTemporarily() {
 
 public void setTemporarily(boolean temporarily) {
 	((Shape)this.getModel()).setTemporarily(temporarily);
-	if(temporarily==false)this.getFigure().setBackgroundColor(ColorConstants.orange);
-	else this.getFigure().setBackgroundColor(ColorConstants.red);
+	if(temporarily==false)
+		this.getFigure().setBackgroundColor(ColorConstants.orange);
+	else 
+		this.getFigure().setBackgroundColor(ColorConstants.red);
 }
 
 //改变ShapeFigure的大小，但是这个函数还没有调试好

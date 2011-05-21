@@ -50,33 +50,26 @@ public class ShapeComponentEditPolicy extends ComponentEditPolicy {
 		return super.createDeleteCommand(deleteRequest);
 	}
 
-	private Command childrenDeleteCommand(ShapesDiagram parentShapesDiagram,Shape parentShape) {
-		Command returnedCommand=new CompoundCommand();
+	private Command childrenDeleteCommand(ShapesDiagram parentShapesDiagram,Shape parentShape)
+	{
+		CompoundCommand returnedCommand=new CompoundCommand();
 		if (parentShape.getChildren().size() > 0) {
 			ArrayList<Shape> children = parentShape.getChildren();
 			List<ShapesDiagram> childShapesDiagramList = parentShapesDiagram.getLowerLevelDiagrams();
-			
-			/*
-			for (int j = 0; j < childShapesDiagramList.size(); j++) {
-				if (childShapesDiagramList.get(j).getChildren().indexOf(children.get(0)) != -1) {
-					returnedCommand = childrenDeleteCommand(childShapesDiagramList.get(j), children.get(0));
-					break;
-				}
-			}
-			*/
+
 			for (int i = 0; i < children.size(); i++) {
 				for (int j = 0; j < childShapesDiagramList.size(); j++) {
 					if (childShapesDiagramList.get(j).getChildren().indexOf(children.get(i)) != -1) {
-						returnedCommand = returnedCommand.chain(childrenDeleteCommand(childShapesDiagramList.get(j),children.get(i)));
-						break;
+						returnedCommand.add(childrenDeleteCommand(childShapesDiagramList.get(j),children.get(i)));
+						//break;
 					}
 				}
 			}
-			returnedCommand = returnedCommand.chain(new ShapeDeleteCommand(
-					parentShapesDiagram, parentShape));
-		} else {
-			returnedCommand = new ShapeDeleteCommand(parentShapesDiagram, parentShape);
-		}
+			returnedCommand.add(new ShapeDeleteCommand(parentShapesDiagram, parentShape));
+		} 
+		else 
+			returnedCommand.add( new ShapeDeleteCommand(parentShapesDiagram, parentShape));
+		
 		return returnedCommand;
 	}
 }

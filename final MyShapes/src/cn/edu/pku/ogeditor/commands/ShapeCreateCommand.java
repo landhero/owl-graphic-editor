@@ -64,7 +64,7 @@ extends Command
 		int index=children.indexOf(selected);
 		Shape newShapeParent=curPaletteRoot.getUplevelAllShapes().get(index);
 		this.newShape.setParent(newShapeParent);
-		newShapeParent.getChildren().add(newShape);
+		newShapeParent.addChild(newShape);
 		this.parent = parent;
 		this.bounds = bounds;
 
@@ -85,14 +85,15 @@ extends Command
 		if (size.width > 0 && size.height > 0)
 			newShape.setSize(size);
 		redo();
+		requiredShapes.add(newShape);
 		createRequiredShape(newShape);
 	}
 
 	public void createRequiredShape(Shape shape) {
+		//应该是绝对不会创建的
 		if(shape.isRoot())
 			return;
-		if (shape == newShape)
-			requiredShapes.add(shape);
+
 		List<Connection> sourceConnection=shape.getParent().getSourceConnections();
 		Shape defaultShape;
 		for(int i=0;i<sourceConnection.size();i++){
@@ -108,7 +109,7 @@ extends Command
 				defaultShape=new Shape();
 				requiredShapes.add(defaultShape);
 				defaultShape.setParent(parentShape);
-				parentShape.getChildren().add(defaultShape);
+				parentShape.addChild(defaultShape);
 				defaultShape.setName("缺省 "+parentShape.getName());
 				defaultShape.setTemporarily(true);
 				Point location;
@@ -116,19 +117,16 @@ extends Command
 				location.x+=300*((new Random()).nextDouble()-0.5);
 				location.y+=300*((new Random()).nextDouble()-0.5);
 				defaultShape.setLocation(location);
-				Dimension size = bounds.getSize();
-				if (size.width > 0 && size.height > 0)
-					defaultShape.setSize(size);
 				parent.addChild(defaultShape);
 				createRequiredShape(defaultShape);
 			}
-			else defaultShape=requiredShapes.get(j);//如果parentShape的子类已经被创建，那么用它来建立新的Connection
+			else 
+				//如果parentShape的子类已经被创建，那么用它来建立新的Connection
+				defaultShape=requiredShapes.get(j);
 			Connection defaultConnection=new Connection(shape, defaultShape);
 			defaultConnection.setName("缺省 "+sourceConnection.get(i).getName());
 			defaultConnection.setParent(sourceConnection.get(i));
 			sourceConnection.get(i).getChildren().add(defaultConnection);
-			defaultConnection.reconnect();
-
 		}
 	}
 

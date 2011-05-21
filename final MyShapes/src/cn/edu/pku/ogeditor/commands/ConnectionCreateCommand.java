@@ -90,7 +90,6 @@ public boolean canExecute() {
 	parentConnection=getParent();
 	if(!parentConnection.isRequired()&&!parentConnection.isRoot()) 
 		if(source.getParent().getSourceConnections().indexOf(parentConnection)==-1)
-				//|| target.getParent().getTargetConnections().indexOf(parentConnection)==-1)
 			return false;
 	return true;
 }
@@ -105,7 +104,6 @@ private Connection getParent(){
 	if(index==-1){
 		children=(List<?>) curPaletteRoot.getElectiveConnectionDrawer().getChildren();
 		index=children.indexOf(selectedTool);
-
 		newConnectionParent=curPaletteRoot.getUplevelAllElectiveConnections().get(index);
 	}else newConnectionParent=curPaletteRoot.getUplevelAllRequiredConnections().get(index);
 	return newConnectionParent;
@@ -118,8 +116,9 @@ public void execute() {
 	Connection parentConnection;
 	parentConnection=getParent();
 	//如果这个Connection的target不符合要求，那么不要创建
-	if(!parentConnection.isRequired()&&!parentConnection.isRoot()) 
-		if(target.getParent().getTargetConnections().indexOf(parentConnection)==-1)
+	if(!parentConnection.isRequired()
+			&& !parentConnection.isRoot()
+			&& target.getParent().getTargetConnections().indexOf(parentConnection)==-1) 
 			return;
 
 	connection = new Connection(source, target);
@@ -137,10 +136,8 @@ public void execute() {
         connection.addBendpoint(2, cbp3);
     }
 	connection.setName(name);
-	Connection newConnectionParent;
-	newConnectionParent=getParent();
-	connection.setParent(newConnectionParent);
-	newConnectionParent.addChild(connection);
+	connection.setParent(parentConnection);
+	parentConnection.addChild(connection);
 
 }
 
