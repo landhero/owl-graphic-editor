@@ -41,15 +41,6 @@ public class Connection extends ModelElement {
 		descriptors = new IPropertyDescriptor[] {
 				new TextPropertyDescriptor(LINENAME_PROP, "Name")};
 	}
-
-	/** 
-	 * Create a (solid) connection between two distinct shapes.
-	 * @param source a source endpoint for this connection (non null)
-	 * @param target a target endpoint for this connection (non null)
-	 * @param name 
-	 * @throws IllegalArgumentException if any of the parameters are null or source == target
-	 * @see #setLineStyle(int) 
-	 */
 	public Connection(Shape source, Shape target) {
 		reconnect(source, target);
 	}
@@ -222,7 +213,8 @@ public class Connection extends ModelElement {
 		this.children = children;
 	}
 	public void addChild(Connection child){
-		children.add(child);
+		if(!children.contains(child))
+			children.add(child);
 	}
 	public boolean isRoot() {
 		return isRoot;

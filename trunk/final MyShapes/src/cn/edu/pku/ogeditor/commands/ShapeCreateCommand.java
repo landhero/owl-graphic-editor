@@ -126,7 +126,7 @@ extends Command
 			Connection defaultConnection=new Connection(shape, defaultShape);
 			defaultConnection.setName("ȱʡ "+sourceConnection.get(i).getName());
 			defaultConnection.setParent(sourceConnection.get(i));
-			sourceConnection.get(i).getChildren().add(defaultConnection);
+			sourceConnection.get(i).addChild(defaultConnection);
 		}
 	}
 
