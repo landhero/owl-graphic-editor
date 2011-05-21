@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005 Elias Volanakis and others.
 ?* All rights reserved. This program and the accompanying materials
 ?* are made available under the terms of the Eclipse Public License v1.0
 ?* which accompanies this distribution, and is available at
 ?* http://www.eclipse.org/legal/epl-v10.html
 ?*
 ?* Contributors:
-?*????Elias Volanakis - initial API and implementation
 ?*******************************************************************************/
 package cn.edu.pku.ogeditor.parts;
 
@@ -41,13 +39,11 @@ import cn.edu.pku.ogeditor.model.ModelElement;
 import cn.edu.pku.ogeditor.policies.ConnectionBendPointEditPolicy;
 import cn.edu.pku.ogeditor.policies.ConnectionDirectEditPolicy;
 
-//import com.example.policies.NodeDirectEditPolicy;
 /**
  * Edit part for Connection model elements.
  * <p>This edit part must implement the PropertyChangeListener interface, 
  * so it can be notified of property changes in the corresponding model element.
  * </p>
- * @author Elias Volanakis
  */
 
 
@@ -156,8 +152,8 @@ implements PropertyChangeListener {
 	}
 	protected void refreshBendpoints() {
 		Connection conn = (Connection) getModel();
-		List modelConstraint = conn.getBendpoints();
-		List figureConstraint = new ArrayList();
+		List<?> modelConstraint = conn.getBendpoints();
+		List<RelativeBendpoint> figureConstraint = new ArrayList<RelativeBendpoint>();
 		for (int i = 0; i < modelConstraint.size(); i++) {
 			ConnectionBendpoint cbp = (ConnectionBendpoint) modelConstraint
 					.get(i);

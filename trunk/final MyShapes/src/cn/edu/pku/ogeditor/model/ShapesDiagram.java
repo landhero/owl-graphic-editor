@@ -59,7 +59,7 @@ public class ShapesDiagram extends ModelElement {
 	public List<ShapesDiagram> getLowerLevelDiagrams() {
 		return lowerLevelDiagrams;
 	}
-	public void addLowLevelDiagram(ShapesDiagram childDiagram) {
+	public void addLowerLevelDiagram(ShapesDiagram childDiagram) {
 		// TODO Auto-generated method stub
 		if(lowerLevelDiagrams.add(childDiagram))
 			childDiagram.setFather(this);
@@ -67,14 +67,23 @@ public class ShapesDiagram extends ModelElement {
 			System.err.println("Can't add to lowerLevelDiagrams");
 	}
 
-	public void removeLowLevelDiagram(ShapesDiagram childDiagram) {
+	public void removeLowerLevelDiagram(ShapesDiagram childDiagram) {
 		// TODO Auto-generated method stub
+		//删除一个diagram时其shapes的父子关系是否被删除，这个问吴韬
 		if(lowerLevelDiagrams.remove(childDiagram))
 			childDiagram.setFather(null);
 		else 
-			System.err.println("Can't add to lowerLevelDiagrams");
+			System.err.println("Can't remove Diagram "+childDiagram.getName());
 	}
 
+	public ShapesDiagram getRootDiagram()
+	{
+		ShapesDiagram root = this;
+		while(root.getFather() != null)
+			root = root.getFather();
+		return root;
+		
+	}
 	/** Return a List of Shapes in this diagram.  The returned List should not be modified. */
 	public List<Shape> getChildren() {
 		return shapes;
