@@ -4,6 +4,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 
 public class ConnectionBendpoint extends Element {
 
+	private static final long serialVersionUID = 1L;
 	private float weight = 0.5f;
 	private Dimension d1, d2;
 

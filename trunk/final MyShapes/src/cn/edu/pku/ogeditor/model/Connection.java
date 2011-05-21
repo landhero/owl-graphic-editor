@@ -25,7 +25,7 @@ public class Connection extends ModelElement {
 	private boolean isRoot=false;
 	/** True, if the connection is attached to its endpoints. */ 
 	private boolean isConnected;
-	protected List bendpoints = new ArrayList();
+	protected List<ConnectionBendpoint> bendpoints = new ArrayList<ConnectionBendpoint>();
 	final public static String PROP_BENDPOINT = "BENDPOINT";
 
 	/** Connection's source endpoint. */
@@ -73,11 +73,11 @@ public class Connection extends ModelElement {
 		getBendpoints().remove(index);
 		firePropertyChange(PROP_BENDPOINT, null, null);
 	}
-	public List getBendpoints() {
+	public List<ConnectionBendpoint> getBendpoints() {
 		return bendpoints;
 	}
 
-	public void setBendpoints(List bendpoints) {
+	public void setBendpoints(List<ConnectionBendpoint> bendpoints) {
 		this.bendpoints = bendpoints;
 	}
 	public Connection(String string){

@@ -1,7 +1,5 @@
 package cn.edu.pku.ogeditor.commands;
 
-import org.eclipse.draw2d.Bendpoint;
-
 import cn.edu.pku.ogeditor.model.ConnectionBendpoint;
 
 
