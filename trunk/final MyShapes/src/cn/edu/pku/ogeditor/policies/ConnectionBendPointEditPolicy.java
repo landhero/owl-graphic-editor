@@ -37,7 +37,6 @@ public class ConnectionBendPointEditPolicy extends BendpointEditPolicy {
 
 	protected Command getDeleteBendpointCommand(BendpointRequest request) {
 		BendpointCommand cmd = new DeleteBendpointCommand();
-		Point p = request.getLocation();
 		cmd.setConnection((cn.edu.pku.ogeditor.model.Connection) request.getSource().getModel());
 		cmd.setIndex(request.getIndex());
 		return cmd;
