@@ -2,7 +2,7 @@ package cn.edu.pku.ogeditor.model;
 
 import org.eclipse.draw2d.geometry.Dimension;
 
-public class ConnectionBendpoint extends Element {
+public class ConnectionBendpoint extends ModelElement {
 
 	private static final long serialVersionUID = 1L;
 	private float weight = 0.5f;

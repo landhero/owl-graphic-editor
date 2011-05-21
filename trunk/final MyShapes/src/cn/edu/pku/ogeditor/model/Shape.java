@@ -90,6 +90,18 @@ public void setChildren(ArrayList<Shape> children) {
 	this.children = children;
 }
 
+public void addChild(Shape child)
+{
+	if(!children.contains(child))
+		children.add(child);		
+}
+
+public void removeChild(Shape child) {
+	// TODO Auto-generated method stub
+	if(children.contains(child))
+		children.remove(child);
+}
+
 public Shape getParent() {
 	return parent;
 }

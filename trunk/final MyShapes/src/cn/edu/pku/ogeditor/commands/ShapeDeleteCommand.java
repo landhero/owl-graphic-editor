@@ -30,7 +30,7 @@ public class ShapeDeleteCommand extends Command {
 	private final Shape child;
 
 	/** ShapeDiagram to remove from. */
-	private final ShapesDiagram parent;
+	private final ShapesDiagram parentDiagram;
 	/** Holds a copy of the outgoing connections of child. */
 	private List<Connection> sourceConnections;
 	/** Holds a copy of the incoming connections of child. */
@@ -48,12 +48,12 @@ public class ShapeDeleteCommand extends Command {
 	 * @throws IllegalArgumentException
 	 *             if any parameter is null
 	 */
-	public ShapeDeleteCommand(ShapesDiagram parent, Shape child) {
-		if (parent == null || child == null) {
+	public ShapeDeleteCommand(ShapesDiagram parentDiagram, Shape child) {
+		if (parentDiagram == null || child == null) {
 			throw new IllegalArgumentException();
 		}
 		setLabel("shape deletion");
-		this.parent = parent;
+		this.parentDiagram = parentDiagram;
 		this.child = child;
 	}
 
@@ -98,9 +98,9 @@ public class ShapeDeleteCommand extends Command {
 	 */
 	public void redo() {
 		// remove the child and disconnect its connections
-		wasRemoved = parent.removeChild(child);
+		wasRemoved = parentDiagram.removeChild(child);
 		if (wasRemoved) {
-			child.getParent().getChildren().remove(child);
+			child.getParent().removeChild(child);
 			removeConnections(sourceConnections);
 			removeConnections(targetConnections);
 		}
@@ -126,7 +126,7 @@ public class ShapeDeleteCommand extends Command {
 	 */
 	public void undo() {
 		// add the child and reconnect its connections
-		if (parent.addChild(child)) {
+		if (parentDiagram.addChild(child)) {
 			addConnections(sourceConnections);
 			addConnections(targetConnections);
 		}
