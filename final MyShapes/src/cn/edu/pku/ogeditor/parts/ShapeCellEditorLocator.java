@@ -3,8 +3,6 @@ package cn.edu.pku.ogeditor.parts;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Text;
 
 import cn.edu.pku.ogeditor.figures.ShapeFigure;

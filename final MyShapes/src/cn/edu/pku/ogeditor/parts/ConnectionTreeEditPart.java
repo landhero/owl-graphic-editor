@@ -3,12 +3,10 @@ package cn.edu.pku.ogeditor.parts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractTreeEditPart;
 
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.ModelElement;
-import cn.edu.pku.ogeditor.model.Shape;
 
 public class ConnectionTreeEditPart extends AbstractTreeEditPart implements
 		PropertyChangeListener {
