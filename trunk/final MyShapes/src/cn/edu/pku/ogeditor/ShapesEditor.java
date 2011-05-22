@@ -475,80 +475,6 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 		return dv;
 	}
 
-
-
-//	/**
-//	 * Creates an outline pagebook for this editor.
-//	 */
-//	public class ShapesOutlinePage extends ContentOutlinePage {	
-//		/**
-//		 * Create a new outline page for the shapes editor.
-//		 * @param viewer a viewer (TreeViewer instance) used for this outline page
-//		 * @throws IllegalArgumentException if editor is null
-//		 */
-//		public ShapesOutlinePage(EditPartViewer viewer) {
-//			super(viewer);
-//		}
-//
-//		/* (non-Javadoc)
-//		 * @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite)
-//		 */
-//		public void createControl(Composite parent) {
-//			// create outline viewer page
-//			getViewer().createControl(parent);
-//			// configure outline viewer
-//			getViewer().setEditDomain(getEditDomain());
-//			getViewer().setEditPartFactory(new ShapesTreeEditPartFactory());
-//			// configure & add context menu to viewer
-//			ContextMenuProvider cmProvider = new ShapesEditorContextMenuProvider(
-//					getViewer(), getActionRegistry()); 
-//			getViewer().setContextMenu(cmProvider);
-//			getSite().registerContextMenu(
-//					"cn.edu.pku.ogeditor.outline.contextmenu",
-//					cmProvider, getSite().getSelectionProvider());		
-//			// hook outline viewer
-//			getSelectionSynchronizer().addViewer(getViewer());
-//			// initialize outline viewer with model
-//			getViewer().setContents(getModel());
-//			// show outline viewer
-//		}
-//
-//		/* (non-Javadoc)
-//		 * @see org.eclipse.ui.part.IPage#dispose()
-//		 */
-//		public void dispose() {
-//			// unhook outline viewer
-//			getSelectionSynchronizer().removeViewer(getViewer());
-//			// dispose
-//			super.dispose(); 
-//		}
-//
-//
-//		/* (non-Javadoc)
-//		 * @see org.eclipse.ui.part.IPage#getControl()
-//		 */
-//		public Control getControl() {
-//
-//			return getViewer().getControl();
-//		}
-//
-//		/**
-//		 * @see org.eclipse.ui.part.IPageBookViewPage#init(org.eclipse.ui.part.IPageSite)
-//		 */
-//		public void init(IPageSite pageSite) {
-//			super.init(pageSite);
-//			ActionRegistry registry = getActionRegistry();
-//			IActionBars bars = pageSite.getActionBars();
-//			String id = ActionFactory.UNDO.getId();
-//			bars.setGlobalActionHandler(id, registry.getAction(id));
-//			id = ActionFactory.REDO.getId();
-//			bars.setGlobalActionHandler(id, registry.getAction(id));
-//			id = ActionFactory.DELETE.getId();
-//			bars.setGlobalActionHandler(id, registry.getAction(id));			
-//		}
-//	}
-
-
 	public void setDirty(boolean dirty) {
 		// TODO Auto-generated method stub
 		this.dirty = dirty;
@@ -564,7 +490,9 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 	protected FigureCanvas getEditor(){
 		return (FigureCanvas)getGraphicalViewer().getControl();
 	}
-	
+	/**
+	 * Creates an outline pagebook for this editor.
+	 */
 	class OutlinePage extends ContentOutlinePage implements IAdaptable
 	{
 

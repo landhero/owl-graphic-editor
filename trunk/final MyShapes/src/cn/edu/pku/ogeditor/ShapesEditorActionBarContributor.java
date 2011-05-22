@@ -58,7 +58,7 @@ public void contributeToToolBar(IToolBarManager toolBarManager) {
 }
 
 public void contributeToMenu(IMenuManager menuManager) {
-	MenuManager viewMenu = new MenuManager("V&iew");
+	MenuManager viewMenu = new MenuManager("&Zoom");
 	viewMenu.add(getAction(GEFActionConstants.ZOOM_IN));
 	viewMenu.add(getAction(GEFActionConstants.ZOOM_OUT));
 	menuManager.add(viewMenu);
