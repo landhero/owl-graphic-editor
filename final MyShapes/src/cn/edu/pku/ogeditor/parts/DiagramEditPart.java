@@ -73,7 +73,7 @@ protected void createEditPolicies() {
  */
 protected IFigure createFigure() {
 	Figure f = new FreeformLayer();
-	f.setBorder(new MarginBorder(400));
+	f.setBorder(new MarginBorder(150));
 	f.setLayoutManager(new FreeformLayout());
 
 	// Create the static router for the connection layer
