@@ -118,7 +118,6 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 	private String selectedDragSourceToolLabel;
 	private boolean dirty = false;
 	private OntModel ontModel;
-	private OutlinePage outlinePage;
 	public static ShapesEditor myselfShapesEditor;
 	/** Create a new ShapesEditor instance. This is called by the Workspace. */
 	public ShapesEditor() {
@@ -648,8 +647,6 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 				thumbnail = null;
 			}
 			super.dispose();
-			ShapesEditor.this.outlinePage = null;
-			outlinePage = null;
 		}
 
 		public Object getAdapter(Class type) {
