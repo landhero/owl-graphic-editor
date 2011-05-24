@@ -637,6 +637,7 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 			}
 		}
 
+		
 		protected void unhookOutlineViewer(){
 			getSelectionSynchronizer().removeViewer(getViewer());
 			if (disposeListener != null && getEditor() != null && !getEditor().isDisposed())
