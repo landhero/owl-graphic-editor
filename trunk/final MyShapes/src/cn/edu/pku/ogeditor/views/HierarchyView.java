@@ -81,7 +81,6 @@ public class HierarchyView extends ViewPart {
 
 	private class LevelChangeListener implements ISelectionChangedListener
 	{
-		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
 			// TODO Auto-generated method stub
 			TreeSelection curSelection = (TreeSelection) viewer.getSelection();
@@ -214,7 +213,6 @@ public class HierarchyView extends ViewPart {
 			}
 		}
 
-		@Override
 		public void doubleClick(DoubleClickEvent event) {
 			// TODO Auto-generated method stub
 			widgetSelected(null);
