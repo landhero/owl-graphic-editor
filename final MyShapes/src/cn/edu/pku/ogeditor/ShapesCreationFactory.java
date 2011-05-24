@@ -12,7 +12,6 @@ public class ShapesCreationFactory implements CreationFactory {
 		this.shapeName = shapeName;
 	}
 
-	@Override
 	public Object getNewObject() {
 		// TODO Auto-generated method stub
 		try {
@@ -24,7 +23,6 @@ public class ShapesCreationFactory implements CreationFactory {
 		}
 	}
 
-	@Override
 	public Object getObjectType() {
 		// TODO Auto-generated method stub
 		return Shape.class;
