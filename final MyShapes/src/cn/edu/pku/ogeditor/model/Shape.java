@@ -191,20 +191,6 @@ public IPropertyDescriptor[] getPropertyDescriptors() {
 }
 
 /**
- * Return the property value for the given propertyId, or null.
- * <p>The property view uses the IDs from the IPropertyDescriptors array 
- * to obtain the value of the corresponding properties.</p>
- * @see #descriptors
- * @see #getPropertyDescriptors()
- */
-public Object getPropertyValue(Object propertyId) {
-	if (NAME_PROP.equals(propertyId)) {
-		return name;
-	}
-	return super.getPropertyValue(propertyId);
-}
-
-/**
  * Return the Size of this shape.
  * @return a non-null Dimension instance
  */
@@ -288,6 +274,20 @@ public void setDescription(String newDes) {
 	if (newDes != null) {
 		description = newDes;
 	}
+}
+
+/**
+ * Return the property value for the given propertyId, or null.
+ * <p>The property view uses the IDs from the IPropertyDescriptors array 
+ * to obtain the value of the corresponding properties.</p>
+ * @see #descriptors
+ * @see #getPropertyDescriptors()
+ */
+public Object getPropertyValue(Object propertyId) {
+	if (NAME_PROP.equals(propertyId)) {
+		return name;
+	}
+	return super.getPropertyValue(propertyId);
 }
 
 /**
