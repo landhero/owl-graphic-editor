@@ -93,7 +93,7 @@ implements PropertyChangeListener {
 	}
 
 	private ShapesDiagram getCastedModel() {
-		return (ShapesDiagram) getModel();
+		return (ShapesDiagram) ShapesEditor.myselfShapesEditor.getDiagram();
 	}
 
 	/**
