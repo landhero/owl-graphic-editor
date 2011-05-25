@@ -183,7 +183,9 @@ public class ConnectionReconnectCommand extends Command {
 			
 		} else if (newTarget != null) {
 			connection.reconnect(oldSource, newTarget);
-			if (oldTarget.isTemporarily()) {
+			if (oldTarget.isTemporarily()
+					&& oldTarget.getSourceConnections().size() == 0
+					&& oldTarget.getTargetConnections().size() == 0) {
 				((ShapesDiagram) diagramEditPart.getModel()).removeChild(oldTarget);
 				removeConnections(oldTarget.getSourceConnections());
 				removeConnections(oldTarget.getTargetConnections());
