@@ -43,5 +43,12 @@
                name="Hierarchy"
                restorable="true">
          </view>
+         <view
+               category="cn.edu.pku.ogeditor.views"
+               class="cn.edu.pku.ogeditor.views.TestView"
+               id="test"
+               name="test"
+               restorable="true">
+         </view>
    </extension>
 </plugin>
