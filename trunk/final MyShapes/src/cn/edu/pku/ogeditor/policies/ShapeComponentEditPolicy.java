@@ -41,7 +41,7 @@ public class ShapeComponentEditPolicy extends ComponentEditPolicy {
 	 * org.eclipse.gef.requests.GroupRequest)
 	 */
 	protected Command createDeleteCommand(GroupRequest deleteRequest) {
-		((ShapeEditPart) getHost()).setTemporarily(false);
+//		((ShapeEditPart) getHost()).setTemporarily(false);
 		Object parent = getHost().getParent().getModel();
 		Object child = getHost().getModel();
 		if (parent instanceof ShapesDiagram && child instanceof Shape) {

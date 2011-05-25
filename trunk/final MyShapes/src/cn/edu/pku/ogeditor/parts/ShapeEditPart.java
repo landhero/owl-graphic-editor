@@ -58,7 +58,6 @@ public void activate() {
 	if (!isActive()) {
 		super.activate();
 		((ModelElement) getModel()).addPropertyChangeListener(this);
-		setTemporarily(isTemporarily());
 	}
 }
 
@@ -94,6 +93,7 @@ protected void createEditPolicies() {
 	
 protected IFigure createFigure() {
 	return new ShapeFigure(getCastedModel().getName(),getCastedModel().getParent().getName());
+	
 }
 
 /**
@@ -247,6 +247,7 @@ public void propertyChange(PropertyChangeEvent evt) {
 protected void refreshVisuals() {
 	Rectangle bounds = new Rectangle(getCastedModel().getLocation(),
 			getCastedModel().getSize());
+	setTemporarily(isTemporarily());
 	((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), bounds);
 }
 
@@ -267,6 +268,9 @@ private void performDirectEdit() {
 		directmanager = new ShapeDirectEditManager(this,TextCellEditor.class,
 				new ShapeCellEditorLocator((ShapeFigure) getFigure()));
 	}
-	directmanager.show();
+	if(getCastedModel().isTemporarily())
+		setTemporarily(false);
+	else
+		directmanager.show();
 }
 }
