@@ -28,7 +28,7 @@ public class ShapesTreeEditPartFactory implements EditPartFactory {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
+	 * @see 
 	 * org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart,
 	 * java.lang.Object)
 	 */
