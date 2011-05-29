@@ -51,4 +51,33 @@
                restorable="true">
          </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor
+            contributorId="OGEditor.propertyContributor1">
+         <propertyCategory></propertyCategory>
+      </propertyContributor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections
+            contributorId="OGEditor.propertySections1">
+         <propertySection
+               class="ogeditor.AbstractPropertySection1"
+               id="OGEditor.propertySection1"
+               tab="OGEditor.propertySection1">
+         </propertySection>
+      </propertySections>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs
+            contributorId="OGEditor.propertyTabs1">
+         <propertyTab
+               category="OGEditor.propertyTab1"
+               id="OGEditor.propertyTab1"
+               label="label">
+         </propertyTab>
+      </propertyTabs>
+   </extension>
 </plugin>
