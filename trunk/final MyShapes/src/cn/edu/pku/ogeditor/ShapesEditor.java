@@ -531,7 +531,7 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 			ContextMenuProvider provider = new ShapesEditorContextMenuProvider(getViewer(), getActionRegistry());
 			getViewer().setContextMenu(provider);
 			getSite().registerContextMenu(
-					"org.eclipse.gef.examples.logic.outline.contextmenu", //$NON-NLS-1$
+					"cn.edu.pku.ogeditor.contextmenu", //$NON-NLS-1$
 					provider, getSite().getSelectionProvider());
 //			getViewer().setKeyHandler(getCommonKeyHandler());
 			getViewer().addDropTargetListener((TransferDropTargetListener)
