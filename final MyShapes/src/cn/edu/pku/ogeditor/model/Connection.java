@@ -180,8 +180,11 @@ public class Connection extends ModelElement {
 		reconnect();
 	}
 	public void setName(String name){
-		this.name = name;
-		firePropertyChange(LINENAME_PROP, null, name);
+		if(name != null)
+		{
+			this.name = name;
+			firePropertyChange(LINENAME_PROP, null, name);
+		}
 	}
 	/**
 	 * Sets the lineStyle based on the String provided by the PropertySheet
