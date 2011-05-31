@@ -253,10 +253,6 @@ protected void refreshVisuals() {
 
 public void  performRequest(Request req){
 	if (req.getType().equals(RequestConstants.REQ_OPEN)){
-//		DecriptionView dv = ShapesEditor.myselfShapesEditor.getDescription();
-//		if (dv != null){
-//			dv.setFather(getCastedModel());
-//		}
 		performDirectEdit();
 	}
 	else

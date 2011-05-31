@@ -36,7 +36,6 @@ public class ShapeBasicSection extends AbstractPropertySection {
         System.out.println(selection);
         if(!(selection instanceof IStructuredSelection))
         {
-        	System.out.println("true!");
         	return;
         }
         Object input = ((IStructuredSelection) selection).getFirstElement();
