@@ -14,11 +14,11 @@
    </extension>
    <extension point="org.eclipse.ui.newWizards">
       <category
-            id="cn.edu.pku.ogeditore"
+            id="cn.edu.pku.ogeditor.newWizard"
             name="OWL Graphic Editor"/>
       <wizard name="OWL Graphic Editor"
               icon="ogeditor.gif"
-              category="cn.edu.pku.ogeditore"
+              category="cn.edu.pku.ogeditor.newWizard"
               class="cn.edu.pku.ogeditor.ShapesCreationWizard"
               id="cn.edu.pku.ogeditor.ShapesCreationWizard">
          <selection class="org.eclipse.core.resources.IResource"/>
@@ -54,30 +54,71 @@
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
       <propertyContributor
-            contributorId="OGEditor.propertyContributor1">
-         <propertyCategory></propertyCategory>
+            contributorId="OWL Graphic Editor">
+         <propertyCategory
+               category="all"></propertyCategory>
       </propertyContributor>
-   </extension>
-   <extension
-         point="org.eclipse.ui.views.properties.tabbed.propertySections">
-      <propertySections
-            contributorId="OGEditor.propertySections1">
-         <propertySection
-               class="ogeditor.AbstractPropertySection1"
-               id="OGEditor.propertySection1"
-               tab="OGEditor.propertySection1">
-         </propertySection>
-      </propertySections>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
       <propertyTabs
-            contributorId="OGEditor.propertyTabs1">
+            contributorId="OWL Graphic Editor">
          <propertyTab
-               category="OGEditor.propertyTab1"
-               id="OGEditor.propertyTab1"
-               label="label">
+               category="all"
+               id="basicTab"
+               label="Basic">
+         </propertyTab>
+         <propertyTab
+               afterTab="basicTab"
+               category="all"
+               id="dataPropertyTab"
+               label="DataProperty">
+         </propertyTab>
+         <propertyTab
+               afterTab="basicTab"
+               category="all"
+               id="objectPropertyTab"
+               label="ObjectProperty">
          </propertyTab>
       </propertyTabs>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections
+            contributorId="OWL Graphic Editor">
+         <propertySection
+               class="cn.edu.pku.ogeditor.properties.ShapeBasicSection"
+               id="shapeBasicSection"
+               tab="basicTab">
+            <input
+                  type="cn.edu.pku.ogeditor.parts.ShapeEditPart">
+            </input>
+         </propertySection>
+         <propertySection
+               class="cn.edu.pku.ogeditor.properties.ConnectionBasicSection"
+               id="connectionBasicSection"
+               tab="basicTab">
+            <input
+                  type="cn.edu.pku.ogeditor.parts.ConnectionEditPart">
+            </input>
+         </propertySection>
+         <propertySection
+               afterSection="shapeBasicSection"
+               class="cn.edu.pku.ogeditor.properties.DataPropertySection"
+               id="dataPropertySection"
+               tab="dataPropertyTab">
+            <input
+                  type="cn.edu.pku.ogeditor.parts.ShapeEditPart">
+            </input>
+         </propertySection>
+         <propertySection
+               class="cn.edu.pku.ogeditor.properties.ObjectPropertySection"
+               id="objectPropertySection"
+               tab="objectPropertyTab">
+            <input
+                  type="cn.edu.pku.ogeditor.parts.ConnectionEditPart">
+            </input>
+         </propertySection>
+      </propertySections>
    </extension>
 </plugin>

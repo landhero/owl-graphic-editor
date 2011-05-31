@@ -92,7 +92,7 @@ public void deactivate() {
 	}
 }
 
-private ShapesDiagram getCastedModel() {
+public ShapesDiagram getCastedModel() {
 	return (ShapesDiagram) getModel();
 }
 

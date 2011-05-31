@@ -83,6 +83,9 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import cn.edu.pku.ogeditor.actions.ReviewAction;
 import cn.edu.pku.ogeditor.model.Connection;
@@ -106,7 +109,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * @author Elias Volanakis
  */
 public class ShapesEditor 
-extends GraphicalEditorWithFlyoutPalette implements Serializable
+extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedPropertySheetPageContributor
 {
 	private static final long serialVersionUID = 1L;
 	private static final String NS = "http://ogeidtor/concept-ont#";
@@ -158,7 +161,20 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 			new ShapesEditorContextMenuProvider(viewer, getActionRegistry());
 		viewer.setContextMenu(cmProvider);
 		getSite().registerContextMenu(cmProvider, viewer);
+        getSite().setSelectionProvider(viewer);
 		initZoomManager();
+	}
+
+	/**
+	 * Set up the editor's inital content (after creation).
+	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#initializeGraphicalViewer()
+	 */
+	protected void initializeGraphicalViewer() {
+		super.initializeGraphicalViewer();
+		GraphicalViewer viewer = getGraphicalViewer();
+		viewer.setContents(getModel()); // set the contents of this editor
+		viewer.addDropTargetListener(createTransferDropTargetListener());
+
 	}
 
 	private void initZoomManager() {
@@ -400,7 +416,10 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 
 	public Object getAdapter(Class type) {
 		myselfShapesEditor= this;
-		if (type == IContentOutlinePage.class)
+
+		if (type == IPropertySheetPage.class)
+	            return new TabbedPropertySheetPage(this);
+		else if (type == IContentOutlinePage.class)
 			return new OutlinePage(new TreeViewer());
 		else if (type == ZoomManager.class) 
 			return ((ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager(); 
@@ -423,18 +442,6 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 		System.err.println("** Load failed. Using default model. **");
 		e.printStackTrace();
 		diagram = new ShapesDiagram();
-	}
-
-	/**
-	 * Set up the editor's inital content (after creation).
-	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#initializeGraphicalViewer()
-	 */
-	protected void initializeGraphicalViewer() {
-		super.initializeGraphicalViewer();
-		GraphicalViewer viewer = getGraphicalViewer();
-		viewer.setContents(getModel()); // set the contents of this editor
-		viewer.addDropTargetListener(createTransferDropTargetListener());
-
 	}
 
 	/* (non-Javadoc)
@@ -643,5 +650,11 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable
 			if (disposeListener != null && getEditor() != null && !getEditor().isDisposed())
 				getEditor().removeDisposeListener(disposeListener);
 		}
+	}
+	@Override
+	public String getContributorId() {
+		// TODO Auto-generated method stub
+		System.out.println(getSite().getId());
+		return getSite().getId();
 	}
 }
