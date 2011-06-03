@@ -18,10 +18,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -102,7 +100,7 @@ public class HierarchyView extends ViewPart {
 				return;
 			Shell shell = viewer.getControl().getShell();
 			InputDialog dialog =
-				new InputDialog(shell, "Create Lower Level Ontology",
+				new InputDialog(shell, "Create a Lower Level Ontology",
 						"Enter a name for the new Ontology:",
 						null, null);
 			if (dialog.open() == InputDialog.OK)
@@ -114,33 +112,6 @@ public class HierarchyView extends ViewPart {
 				viewer.refresh(curDiagram);
 				ShapesEditor.myselfShapesEditor.setDirty(true);
 			}
-//			final Shell tempShell = new Shell();
-//			tempShell.setText("Create Lower Level Ontology");
-//			tempShell.setSize(350, 120);
-//			Label label = new Label(tempShell, SWT.NONE);
-//			label.setText("Please input the name of the new Ontology");
-//			label.setLocation(5, 5);
-//			label.setSize(350,15);
-//			final Text text = new Text(tempShell, SWT.NONE);
-//			text.setLocation(5, 30);
-//			text.setSize(200, 13);
-//			Button button = new Button(tempShell, SWT.NONE);
-//			button.setLocation(5, 53);
-//			button.setSize(100, 25);
-//			button.setText("OK");
-//			button.addSelectionListener(new SelectionAdapter(){
-//				public void widgetSelected(SelectionEvent e) {
-//					String childName = text.getText();
-//					ShapesDiagram childDiagram = new ShapesDiagram();
-//					childDiagram.setName(childName);
-//					curDiagram.addLowerLevelDiagram(childDiagram);
-//					viewer.refresh(curDiagram);
-//					ShapesEditor.myselfShapesEditor.setDirty(true);
-//					tempShell.dispose();
-//				}
-//			});
-//			tempShell.open();
-//		}
 		}
 	}
 

@@ -121,4 +121,36 @@
          </propertySection>
       </propertySections>
    </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:cn.edu.pku.ogeditor.views.hierarchyView?after=additions">
+         <command
+               commandId="cn.edu.pku.ogeditor.commands.createChild"
+               icon="icons/cut_edit.gif"
+               tooltip="Create a Lower Level Ontology">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            description="Commands related to the Hierarchy View"
+            id="cn.edu.pku.ogeditor.commands.category"
+            name="Hierarchy">
+      </category>
+      <command
+            categoryId="cn.edu.pku.ogeditor.commands.category"
+            description="Create a Lower Level Ontology"
+            id="cn.edu.pku.ogeditor.commands.createChild"
+            name="Create a Lower Level Ontology">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="cn.edu.pku.ogeditor.handlers.CreateChildHandler"
+            commandId="cn.edu.pku.ogeditor.commands.createChild">
+      </handler>
+   </extension>
 </plugin>
