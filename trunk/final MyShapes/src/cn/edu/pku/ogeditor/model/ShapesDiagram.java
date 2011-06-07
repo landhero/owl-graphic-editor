@@ -32,7 +32,9 @@ public class ShapesDiagram extends ModelElement {
 	private ShapesDiagram father;
 	private List<Shape> shapes;
 	private List<ShapesDiagram> lowerLevelDiagrams;
-
+	private List<String> allShapesNames;
+	private List<String> allConnectionsNames;
+	
 	public ShapesDiagram(){
 		shapes=new ArrayList<Shape>();
 		lowerLevelDiagrams = new ArrayList<ShapesDiagram>();
@@ -76,6 +78,46 @@ public class ShapesDiagram extends ModelElement {
 			System.err.println("Can't remove Diagram "+childDiagram.getName());
 	}
 
+	public void addShapeName(String name) {
+		if(!ContainShapeName(name))
+		{
+			allShapesNames.add(name);
+		}
+	}
+	private boolean ContainShapeName(String name) {
+		// TODO Auto-generated method stub
+		for(int i=0;i<allShapesNames.size();i++)
+		{
+			if(allShapesNames.get(i).equals(name))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	public List<String> getAllShapesNames() {
+		return allShapesNames;
+	}
+	public void addConnectionName(String name) {
+		if(!ContainConnectionName(name))
+		{
+			allConnectionsNames.add(name);
+		}
+	}
+	private boolean ContainConnectionName(String name) {
+		// TODO Auto-generated method stub
+		for(int i=0;i<allConnectionsNames.size();i++)
+		{
+			if(allConnectionsNames.get(i).equals(name))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	public List<String> getAllConnectionsNames() {
+		return allConnectionsNames;
+	}
 	public ShapesDiagram getRootDiagram()
 	{
 		ShapesDiagram root = this;
