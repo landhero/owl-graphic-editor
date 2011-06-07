@@ -26,10 +26,8 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
-import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.jface.viewers.TextCellEditor;
-
 
 import cn.edu.pku.ogeditor.anchor.BorderAnchor;
 import cn.edu.pku.ogeditor.commands.ConnectionDeleteCommand;
@@ -38,6 +36,7 @@ import cn.edu.pku.ogeditor.model.ConnectionBendpoint;
 import cn.edu.pku.ogeditor.model.ModelElement;
 import cn.edu.pku.ogeditor.policies.ConnectionBendPointEditPolicy;
 import cn.edu.pku.ogeditor.policies.ConnectionDirectEditPolicy;
+import cn.edu.pku.ogeditor.policies.ConnectionEndpointEditPolicy;
 
 /**
  * Edit part for Connection model elements.
@@ -110,7 +109,7 @@ implements PropertyChangeListener {
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure() {
-		PolylineConnection connection = (PolylineConnection) super.createFigure();
+		PolylineConnection connection = new PolylineConnection();
 		connection.setTargetDecoration(new PolygonDecoration()); // arrow at target endpoint
 		label = new Label();
 		label.setOpaque(true);

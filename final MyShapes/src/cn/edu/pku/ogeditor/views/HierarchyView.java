@@ -93,7 +93,7 @@ public class HierarchyView extends ViewPart {
 	private class AddChildListener extends SelectionAdapter
 	{
 		public void widgetSelected(SelectionEvent event){
-			//System.out.println(viewer.getSelection().toString());
+
 			TreeSelection curSelection = (TreeSelection) viewer.getSelection();
 			final ShapesDiagram curDiagram = (ShapesDiagram) curSelection.getFirstElement();
 			if(curDiagram == null)
@@ -118,7 +118,6 @@ public class HierarchyView extends ViewPart {
 	private class RemoveOntologyListener extends SelectionAdapter
 	{
 		public void widgetSelected(SelectionEvent event){
-			//System.out.println(viewer.getSelection().toString());
 			TreeSelection curSelection = (TreeSelection) viewer.getSelection();
 			final ShapesDiagram curDiagram = (ShapesDiagram) curSelection.getFirstElement();
 			if(curDiagram == null)

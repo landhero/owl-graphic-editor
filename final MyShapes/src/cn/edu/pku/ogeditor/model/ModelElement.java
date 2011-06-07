@@ -28,7 +28,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * a non-binary form like XML).</li>
  * </ul>
  */
-public abstract class ModelElement implements Serializable {
+public abstract class ModelElement implements IPropertySource,Serializable {
 /** An empty property descriptor. */
 private static final IPropertyDescriptor[] EMPTY_ARRAY = new IPropertyDescriptor[0];
 

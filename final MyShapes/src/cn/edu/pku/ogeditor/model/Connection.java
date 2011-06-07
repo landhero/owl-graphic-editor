@@ -36,10 +36,18 @@ public class Connection extends ModelElement {
 	private ArrayList<Connection> children=new ArrayList<Connection>();
 	private String name="NewConnection";
 	private boolean required;
+	private boolean isSeparator = false;
 
 	static {
 		descriptors = new IPropertyDescriptor[] {
 				new TextPropertyDescriptor(LINENAME_PROP, "Name")};
+	}
+	public Connection(String string){
+		if(!string.equals("ElectiveRoot")
+				&&!string.equals("RequiredRoot")
+				&&!string.equals("Seperator"))
+			System.err.println("Construct an incorrect connection!");
+		setRoot(true);
 	}
 	public Connection(Shape source, Shape target) {
 		reconnect(source, target);
@@ -70,11 +78,6 @@ public class Connection extends ModelElement {
 
 	public void setBendpoints(List<ConnectionBendpoint> bendpoints) {
 		this.bendpoints = bendpoints;
-	}
-	public Connection(String string){
-		if(!string.equals("ElectiveRoot")&&!string.equals("RequiredRoot"))
-			System.err.println("Construct an incorrect connection!");
-		setRoot(true);
 	}
 
 	public boolean isRequired() {
@@ -224,5 +227,11 @@ public class Connection extends ModelElement {
 	}
 	public void setRoot(boolean isRoot) {
 		this.isRoot = isRoot;
+	}
+	public void setSeparator(boolean isSeperator) {
+		this.isSeparator = isSeperator;
+	}
+	public boolean isSeparator() {
+		return isSeparator;
 	}
 }

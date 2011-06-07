@@ -33,7 +33,6 @@ public class ShapeBasicSection extends AbstractPropertySection {
 
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);
-        System.out.println(selection);
         if(!(selection instanceof IStructuredSelection))
         {
         	return;
