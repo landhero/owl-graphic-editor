@@ -80,12 +80,12 @@ public boolean canExecute() {
 		return false;
 	}*/
 	// return false, if the source -> target connection exists already
-	for (Iterator<Connection> iter = source.getSourceConnections().iterator(); iter.hasNext();) {
-		Connection conn = (Connection) iter.next();
-		if (conn.getTarget().equals(target)) {
-			return false;
-		}
-	}
+//	for (Iterator<Connection> iter = source.getSourceConnections().iterator(); iter.hasNext();) {
+//		Connection conn = (Connection) iter.next();
+//		if (conn.getTarget().equals(target)) {
+//			return false;
+//		}
+//	}
 	Connection parentConnection;
 	parentConnection=getParent();
 	if(!parentConnection.isRequired()&&!parentConnection.isRoot()) 
