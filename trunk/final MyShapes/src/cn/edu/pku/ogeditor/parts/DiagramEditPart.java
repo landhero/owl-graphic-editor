@@ -26,6 +26,7 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
+import org.eclipse.swt.SWT;
 
 import cn.edu.pku.ogeditor.model.ModelElement;
 import cn.edu.pku.ogeditor.model.Shape;
@@ -78,6 +79,7 @@ protected IFigure createFigure() {
 
 	// Create the static router for the connection layer
 	ConnectionLayer connLayer = (ConnectionLayer)getLayer(LayerConstants.CONNECTION_LAYER);
+    connLayer.setAntialias(SWT.ON);
 	connLayer.setConnectionRouter(new ShortestPathConnectionRouter(f));
 	return f;
 }

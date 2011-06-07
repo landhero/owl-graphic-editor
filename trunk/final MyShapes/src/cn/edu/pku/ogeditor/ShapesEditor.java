@@ -653,8 +653,6 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 	}
 	@Override
 	public String getContributorId() {
-		// TODO Auto-generated method stub
-		System.out.println(getSite().getId());
 		return getSite().getId();
 	}
 }

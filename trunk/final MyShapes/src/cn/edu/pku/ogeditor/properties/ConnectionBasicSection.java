@@ -33,10 +33,8 @@ public class ConnectionBasicSection extends AbstractPropertySection {
 
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);
-        System.out.println(selection);
         if(!(selection instanceof IStructuredSelection))
         {
-        	System.out.println("false!");
         	return;
         }
         Object input = ((IStructuredSelection) selection).getFirstElement();

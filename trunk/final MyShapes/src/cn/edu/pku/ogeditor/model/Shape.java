@@ -18,7 +18,6 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 import cn.edu.pku.ogeditor.ShapesPlugin;
@@ -57,6 +56,7 @@ private List<Connection> targetConnections;
 private String description;
 private boolean isRoot=false;
 private boolean temporarily=false;
+private boolean isSeparator= false;
 
 
 public boolean isTemporarily() {
@@ -109,6 +109,14 @@ public Shape getParent() {
 
 public void setParent(Shape parent) {
 	this.parent = parent;
+}
+
+public void setSeparator(boolean isSeperator) {
+	this.isSeparator = isSeperator;
+}
+
+public boolean isSeparator() {
+	return isSeparator;
 }
 
 static {
