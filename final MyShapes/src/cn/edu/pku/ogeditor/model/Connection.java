@@ -57,7 +57,7 @@ public class Connection extends ModelElement {
 		firePropertyChange(PROP_BENDPOINT, null, null);
 	}
 	/**
-	 * zhanghao: 为了在更新两个dimension后能发送事件，在MoveBendpointCommand要在用这个方法设置新坐标，
+	 * 为了在更新两个dimension后能发送事件，在MoveBendpointCommand要在用这个方法设置新坐标，
 	 * 而不是直接用BendPoint里的方法。
 	 */
 	public void setBendpointRelativeDimensions(int index, Dimension d1,

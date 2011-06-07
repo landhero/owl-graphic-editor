@@ -136,16 +136,16 @@ public class ConnectionReconnectCommand extends Command {
 			return false;
 		}
 		// return false, if the connection exists already
-		for (Iterator<Connection> iter = newSource.getSourceConnections()
-				.iterator(); iter.hasNext();) {
-			Connection conn = (Connection) iter.next();
-			// return false if a newSource -> oldTarget connection exists
-			// already
-			// and it is a different instance than the connection-field
-			if (conn.getTarget().equals(oldTarget) && !conn.equals(connection)) {
-				return false;
-			}
-		}
+//		for (Iterator<Connection> iter = newSource.getSourceConnections()
+//				.iterator(); iter.hasNext();) {
+//			Connection conn = (Connection) iter.next();
+//			// return false if a newSource -> oldTarget connection exists
+//			// already
+//			// and it is a different instance than the connection-field
+//			if (conn.getTarget().equals(oldTarget) && !conn.equals(connection)) {
+//				return false;
+//			}
+//		}
 		return true;
 	}
 
@@ -159,16 +159,16 @@ public class ConnectionReconnectCommand extends Command {
 			return false;
 		}
 		// return false, if the connection exists already
-		for (Iterator<Connection> iter = newTarget.getTargetConnections()
-				.iterator(); iter.hasNext();) {
-			Connection conn = (Connection) iter.next();
-			// return false if a oldSource -> newTarget connection exists
-			// already
-			// and it is a differenct instance that the connection-field
-			if (conn.getSource().equals(oldSource) && !conn.equals(connection)) {
-				return false;
-			}
-		}
+//		for (Iterator<Connection> iter = newTarget.getTargetConnections()
+//				.iterator(); iter.hasNext();) {
+//			Connection conn = (Connection) iter.next();
+//			// return false if a oldSource -> newTarget connection exists
+//			// already
+//			// and it is a differenct instance that the connection-field
+//			if (conn.getSource().equals(oldSource) && !conn.equals(connection)) {
+//				return false;
+//			}
+//		}
 		return true;
 	}
 
@@ -189,7 +189,6 @@ public class ConnectionReconnectCommand extends Command {
 				((ShapesDiagram) diagramEditPart.getModel()).removeChild(oldTarget);
 				removeConnections(oldTarget.getSourceConnections());
 				removeConnections(oldTarget.getTargetConnections());
-				//diagramEditPart.refresh();
 			}
 		} else {
 			throw new IllegalStateException("Should not happen");

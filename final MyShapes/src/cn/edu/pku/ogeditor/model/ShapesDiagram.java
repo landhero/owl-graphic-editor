@@ -14,6 +14,8 @@ import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
 /**
  * A container for multiple shapes.
  * This is the "root" of the model data structure.
@@ -21,6 +23,15 @@ import org.eclipse.draw2d.geometry.Rectangle;
  */
 public class ShapesDiagram extends ModelElement {
 
+	public static String ID_ROUTER = "router";	//$NON-NLS-1$
+	public static Integer ROUTER_MANUAL = new Integer(0);
+	public static Integer ROUTER_MANHATTAN = new Integer(1);
+	public static Integer ROUTER_SHORTEST_PATH = new Integer(2);
+
+	public static String PropertyDescriptor_LogicDiagram_Manual="Manual";
+	public static String PropertyDescriptor_LogicDiagram_Manhattan="Manhattan";
+	public static String PropertyDescriptor_LogicDiagram_ShortestPath="Shortest Path";
+	protected Integer connectionRouter = null;
 	/** Property ID to use when a child is added to this diagram. */
 	public static final String CHILD_ADDED_PROP = "ShapesDiagram.ChildAdded";
 	/** Property ID to use when a child is removed from this diagram. */
@@ -34,13 +45,44 @@ public class ShapesDiagram extends ModelElement {
 	private List<ShapesDiagram> lowerLevelDiagrams;
 	private List<String> allShapesNames;
 	private List<String> allConnectionsNames;
-	
+
 	public ShapesDiagram(){
 		shapes=new ArrayList<Shape>();
 		lowerLevelDiagrams = new ArrayList<ShapesDiagram>();
 		setName("New Ontology");
 		setFather(null);
 
+	}
+	public IPropertyDescriptor[] getPropertyDescriptors() {
+		if(getClass().equals(ShapesDiagram.class)){
+			ComboBoxPropertyDescriptor cbd = new ComboBoxPropertyDescriptor(
+					ID_ROUTER, 
+					"Connection Router",
+					new String[]{
+							PropertyDescriptor_LogicDiagram_Manual,
+							PropertyDescriptor_LogicDiagram_Manhattan,
+							PropertyDescriptor_LogicDiagram_ShortestPath});
+			cbd.setLabelProvider(new ConnectionRouterLabelProvider());
+			return new IPropertyDescriptor[]{cbd};
+		}
+		return super.getPropertyDescriptors();
+	}
+
+	public void setPropertyValue(Object id, Object value){
+		if(ID_ROUTER.equals(id))
+			setConnectionRouter((Integer)value);
+		else super.setPropertyValue(id,value);
+	}
+
+	public Object getPropertyValue(Object propName) {
+		if(propName.equals(ID_ROUTER))
+			return connectionRouter;
+		return super.getPropertyValue(propName);
+	}
+	public void setConnectionRouter(Integer router){
+		Integer oldConnectionRouter = connectionRouter;
+		connectionRouter = router;
+		firePropertyChange(ID_ROUTER, oldConnectionRouter, connectionRouter);
 	}
 	public void setName(String name) {
 		this.name = name;
@@ -124,7 +166,7 @@ public class ShapesDiagram extends ModelElement {
 		while(root.getFather() != null)
 			root = root.getFather();
 		return root;
-		
+
 	}
 	/** Return a List of Shapes in this diagram.  The returned List should not be modified. */
 	public List<Shape> getChildren() {
@@ -156,6 +198,7 @@ public class ShapesDiagram extends ModelElement {
 		}
 		return false;
 	}
+
 	public void fireRelocate(){
 		firePropertyChange(ALLCHILDREN_RELOCATED_PROP, null, null);
 	}
@@ -270,5 +313,29 @@ public class ShapesDiagram extends ModelElement {
 		}
 	}
 
+	private class ConnectionRouterLabelProvider 
+	extends org.eclipse.jface.viewers.LabelProvider{
 
+		public ConnectionRouterLabelProvider(){
+			super();
+		}
+		public String getText(Object element){
+			if(element instanceof Integer){
+				Integer integer = (Integer)element;
+				if(ROUTER_MANUAL.intValue()==integer.intValue())
+					return PropertyDescriptor_LogicDiagram_Manual;
+				if(ROUTER_MANHATTAN.intValue()==integer.intValue())
+					return PropertyDescriptor_LogicDiagram_Manhattan;
+				if(ROUTER_SHORTEST_PATH.intValue()==integer.intValue())
+					return PropertyDescriptor_LogicDiagram_ShortestPath;
+			}
+			return super.getText(element);
+		}
+	}
+
+	public Integer getConnectionRouter(){
+		if(connectionRouter==null)
+			connectionRouter = ROUTER_MANUAL;
+		return connectionRouter;
+	}
 }

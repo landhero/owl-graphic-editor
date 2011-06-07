@@ -119,6 +119,14 @@
                   type="cn.edu.pku.ogeditor.parts.ConnectionEditPart">
             </input>
          </propertySection>
+         <propertySection
+               class="cn.edu.pku.ogeditor.properties.DiagramBasicSection"
+               id="diagramBasicSection"
+               tab="basicTab">
+            <input
+                  type="cn.edu.pku.ogeditor.parts.DiagramEditPart">
+            </input>
+         </propertySection>
       </propertySections>
    </extension>
    <extension
