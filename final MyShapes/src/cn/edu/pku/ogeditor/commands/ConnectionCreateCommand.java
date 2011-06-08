@@ -10,7 +10,6 @@
 ?*******************************************************************************/
 package cn.edu.pku.ogeditor.commands;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Dimension;
@@ -116,8 +115,7 @@ public void execute() {
 	Connection parentConnection;
 	parentConnection=getParent();
 	//如果这个Connection的target不符合要求，那么不要创建
-	if(!parentConnection.isRequired()
-			&& !parentConnection.isRoot()
+	if( !parentConnection.isRoot()
 			&& target.getParent().getTargetConnections().indexOf(parentConnection)==-1) 
 			return;
 
