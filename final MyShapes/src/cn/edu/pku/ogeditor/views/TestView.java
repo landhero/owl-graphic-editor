@@ -10,7 +10,7 @@ import org.eclipse.ui.part.ViewPart;
 import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 import cn.edu.pku.ogeditor.parts.ShapesEditPartFactory;
-//xingxueyuan
+
 public class TestView extends ViewPart {
 ScrollingGraphicalViewer graphicalViewer;
 FigureCanvas canvas;
