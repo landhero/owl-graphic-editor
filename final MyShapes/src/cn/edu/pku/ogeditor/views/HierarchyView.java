@@ -50,7 +50,6 @@ public class HierarchyView extends ViewPart {
 		ce = new TreeEditor(tree);
 		tree.setHeaderVisible(true);
 		tree.setLinesVisible(true);
-		//tree.addSelectionListener(new RenameListener());
 		viewer.setLabelProvider(new HierarchyLabelProvider());
 		viewer.setContentProvider(new HierarchyContentProvider());
 		List<ShapesDiagram> diagrams = new ArrayList<ShapesDiagram>();
