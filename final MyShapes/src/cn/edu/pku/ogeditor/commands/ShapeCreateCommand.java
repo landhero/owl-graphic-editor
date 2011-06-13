@@ -62,7 +62,7 @@ extends Command
 		ShapesEditorPaletteRoot curPaletteRoot = (ShapesEditorPaletteRoot)ShapesEditor.myselfShapesEditor.getPaletteRoot();
 		List<?> children=curPaletteRoot.getShapeDrawer().getChildren();
 		int index=children.indexOf(selected);
-		Shape newShapeParent=curPaletteRoot.getUplevelAllShapes().get(index);
+		Shape newShapeParent=curPaletteRoot.getAllUpperLevelShapes().get(index);
 		this.newShape.setParent(newShapeParent);
 		newShapeParent.addChild(newShape);
 		this.parent = parent;

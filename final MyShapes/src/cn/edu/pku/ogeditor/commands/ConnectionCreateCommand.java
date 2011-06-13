@@ -97,14 +97,10 @@ private Connection getParent(){
 	ToolEntry  selectedTool=ShapesEditor.myselfShapesEditor.paletteViewer.getActiveTool();
 	Connection newConnectionParent;
 	ShapesEditorPaletteRoot curPaletteRoot = (ShapesEditorPaletteRoot)ShapesEditor.myselfShapesEditor.getPaletteRoot();
-	List<?> children=(List<?>) curPaletteRoot.getRequiredConnectionDrawer().getChildren();
+	List<?> children=(List<?>) curPaletteRoot.getConnectionDrawer().getChildren();
 	int index=0;
 	index=children.indexOf(selectedTool);
-	if(index==-1){
-		children=(List<?>) curPaletteRoot.getElectiveConnectionDrawer().getChildren();
-		index=children.indexOf(selectedTool);
-		newConnectionParent=curPaletteRoot.getUplevelAllElectiveConnections().get(index);
-	}else newConnectionParent=curPaletteRoot.getUplevelAllRequiredConnections().get(index);
+	newConnectionParent=curPaletteRoot.getAllUpperLevelConnections().get(index);
 	return newConnectionParent;
 }
 
