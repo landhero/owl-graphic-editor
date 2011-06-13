@@ -14,12 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 
 public class Connection extends ModelElement {
-	public static final String LINENAME_PROP = "LineName";
+	public static final String LINENAME_PROP = "ConnectionName";
+	public static final String LINESTYLE_REQUIRED = "required";
+	public static final String LINESTYLE_ELECTIVE = "elective";
+	public static final String LINESTYLE_PROP = "Relation Style";
 	private static final IPropertyDescriptor[] descriptors;
 	private static final long serialVersionUID = 1;
 	private boolean isRoot=false;
@@ -40,11 +44,12 @@ public class Connection extends ModelElement {
 
 	static {
 		descriptors = new IPropertyDescriptor[] {
-				new TextPropertyDescriptor(LINENAME_PROP, "Name")};
+				new TextPropertyDescriptor(LINENAME_PROP, "Name"),
+				new ComboBoxPropertyDescriptor(LINESTYLE_PROP, LINESTYLE_PROP, 
+						new String[] {LINESTYLE_REQUIRED,LINESTYLE_ELECTIVE})};
 	}
 	public Connection(String string){
-		if(!string.equals("ElectiveRoot")
-				&&!string.equals("RequiredRoot")
+		if(!string.equals("ConnectionRoot")
 				&&!string.equals("Seperator"))
 			System.err.println("Construct an incorrect connection!");
 		setRoot(true);
@@ -134,6 +139,12 @@ public class Connection extends ModelElement {
 		if (id.equals(LINENAME_PROP)){
 			return name;
 		}
+		else if (id.equals(LINESTYLE_PROP)){
+			if(isRequired())
+				return new Integer(0);
+			else 
+				return new Integer(1);
+		}
 		return super.getPropertyValue(id);
 	}
 
@@ -196,6 +207,12 @@ public class Connection extends ModelElement {
 	public void setPropertyValue(Object id, Object value) {
 		if (id.equals(LINENAME_PROP)){
 			setName((String) value);
+		}
+		if (id.equals(LINESTYLE_PROP)){
+			if(new Integer(0).equals(value))
+				setRequired(true);
+			else
+				setRequired(false);
 		}
 		super.setPropertyValue(id, value);
 	}

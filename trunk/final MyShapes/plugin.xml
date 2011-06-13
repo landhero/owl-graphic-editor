@@ -93,6 +93,9 @@
             <input
                   type="cn.edu.pku.ogeditor.parts.ShapeEditPart">
             </input>
+            <input
+                  type="cn.edu.pku.ogeditor.parts.ShapeTreeEditPart">
+            </input>
          </propertySection>
          <propertySection
                class="cn.edu.pku.ogeditor.properties.ConnectionBasicSection"
@@ -109,6 +112,9 @@
                tab="dataPropertyTab">
             <input
                   type="cn.edu.pku.ogeditor.parts.ShapeEditPart">
+            </input>
+            <input
+                  type="cn.edu.pku.ogeditor.parts.ShapeTreeEditPart">
             </input>
          </propertySection>
          <propertySection

@@ -24,15 +24,12 @@ import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
 public class ShapesEditorPaletteRoot extends PaletteRoot {
 
-	private ArrayList<Connection> allUplevelRequiredConnections = new ArrayList<Connection>();
-	private PaletteDrawer requiredConnectionDrawer;
-	private ArrayList<Connection> allUplevelElectiveConnections = new ArrayList<Connection>();
-	private PaletteDrawer electiveConnectionDrawer;
-	private ArrayList<Shape> allUplevelShapes=new ArrayList<Shape>();
+	private ArrayList<Connection> allUpperLevelConnections = new ArrayList<Connection>();
+	private PaletteDrawer connectionDrawer;
+	private ArrayList<Shape> allUpperLevelShapes=new ArrayList<Shape>();
 	private PaletteDrawer conceptDrawer;
 	private Shape rootShape;
-	private Connection requiredRootConnection;
-	private Connection electiveRootConnection;
+	private Connection rootConnection;
 	private Shape separatorShape;
 	private Connection separatorConnection;
 
@@ -44,17 +41,14 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 	/**
 	 * @return the allConnectionTool
 	 */
-	public ArrayList<Connection> getUplevelAllRequiredConnections() {
-		return allUplevelRequiredConnections;
-	}
-	public ArrayList<Connection> getUplevelAllElectiveConnections() {
-		return allUplevelElectiveConnections;
+	public ArrayList<Connection> getAllUpperLevelConnections() {
+		return allUpperLevelConnections;
 	}
 	/**
 	 * @return the allShapeTool
 	 */
-	public ArrayList<Shape> getUplevelAllShapes() {
-		return allUplevelShapes;
+	public ArrayList<Shape> getAllUpperLevelShapes() {
+		return allUpperLevelShapes;
 	}
 
 	//	private static boolean dirty = false;
@@ -102,11 +96,11 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 
 	private void init() {
 		conceptDrawer = new PaletteDrawer("Concepts");
-		requiredConnectionDrawer=new PaletteDrawer("Required Relations");
-		electiveConnectionDrawer=new PaletteDrawer("Elective Relations");
+		connectionDrawer=new PaletteDrawer("Relations");
+		//electiveConnectionDrawer=new PaletteDrawer("Elective Relations");
 		add(conceptDrawer);
-		add(requiredConnectionDrawer);
-		add(electiveConnectionDrawer);
+		add(connectionDrawer);
+		//add(electiveConnectionDrawer);
 		rootShape=new Shape();
 		rootShape.setName("Thing");
 		rootShape.setRoot(true);	//Thing为根，但从未在Diagram里创建
@@ -120,20 +114,20 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 		separatorConnection.setSeparator(true);
 
 
-		requiredRootConnection=new Connection("RequiredRoot");
-		requiredRootConnection.setName("RequiredRelation");
-		requiredRootConnection.setRequired(true);
-		addRequiredConnectionTool(requiredRootConnection);
-		addRequiredConnectionTool(separatorConnection);
+		rootConnection=new Connection("ConnectionRoot");
+		rootConnection.setName("Relation");
+		rootConnection.setRequired(true);
+		addConnectionTool(rootConnection);
+		addConnectionTool(separatorConnection);
 
-		electiveRootConnection=new Connection("ElectiveRoot");
-		electiveRootConnection.setName("ElectiveRelation");
-		electiveRootConnection.setRequired(false);
-		addElectiveConnectionTool(electiveRootConnection);
-		addElectiveConnectionTool(separatorConnection);
+//		electiveRootConnection=new Connection("ElectiveRoot");
+//		electiveRootConnection.setName("ElectiveRelation");
+//		electiveRootConnection.setRequired(false);
+//		addElectiveConnectionTool(electiveRootConnection);
+//		addElectiveConnectionTool(separatorConnection);
 	}
 	public void addShapeTool(final Shape shape) {
-		allUplevelShapes.add(shape);
+		allUpperLevelShapes.add(shape);
 		if(shape.isSeparator())
 		{
 			conceptDrawer.add(new PaletteSeparator());
@@ -152,14 +146,14 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 			conceptDrawer.add(component);
 		}
 	}
-	public void addRequiredConnectionTool(final Connection connection) {
-		allUplevelRequiredConnections.add(connection);
+	public void addConnectionTool(final Connection connection) {
+		allUpperLevelConnections.add(connection);
 		if(connection.isSeparator())
 		{
-			requiredConnectionDrawer.add(new PaletteSeparator());
+			connectionDrawer.add(new PaletteSeparator());
 			return;
 		}
-		if (requiredConnectionDrawer != null) {
+		if (connectionDrawer != null) {
 			ImageDescriptor newConnectionDescriptor = ImageDescriptor
 			.createFromFile(ShapesPlugin.class,
 			"icons/connection_common.gif");
@@ -174,76 +168,76 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 							return connection.getName();
 						}
 					}, newConnectionDescriptor, newConnectionDescriptor);
-			requiredConnectionDrawer.add(tool);
+			connectionDrawer.add(tool);
 		}
 		else System.err.println("Drawer is null!");
 	}
-	public void addElectiveConnectionTool(final Connection connection) {
-		allUplevelElectiveConnections.add(connection);
-		if(connection.isSeparator())
-		{
-			electiveConnectionDrawer.add(new PaletteSeparator());
-			return;
-		}
-		if (electiveConnectionDrawer != null) {
-			ImageDescriptor newConnectionDescriptor = ImageDescriptor
-			.createFromFile(ShapesPlugin.class,
-			"icons/connection_common.gif");
-			ConnectionCreationToolEntry tool = new ConnectionCreationToolEntry(
-					connection.getName(), "Create a "
-					+ connection.getName() + " relation",
-					new CreationFactory() {
-						public Object getNewObject() {
-							return null;
-						}
-						public Object getObjectType() {
-							return connection.getName();
-						}
-					}, newConnectionDescriptor, newConnectionDescriptor);
-			electiveConnectionDrawer.add(tool);
-		}
-		else System.err.println("Drawer is null!");
-	}
-	public void RemoveRequiredConnectionTool() {
-		int size = requiredConnectionDrawer.getChildren().size();
+//	public void addElectiveConnectionTool(final Connection connection) {
+//		allUplevelElectiveConnections.add(connection);
+//		if(connection.isSeparator())
+//		{
+//			electiveConnectionDrawer.add(new PaletteSeparator());
+//			return;
+//		}
+//		if (electiveConnectionDrawer != null) {
+//			ImageDescriptor newConnectionDescriptor = ImageDescriptor
+//			.createFromFile(ShapesPlugin.class,
+//			"icons/connection_common.gif");
+//			ConnectionCreationToolEntry tool = new ConnectionCreationToolEntry(
+//					connection.getName(), "Create a "
+//					+ connection.getName() + " relation",
+//					new CreationFactory() {
+//						public Object getNewObject() {
+//							return null;
+//						}
+//						public Object getObjectType() {
+//							return connection.getName();
+//						}
+//					}, newConnectionDescriptor, newConnectionDescriptor);
+//			electiveConnectionDrawer.add(tool);
+//		}
+//		else System.err.println("Drawer is null!");
+//	}
+	public void removeConnectionTool() {
+		int size = connectionDrawer.getChildren().size();
 		for (int i = 0; i < size; i++) {
-			requiredConnectionDrawer.remove((PaletteEntry) requiredConnectionDrawer
+			connectionDrawer.remove((PaletteEntry) connectionDrawer
 					.getChildren().get(0));
-			allUplevelRequiredConnections.remove(0);
+			allUpperLevelConnections.remove(0);
 		}
 	}
 
-	public void RemoveElectiveConnectionTool() {
-		int size = electiveConnectionDrawer.getChildren().size();
-		for (int i = 0; i < size; i++) {
-			electiveConnectionDrawer.remove((PaletteEntry) electiveConnectionDrawer
-					.getChildren().get(0));
-			allUplevelElectiveConnections.remove(0);
-		}
-	}
+//	public void RemoveElectiveConnectionTool() {
+//		int size = electiveConnectionDrawer.getChildren().size();
+//		for (int i = 0; i < size; i++) {
+//			electiveConnectionDrawer.remove((PaletteEntry) electiveConnectionDrawer
+//					.getChildren().get(0));
+//			allUplevelElectiveConnections.remove(0);
+//		}
+//	}
 
 
-	public void RemoveShapeTool() {
+	public void removeShapeTool() {
 		int size = conceptDrawer.getChildren().size();
 		for (int i = 0; i < size; i++) {
 			conceptDrawer.remove((PaletteEntry) conceptDrawer.getChildren().get(0));
-			allUplevelShapes.remove(0);
+			allUpperLevelShapes.remove(0);
 		}
 	}
 
 	public void refresh() {
 		ShapesDiagram curDiagram = ShapesEditor.myselfShapesEditor.getModel();
-		RemoveShapeTool();
-		RemoveRequiredConnectionTool();
-		RemoveElectiveConnectionTool();
+		removeShapeTool();
+		removeConnectionTool();
+		//RemoveElectiveConnectionTool();
 		addShapeTool(rootShape);
 		addShapeTool(separatorShape);
 
-		addRequiredConnectionTool(requiredRootConnection);
-		addRequiredConnectionTool(separatorConnection);
+		addConnectionTool(rootConnection);
+		addConnectionTool(separatorConnection);
 
-		addElectiveConnectionTool(electiveRootConnection);
-		addElectiveConnectionTool(separatorConnection);
+//		addElectiveConnectionTool(electiveRootConnection);
+//		addElectiveConnectionTool(separatorConnection);
 
 		if(curDiagram.getFather() == null)
 			return;
@@ -256,18 +250,12 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 				addShapeTool(shapeTemp);
 				for(int j=0;j<shapeTemp.getSourceConnections().size();j++){
 					tempConnection=(Connection)shapeTemp.getSourceConnections().get(j);
-					if(tempConnection.isRequired())
-						addRequiredConnectionTool(tempConnection);
-					else 
-						addElectiveConnectionTool(tempConnection);
+					addConnectionTool(tempConnection);
 				}
 			}
 		}
 	}
-	public PaletteDrawer getRequiredConnectionDrawer() {
-		return requiredConnectionDrawer;
-	}
-	public PaletteDrawer getElectiveConnectionDrawer() {
-		return electiveConnectionDrawer;
+	public PaletteDrawer getConnectionDrawer() {
+		return connectionDrawer;
 	}
 }
