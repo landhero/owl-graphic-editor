@@ -38,6 +38,7 @@ extends Command
 	private final ShapesDiagram parent;
 	/** The bounds of the new Shape. */
 	private Rectangle bounds;
+	private Shape newShapeParent;
 	
 	//private ArrayList<Shape> requiredShapes = new ArrayList<Shape>();
 
@@ -56,9 +57,7 @@ extends Command
 		ShapesEditorPaletteRoot curPaletteRoot = (ShapesEditorPaletteRoot)ShapesEditor.myselfShapesEditor.getPaletteRoot();
 		List<?> children=curPaletteRoot.getShapeDrawer().getChildren();
 		int index=children.indexOf(selected);
-		Shape newShapeParent=curPaletteRoot.getAllUpperLevelShapes().get(index);
-		this.newShape.setParent(newShapeParent);
-		newShapeParent.addChild(newShape);
+		newShapeParent=curPaletteRoot.getAllUpperLevelShapes().get(index);
 		this.parent = parent;
 		this.bounds = bounds;
 
@@ -78,6 +77,7 @@ extends Command
 		Dimension size = bounds.getSize();
 		if (size.width > 0 && size.height > 0)
 			newShape.setSize(size);
+
 		redo();
 //		requiredShapes.add(newShape);
 //		createRequiredShape(newShape);
@@ -125,11 +125,21 @@ extends Command
 //	}
 
 	public void redo() {
-		parent.addChild(newShape);
+		newShapeParent.addChild(newShape);
+		newShape.setParent(newShapeParent);
+		if(parent.addChild(newShape))
+		{
+
+			newShape.setDiagram(parent);
+		}
 	}
 
 	public void undo() {
-		parent.removeChild(newShape);
+		newShapeParent.removeChild(newShape);
+		newShape.setParent(null);
+		if(parent.removeChild(newShape))
+		{
+			newShape.setDiagram(null);
+		}
 	}
-
 }

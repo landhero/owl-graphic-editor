@@ -16,8 +16,9 @@ public class ShapesCreationFactory implements CreationFactory {
 		// TODO Auto-generated method stub
 		try {
 			Shape newShape = Shape.class.newInstance();
-			newShape.setName(shapeName);
-			return newShape;
+			if(newShape.setName(shapeName+newShape.hashCode()))
+				return newShape;
+			else return null;
 		} catch (Exception exc) {
 			return null;
 		}
