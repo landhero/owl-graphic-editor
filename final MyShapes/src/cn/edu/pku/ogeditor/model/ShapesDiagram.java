@@ -43,12 +43,14 @@ public class ShapesDiagram extends ModelElement {
 	private ShapesDiagram father;
 	private List<Shape> shapes;
 	private List<ShapesDiagram> lowerLevelDiagrams;
-	private List<String> allShapesNames;
-	private List<String> allConnectionsNames;
+	private List<Shape> allShapesNames;
+	private List<Connection> allConnectionsNames;
 
 	public ShapesDiagram(){
 		shapes=new ArrayList<Shape>();
 		lowerLevelDiagrams = new ArrayList<ShapesDiagram>();
+		allShapesNames = new ArrayList<Shape>();
+		allConnectionsNames = new ArrayList<Connection>();
 		setName("New Ontology");
 		setFather(null);
 
@@ -97,9 +99,6 @@ public class ShapesDiagram extends ModelElement {
 		return father;
 	}
 
-	public void setLowerLevelDiagrams(List<ShapesDiagram> lowLevelDiagrams) {
-		this.lowerLevelDiagrams = lowLevelDiagrams;
-	}
 	public List<ShapesDiagram> getLowerLevelDiagrams() {
 		return lowerLevelDiagrams;
 	}
@@ -112,52 +111,50 @@ public class ShapesDiagram extends ModelElement {
 	}
 
 	public void removeLowerLevelDiagram(ShapesDiagram childDiagram) {
-		// TODO Auto-generated method stub
-		//删除一个diagram时其shapes的父子关系是否被删除，这个问吴韬
 		if(lowerLevelDiagrams.remove(childDiagram))
 			childDiagram.setFather(null);
 		else 
 			System.err.println("Can't remove Diagram "+childDiagram.getName());
 	}
 
-	public void addShapeName(String name) {
-		if(!ContainShapeName(name))
+	public void addShapeName(Shape newShapeName) {
+		if(!ContainShapeName(newShapeName.getName()))
 		{
-			allShapesNames.add(name);
+			allShapesNames.add(newShapeName);
 		}
 	}
-	private boolean ContainShapeName(String name) {
+	public boolean ContainShapeName(String name) {
 		// TODO Auto-generated method stub
 		for(int i=0;i<allShapesNames.size();i++)
 		{
-			if(allShapesNames.get(i).equals(name))
+			if(allShapesNames.get(i).getName().equals(name))
 			{
 				return true;
 			}
 		}
 		return false;
 	}
-	public List<String> getAllShapesNames() {
+	public List<Shape> getAllShapesNames() {
 		return allShapesNames;
 	}
-	public void addConnectionName(String name) {
-		if(!ContainConnectionName(name))
+	public void addConnectionName(Connection newConnectionName) {
+		if(!ContainConnectionName(newConnectionName))
 		{
-			allConnectionsNames.add(name);
+			allConnectionsNames.add(newConnectionName);
 		}
 	}
-	private boolean ContainConnectionName(String name) {
+	public boolean ContainConnectionName(Connection newConnectionName) {
 		// TODO Auto-generated method stub
 		for(int i=0;i<allConnectionsNames.size();i++)
 		{
-			if(allConnectionsNames.get(i).equals(name))
+			if(allConnectionsNames.get(i).getName().equals(newConnectionName.getName()))
 			{
 				return true;
 			}
 		}
 		return false;
 	}
-	public List<String> getAllConnectionsNames() {
+	public List<Connection> getAllConnectionsNames() {
 		return allConnectionsNames;
 	}
 	public ShapesDiagram getRootDiagram()
@@ -179,7 +176,9 @@ public class ShapesDiagram extends ModelElement {
 	 * @return true, if the shape was added, false otherwise
 	 */
 	public boolean addChild(Shape s) {
-		if (s != null && shapes.add(s)) {
+		if (s != null && shapes.add(s)
+				&& !ContainShapeName(s.getName())) {
+			allShapesNames.add(s);
 			firePropertyChange(CHILD_ADDED_PROP, null, s);
 			return true;
 		}
@@ -192,13 +191,14 @@ public class ShapesDiagram extends ModelElement {
 	 * @return true, if the shape was removed, false otherwise
 	 */
 	public boolean removeChild(Shape s) {
-		if (s != null && shapes.remove(s)) {
+		if (s != null && shapes.remove(s)
+				&& ContainShapeName(s.getName())) {
 			firePropertyChange(CHILD_REMOVED_PROP, null, s);
+			allShapesNames.remove(s);
 			return true;
 		}
 		return false;
 	}
-
 	public void fireRelocate(){
 		firePropertyChange(ALLCHILDREN_RELOCATED_PROP, null, null);
 	}

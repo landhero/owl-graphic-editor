@@ -8,6 +8,16 @@ public class ShapeRenameCommand extends Command {
 	private String oldText, newText;
 	private Shape shape;
 	
+	public boolean canExecute()
+	{
+		if(shape.getDiagram().ContainShapeName(newText))
+		{
+			//弹出对话框之类
+			shape.setName(shape.getName());
+			return false;
+		}	
+		return true;
+	}
 	@Override
 	public void execute(){
 		oldText = shape.getName();
