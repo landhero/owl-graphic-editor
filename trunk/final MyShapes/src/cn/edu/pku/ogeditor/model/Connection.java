@@ -41,9 +41,6 @@ public class Connection extends ModelElement {
 	private String name="NewConnection";
 	private boolean required;
 	private boolean isSeparator = false;
-	
-	private ArrayList<Shape> domain;
-	private ArrayList<Shape> range;
 
 	static {
 		descriptors = new IPropertyDescriptor[] {
@@ -53,8 +50,6 @@ public class Connection extends ModelElement {
 	}
 	public Connection(String string){
 		children=new ArrayList<Connection>();
-		domain = new ArrayList<Shape>();
-		range = new ArrayList<Shape>();
 		bendpoints = new ArrayList<ConnectionBendpoint>();
 		if(!string.equals("ConnectionRoot")
 				&&!string.equals("Seperator"))
@@ -63,9 +58,16 @@ public class Connection extends ModelElement {
 	}
 	public Connection(Shape source, Shape target) {
 		children=new ArrayList<Connection>();
-		domain = new ArrayList<Shape>();
-		range = new ArrayList<Shape>();
 		bendpoints = new ArrayList<ConnectionBendpoint>();
+		reconnect(source, target);
+	}
+	
+	public Connection(Shape source, Shape target, double sourceAngle,
+			double targetAngle) {
+		children=new ArrayList<Connection>();
+		bendpoints = new ArrayList<ConnectionBendpoint>();
+		setSourceAngle(sourceAngle);
+		setTargetAngle(targetAngle);
 		reconnect(source, target);
 	}
 	public void addBendpoint(int index, ConnectionBendpoint point) {
