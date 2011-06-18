@@ -200,15 +200,16 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 			return;
 		else
 		{
-			List<Shape> concepts = curDiagram.getFather().getChildren();
-			Connection tempConnection;
-			for(int i=0;i<concepts.size();i++){
-				Shape shapeTemp=(Shape)concepts.get(i);
-				addShapeTool(shapeTemp);
-				for(int j=0;j<shapeTemp.getSourceConnections().size();j++){
-					tempConnection=(Connection)shapeTemp.getSourceConnections().get(j);
-					addConnectionTool(tempConnection);
-				}
+			ShapesDiagram fatherDiagram = curDiagram.getFather();
+			List<Shape> concepts = fatherDiagram.getAllShapesNames();
+			for(int i=0;i<concepts.size();i++)
+			{
+				addShapeTool(concepts.get(i));
+			}
+			List<Connection> relations = fatherDiagram.getAllConnectionsNames();
+			for(int i=0;i<relations.size();i++)
+			{
+				addConnectionTool(relations.get(i));
 			}
 		}
 	}

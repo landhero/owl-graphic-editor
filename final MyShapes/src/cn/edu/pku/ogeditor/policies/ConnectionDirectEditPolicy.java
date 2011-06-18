@@ -5,6 +5,7 @@ import org.eclipse.gef.editpolicies.DirectEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 
 import cn.edu.pku.ogeditor.commands.ConnectionRenameCommand;
+import cn.edu.pku.ogeditor.figures.ConnectionFigure;
 import cn.edu.pku.ogeditor.model.Connection;
 
 public class ConnectionDirectEditPolicy  extends DirectEditPolicy{
@@ -17,6 +18,6 @@ public class ConnectionDirectEditPolicy  extends DirectEditPolicy{
     }
     protected void showCurrentEditValue(DirectEditRequest request) {
         String value = (String) request.getCellEditor().getValue();
-        ((Connection)getHost().getModel()).setName(value);
+        ((ConnectionFigure)getHostFigure()).setLabelName(value);
     }
 }

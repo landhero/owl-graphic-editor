@@ -290,24 +290,10 @@ public class Shape extends ModelElement {
 	public boolean setName(String newName) {
 		if (newName == null)
 			return false;
-		//		if(getDiagram() == null)
-		//		{
 		name = newName;
 		firePropertyChange(NAME_PROP, null, name);
 		return  true;
-		//		}
-		//		else if(getDiagram().ContainShapeName(newName))
-		//		{
-		//			//弹出个对话框之类
-		//			return false;
-		//		}
-		//		else
-		//		{
-		//			name = newName;
-		//			getDiagram().addShapeName(this);
-		//			firePropertyChange(NAME_PROP, null, name);
-		//			return true;
-		//		}
+
 	}
 
 	public void setDescription(String newDes) {

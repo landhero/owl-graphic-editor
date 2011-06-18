@@ -67,10 +67,6 @@ public class Connection extends ModelElement {
 		range = new ArrayList<Shape>();
 		bendpoints = new ArrayList<ConnectionBendpoint>();
 		reconnect(source, target);
-		if(!domain.contains(source))
-			domain.add(source);
-		if(!range.contains(target))
-			range.add(target);
 	}
 	public void addBendpoint(int index, ConnectionBendpoint point) {
 		getBendpoints().add(index, point);
@@ -150,6 +146,10 @@ public class Connection extends ModelElement {
 			source.removeSourceConnection(this);
 			target.removeTargetConnection(this);
 			isConnected = false;
+//			if(domain.contains(source))
+//				domain.remove(source);
+//			if(range.contains(target))
+//				range.remove(target);
 		}
 	}
 	public void reconnect() {
@@ -157,6 +157,10 @@ public class Connection extends ModelElement {
 			source.addSourceConnection(this);
 			target.addTargetConnection(this);
 			isConnected = true;
+//			if(!domain.contains(source))
+//				domain.add(source);
+//			if(!range.contains(target))
+//				range.add(target);
 		}
 	}
 

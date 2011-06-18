@@ -45,12 +45,14 @@ public class ShapesDiagram extends ModelElement {
 	private List<ShapesDiagram> lowerLevelDiagrams;
 	private List<Shape> allShapesNames;
 	private List<Connection> allConnectionsNames;
+	private List<Connection> allConnections;
 
 	public ShapesDiagram(){
 		shapes=new ArrayList<Shape>();
 		lowerLevelDiagrams = new ArrayList<ShapesDiagram>();
 		allShapesNames = new ArrayList<Shape>();
 		allConnectionsNames = new ArrayList<Connection>();
+		allConnections = new ArrayList<Connection>();
 		setName("New Ontology");
 		setFather(null);
 
@@ -117,12 +119,14 @@ public class ShapesDiagram extends ModelElement {
 			System.err.println("Can't remove Diagram "+childDiagram.getName());
 	}
 
-	public void addShapeName(Shape newShapeName) {
-		if(!ContainShapeName(newShapeName.getName()))
-		{
-			allShapesNames.add(newShapeName);
-		}
-	}
+//	public void addShapeName(Shape newShapeName) {
+//		if(!ContainShapeName(newShapeName.getName()))
+//			allShapesNames.add(newShapeName);
+//	}
+//	public void removeShapeName(Shape newShapeName) {
+//		if(ContainShapeName(newShapeName.getName()))
+//			allShapesNames.remove(newShapeName);
+//	}
 	public boolean ContainShapeName(String name) {
 		// TODO Auto-generated method stub
 		for(int i=0;i<allShapesNames.size();i++)
@@ -137,22 +141,61 @@ public class ShapesDiagram extends ModelElement {
 	public List<Shape> getAllShapesNames() {
 		return allShapesNames;
 	}
-	public void addConnectionName(Connection newConnectionName) {
-		if(!ContainConnectionName(newConnectionName))
+	public void addConnectionName(Connection newConnection) {
+		if(!ContainConnectionName(newConnection.getName()))
+			allConnectionsNames.add(newConnection);
+	}
+	public void removeConnectionName(Connection connection) {
+		if(ContainConnectionName(connection.getName()))
 		{
-			allConnectionsNames.add(newConnectionName);
+			for(int i=0;i<allConnectionsNames.size();i++)
+			{
+				if(allConnectionsNames.get(i).getName().equals(connection.getName()))
+				{
+					allConnectionsNames.remove(i);
+					return;
+				}
+			}
 		}
 	}
-	public boolean ContainConnectionName(Connection newConnectionName) {
+	public boolean ContainConnectionName(String name) {
 		// TODO Auto-generated method stub
 		for(int i=0;i<allConnectionsNames.size();i++)
 		{
-			if(allConnectionsNames.get(i).getName().equals(newConnectionName.getName()))
+			if(allConnectionsNames.get(i).getName().equals(name))
 			{
 				return true;
 			}
 		}
 		return false;
+	}
+	public void addConnection(Connection newConnection) {
+		if(!allConnections.contains(newConnection))
+		{
+			allConnections.add(newConnection);
+			addConnectionName(newConnection);
+		}
+
+	}
+	public void removeConnection(Connection connection) {
+		if(allConnections.contains(connection))
+		{
+			allConnections.remove(connection);
+			if(allThisNameConnectionRemoved(connection))
+				removeConnectionName(connection);
+		}
+
+	}
+	private boolean allThisNameConnectionRemoved(Connection connection) {
+		for(int i =0;i<allConnections.size();i++)
+		{
+			if(((Connection)allConnections.get(i)).getName().equals(connection.getName()))
+				return false;
+		}
+		return true;
+	}
+	public List<Connection> getAllConnections() {
+		return allConnections;
 	}
 	public List<Connection> getAllConnectionsNames() {
 		return allConnectionsNames;

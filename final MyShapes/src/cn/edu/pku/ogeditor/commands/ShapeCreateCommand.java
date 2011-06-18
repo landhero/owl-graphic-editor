@@ -128,18 +128,13 @@ extends Command
 		newShapeParent.addChild(newShape);
 		newShape.setParent(newShapeParent);
 		if(parent.addChild(newShape))
-		{
-
 			newShape.setDiagram(parent);
-		}
 	}
 
 	public void undo() {
 		newShapeParent.removeChild(newShape);
 		newShape.setParent(null);
 		if(parent.removeChild(newShape))
-		{
 			newShape.setDiagram(null);
-		}
 	}
 }

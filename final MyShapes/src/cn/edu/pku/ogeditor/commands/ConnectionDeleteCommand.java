@@ -43,6 +43,7 @@ public ConnectionDeleteCommand(Connection conn) {
  */
 public void execute() {
 	connection.disconnect();
+	connection.getSource().getDiagram().removeConnection(connection);
 }
 
 /* (non-Javadoc)
@@ -50,5 +51,6 @@ public void execute() {
  */
 public void undo() {
 	connection.reconnect();
+	connection.getSource().getDiagram().addConnection(connection);
 }
 }

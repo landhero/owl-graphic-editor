@@ -19,12 +19,6 @@ import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
-/**
- * A command to remove a shape from its parent. The command can be undone or
- * redone.
- * 
- * @author Elias Volanakis
- */
 public class ShapeDeleteCommand extends Command {
 	/** Shape to remove. */
 	private final Shape child;
@@ -119,11 +113,6 @@ public class ShapeDeleteCommand extends Command {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.gef.commands.Command#undo()
-	 */
 	public void undo() {
 		// add the child and reconnect its connections
 		if (parentDiagram.addChild(child)) {

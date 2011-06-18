@@ -74,7 +74,7 @@ public class ShapeFigure extends Figure {
 		this.labelParent.setBounds(rectParentLabel);
 	}
 
-	public void setName(String value) {
+	public void setLabelName(String value) {
 		// TODO Auto-generated method stub
 		getLabel().setText(value);
 
