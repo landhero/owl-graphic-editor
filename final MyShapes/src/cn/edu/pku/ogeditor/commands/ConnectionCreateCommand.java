@@ -87,8 +87,8 @@ public boolean canExecute() {
 //	}
 	Connection parentConnection;
 	parentConnection=getParent();
-	if(!parentConnection.isRequired()&&!parentConnection.isRoot()) 
-		if(source.getParent().getSourceConnections().indexOf(parentConnection)==-1)
+	if(!parentConnection.isRoot()) 
+		if(!source.getParent().containSourceConnectionName(parentConnection))
 			return false;
 	return true;
 }
@@ -112,7 +112,7 @@ public void execute() {
 	parentConnection=getParent();
 	//如果这个Connection的target不符合要求，那么不要创建
 	if( !parentConnection.isRoot() //如果是最顶层本体则可以随意创建
-			&& target.getParent().getTargetConnections().indexOf(parentConnection)==-1) 
+			&& !target.getParent().containTargetConnectionName(parentConnection)) 
 			return;
 
 	connection = new Connection(source, target);

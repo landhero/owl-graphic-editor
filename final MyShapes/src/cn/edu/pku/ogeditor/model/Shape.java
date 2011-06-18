@@ -332,4 +332,26 @@ public class Shape extends ModelElement {
 			super.setPropertyValue(propertyId, value);
 		}
 	}
+	public boolean containSourceConnectionName(Connection connection) {
+		// TODO Auto-generated method stub
+		for(int i=0;i<sourceConnections.size();i++)
+		{
+			if(sourceConnections.get(i).getName().equals(connection.getName()))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean containTargetConnectionName(Connection connection) {
+		// TODO Auto-generated method stub
+		for(int i=0;i<targetConnections.size();i++)
+		{
+			if(targetConnections.get(i).getName().equals(connection.getName()))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }
