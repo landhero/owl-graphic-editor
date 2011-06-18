@@ -22,8 +22,8 @@ public class ShapeNodeEditPolicy extends GraphicalNodeEditPolicy
 
 	protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
 		Shape source = (Shape) getHost().getModel();
-		String _name  = ((String) request.getNewObjectType());
-		ConnectionCreateCommand cmd = new ConnectionCreateCommand(source ,_name);
+		String name  = ((String) request.getNewObjectType());
+		ConnectionCreateCommand cmd = new ConnectionCreateCommand(source ,name);
 		request.setStartCommand(cmd);
 		return cmd;
 	}

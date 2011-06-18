@@ -524,11 +524,6 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 			id = ActionFactory.REDO.getId();
 			bars.setGlobalActionHandler(id, registry.getAction(id));
 			id = ActionFactory.DELETE.getId();
-//			bars.setGlobalActionHandler(id, registry.getAction(id));
-//			id = IncrementDecrementAction.INCREMENT;
-//			bars.setGlobalActionHandler(id, registry.getAction(id));
-//			id = IncrementDecrementAction.DECREMENT;
-//			bars.setGlobalActionHandler(id, registry.getAction(id));
 			bars.updateActionBars();
 		}
 

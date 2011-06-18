@@ -61,13 +61,13 @@ private String name;
  * @throws IllegalArgumentException if source is null
  * @see Connection#setLineStyle(int)
  */
-public ConnectionCreateCommand(Shape source, String lineName) {
+public ConnectionCreateCommand(Shape source, String name) {
 	if (source == null) {
 		throw new IllegalArgumentException();
 	}
 	setLabel("connection creation");
 	this.source = source;
-	this.name = lineName;
+	this.name = name;
 }
 
 /* (non-Javadoc)
@@ -132,6 +132,7 @@ public void execute() {
 	connection.setName(name);
 	connection.setParent(parentConnection);
 	parentConnection.addChild(connection);
+	source.getDiagram().addConnection(connection);
 
 }
 

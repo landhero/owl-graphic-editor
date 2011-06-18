@@ -13,12 +13,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.MidpointLocator;
-import org.eclipse.draw2d.PolygonDecoration;
-import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.RelativeBendpoint;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
@@ -31,6 +26,8 @@ import org.eclipse.jface.viewers.TextCellEditor;
 
 import cn.edu.pku.ogeditor.anchor.BorderAnchor;
 import cn.edu.pku.ogeditor.commands.ConnectionDeleteCommand;
+import cn.edu.pku.ogeditor.figures.ConnectionFigure;
+import cn.edu.pku.ogeditor.figures.ShapeFigure;
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.ConnectionBendpoint;
 import cn.edu.pku.ogeditor.model.ModelElement;
@@ -49,7 +46,6 @@ import cn.edu.pku.ogeditor.policies.ConnectionEndpointEditPolicy;
 public class ConnectionEditPart extends AbstractConnectionEditPart
 implements PropertyChangeListener {
 
-	private Label label = null;
 	private ConnectionDirectEditManager directManager = null;
 
 	public ConnectionEditPart(){
@@ -105,14 +101,14 @@ implements PropertyChangeListener {
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure() {
-		PolylineConnection connection = new PolylineConnection();
-		connection.setTargetDecoration(new PolygonDecoration()); // arrow at target endpoint
-		label = new Label();
-		label.setOpaque(true);
-		label.setText(((Connection)this.getModel()).getName());
-		label.setBackgroundColor(ColorConstants.lightGray);
-		connection.add(label, new MidpointLocator(connection, 0));
-		return connection;
+//		PolylineConnection connection = new PolylineConnection();
+//		connection.setTargetDecoration(new PolygonDecoration()); // arrow at target endpoint
+//		label = new Label();
+//		label.setOpaque(true);
+//		label.setText(((Connection)this.getModel()).getName());
+//		label.setBackgroundColor(ColorConstants.lightGray);
+//		connection.add(label, new MidpointLocator(connection, 0));
+		return new ConnectionFigure(((Connection)this.getModel()).getName());
 	}
 
 	/**
@@ -135,7 +131,7 @@ implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent event) {
 		String property = event.getPropertyName();
 		if (Connection.LINENAME_PROP.equals(property)){
-			label.setText(getCastedModel().getName());
+			((ConnectionFigure)getFigure()).setLabelName(getCastedModel().getName());
 		}
 		if (Connection.PROP_BENDPOINT.equals(property)) {
 			refreshBendpoints();
@@ -170,7 +166,7 @@ implements PropertyChangeListener {
 	private void performDirectEdit(){
 		if (directManager == null){
 			directManager = new ConnectionDirectEditManager(this, TextCellEditor.class,
-					new ConnectionCellEditorLocator(label));
+					new ConnectionCellEditorLocator(((ConnectionFigure)getFigure()).getLabel()));
 		}
 		directManager.show();
 	}

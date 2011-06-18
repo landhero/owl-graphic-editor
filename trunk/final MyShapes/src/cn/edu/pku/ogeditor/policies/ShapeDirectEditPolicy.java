@@ -22,7 +22,7 @@ public class ShapeDirectEditPolicy extends DirectEditPolicy{
 	protected void showCurrentEditValue(DirectEditRequest request) {
 		// TODO Auto-generated method stub
 	      String value = (String) request.getCellEditor().getValue();
-	      ((ShapeFigure) getHostFigure()).setName(value);
+	      ((ShapeFigure) getHostFigure()).setLabelName(value);
 	}
 
 }

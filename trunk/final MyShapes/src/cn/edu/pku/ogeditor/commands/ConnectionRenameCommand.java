@@ -18,17 +18,27 @@ public class ConnectionRenameCommand extends Command {
     private String oldName;
 
     public void setName(String name) {
-        this.newName = name;
+        newName = name;
     }
 
     public void setConnection(Connection connection) {
         this.connection = connection;
     }
 
+	public boolean canExecute()
+	{
+		if(connection.getSource().getDiagram().ContainConnectionName(newName))
+		{
+			//弹出对话框之类
+			connection.setName(connection.getName());
+			return false;
+		}	
+		return true;
+	}
     public void execute() {
-        oldName = this.connection.getName();
-        this.connection.setName(newName);
-        //connection.getSource().getFatherEditor().AddConnectionName(newName);
+        oldName = connection.getName();
+        connection.setName(newName);
+        connection.getSource().getDiagram().addConnectionName(connection);
     }
 
     public void redo() {
