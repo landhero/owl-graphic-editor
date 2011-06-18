@@ -111,7 +111,7 @@ public void execute() {
 	Connection parentConnection;
 	parentConnection=getParent();
 	//如果这个Connection的target不符合要求，那么不要创建
-	if( !parentConnection.isRoot()
+	if( !parentConnection.isRoot() //如果是最顶层本体则可以随意创建
 			&& target.getParent().getTargetConnections().indexOf(parentConnection)==-1) 
 			return;
 

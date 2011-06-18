@@ -152,7 +152,8 @@ public class Shape extends ModelElement {
 			throw new IllegalArgumentException();
 		}
 		if (conn.getSource() == this) {
-			sourceConnections.add(conn);
+			if(!sourceConnections.contains(conn))
+				sourceConnections.add(conn);
 			firePropertyChange(SOURCE_CONNECTIONS_PROP, null, conn);
 		} 
 	}
@@ -166,7 +167,8 @@ public class Shape extends ModelElement {
 			throw new IllegalArgumentException();
 		}
 		if (conn.getTarget() == this) {
-			targetConnections.add(conn);
+			if(!targetConnections.contains(conn))
+				targetConnections.add(conn);
 			firePropertyChange(TARGET_CONNECTIONS_PROP, null, conn);
 		}
 	}
