@@ -10,6 +10,7 @@
 ?*******************************************************************************/
 package cn.edu.pku.ogeditor.commands;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Dimension;
@@ -39,10 +40,6 @@ import cn.edu.pku.ogeditor.model.Shape;
  * to obtain the Command from the ConnectionRequest, call setTarget(...) to set the
  * target endpoint of the connection and return this command instance.</li>
  * </ol>
- * @see parts.ShapeEditPart#createEditPolicies() for an
- * 			 example of the above procedure.
- * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy
- * @author Elias Volanakis
  */
 public class ConnectionCreateCommand extends Command {
 /** The connection instance. */
@@ -52,8 +49,6 @@ private final Shape source;
 /** Target endpoint for the connection. */
 private Shape target;
 private String name;
-
-
 /**
  *	Instantiate a command that can create a connection between two shapes.
  * @param source the source endpoint (a non-null Shape instance)
@@ -79,12 +74,7 @@ public boolean canExecute() {
 		return false;
 	}*/
 	// return false, if the source -> target connection exists already
-//	for (Iterator<Connection> iter = source.getSourceConnections().iterator(); iter.hasNext();) {
-//		Connection conn = (Connection) iter.next();
-//		if (conn.getTarget().equals(target)) {
-//			return false;
-//		}
-//	}
+
 	Connection parentConnection;
 	parentConnection=getParent();
 	if(!parentConnection.isRoot()) 
@@ -108,6 +98,7 @@ private Connection getParent(){
  * @see org.eclipse.gef.commands.Command#execute()
  */
 public void execute() {
+	boolean connectionExist = false;
 	Connection parentConnection;
 	parentConnection=getParent();
 	//如果这个Connection的target不符合要求，那么不要创建
@@ -115,7 +106,25 @@ public void execute() {
 			&& !target.getParent().containTargetConnectionName(parentConnection)) 
 			return;
 
-	connection = new Connection(source, target);
+	for (Iterator<Connection> iter = source.getSourceConnections().iterator(); iter.hasNext();) {
+		Connection conn = (Connection) iter.next();
+		if (conn.getTarget().equals(target))
+		{
+			connectionExist = true;
+		}
+	}
+	for (Iterator<Connection> iter = target.getSourceConnections().iterator(); iter.hasNext();) {
+		Connection conn = (Connection) iter.next();
+		if (conn.getTarget().equals(source))
+		{
+			connectionExist = true;
+		}
+	}
+	if(connectionExist)
+		connection = new Connection(source, target,Double.MAX_VALUE*Math.random(),Double.MAX_VALUE*Math.random());
+	else
+		connection = new Connection(source, target);
+
 	if (source == target) {
         //The start and end points of our connection are both at the center of the rectangle,
         //so the two relative dimensions are equal.
