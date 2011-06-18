@@ -29,7 +29,7 @@ public class Connection extends ModelElement {
 	private boolean isRoot=false;
 	/** True, if the connection is attached to its endpoints. */ 
 	private boolean isConnected;
-	protected List<ConnectionBendpoint> bendpoints = new ArrayList<ConnectionBendpoint>();
+	protected List<ConnectionBendpoint> bendpoints;
 	final public static String PROP_BENDPOINT = "BENDPOINT";
 
 	/** Connection's source endpoint. */
@@ -37,10 +37,13 @@ public class Connection extends ModelElement {
 	/** Connection's target endpoint. */
 	private Shape target;
 	private Connection parent;
-	private ArrayList<Connection> children=new ArrayList<Connection>();
+	private ArrayList<Connection> children;
 	private String name="NewConnection";
 	private boolean required;
 	private boolean isSeparator = false;
+	
+	private ArrayList<Shape> domain;
+	private ArrayList<Shape> range;
 
 	static {
 		descriptors = new IPropertyDescriptor[] {
@@ -49,13 +52,25 @@ public class Connection extends ModelElement {
 						new String[] {LINESTYLE_REQUIRED,LINESTYLE_ELECTIVE})};
 	}
 	public Connection(String string){
+		children=new ArrayList<Connection>();
+		domain = new ArrayList<Shape>();
+		range = new ArrayList<Shape>();
+		bendpoints = new ArrayList<ConnectionBendpoint>();
 		if(!string.equals("ConnectionRoot")
 				&&!string.equals("Seperator"))
 			System.err.println("Construct an incorrect connection!");
 		setRoot(true);
 	}
 	public Connection(Shape source, Shape target) {
+		children=new ArrayList<Connection>();
+		domain = new ArrayList<Shape>();
+		range = new ArrayList<Shape>();
+		bendpoints = new ArrayList<ConnectionBendpoint>();
 		reconnect(source, target);
+		if(!domain.contains(source))
+			domain.add(source);
+		if(!range.contains(target))
+			range.add(target);
 	}
 	public void addBendpoint(int index, ConnectionBendpoint point) {
 		getBendpoints().add(index, point);
@@ -112,14 +127,36 @@ public class Connection extends ModelElement {
 	public void setTargetAngle(double targetAngle) {
 		this.targetAngle = targetAngle;
 	}
-	/** 
-	 * Disconnect this connection from the shapes it is attached to.
+
+	/**
+	 * Reconnect to a different source and/or target shape.
+	 * The connection will disconnect from its current attachments and reconnect to 
+	 * the new source and target. 
+	 * @param newSource a new source endpoint for this connection (non null)
+	 * @param newTarget a new target endpoint for this connection (non null)
+	 * @throws IllegalArgumentException if any of the paramers are null or newSource == newTarget
 	 */
+	public void reconnect(Shape newSource, Shape newTarget) {
+		if (newSource == null || newTarget == null ) {
+			throw new IllegalArgumentException();
+		}
+		disconnect();
+		this.source = newSource;
+		this.target = newTarget;
+		reconnect();
+	}
 	public void disconnect() {
 		if (isConnected) {
-			source.removeConnection(this);
-			target.removeConnection(this);
+			source.removeSourceConnection(this);
+			target.removeTargetConnection(this);
 			isConnected = false;
+		}
+	}
+	public void reconnect() {
+		if (!isConnected) {
+			source.addSourceConnection(this);
+			target.addTargetConnection(this);
+			isConnected = true;
 		}
 	}
 
@@ -164,35 +201,6 @@ public class Connection extends ModelElement {
 		return target;
 	}
 
-	/** 
-	 * Reconnect this connection. 
-	 * The connection will reconnect with the shapes it was previously attached to.
-	 */  
-	public void reconnect() {
-		if (!isConnected) {
-			source.addSourceConnection(this);
-			target.addTargetConnection(this);
-			isConnected = true;
-		}
-	}
-
-	/**
-	 * Reconnect to a different source and/or target shape.
-	 * The connection will disconnect from its current attachments and reconnect to 
-	 * the new source and target. 
-	 * @param newSource a new source endpoint for this connection (non null)
-	 * @param newTarget a new target endpoint for this connection (non null)
-	 * @throws IllegalArgumentException if any of the paramers are null or newSource == newTarget
-	 */
-	public void reconnect(Shape newSource, Shape newTarget) {
-		if (newSource == null || newTarget == null ) {
-			throw new IllegalArgumentException();
-		}
-		disconnect();
-		this.source = newSource;
-		this.target = newTarget;
-		reconnect();
-	}
 	public void setName(String name){
 		if(name != null)
 		{
@@ -232,9 +240,7 @@ public class Connection extends ModelElement {
 		this.setRequired(parent.isRequired());
 
 	}
-	public void setChildren(ArrayList<Connection> children) {
-		this.children = children;
-	}
+
 	public void addChild(Connection child){
 		if(!children.contains(child))
 			children.add(child);

@@ -152,7 +152,7 @@ public class Shape extends ModelElement {
 			throw new IllegalArgumentException();
 		}
 		if (conn.getSource() == this) {
-			if(!sourceConnections.contains(conn))
+			//if(!sourceConnections.contains(conn))
 				sourceConnections.add(conn);
 			firePropertyChange(SOURCE_CONNECTIONS_PROP, null, conn);
 		} 
@@ -167,7 +167,7 @@ public class Shape extends ModelElement {
 			throw new IllegalArgumentException();
 		}
 		if (conn.getTarget() == this) {
-			if(!targetConnections.contains(conn))
+			//if(!targetConnections.contains(conn))
 				targetConnections.add(conn);
 			firePropertyChange(TARGET_CONNECTIONS_PROP, null, conn);
 		}
@@ -241,14 +241,22 @@ public class Shape extends ModelElement {
 	 * @param conn a non-null connection instance
 	 * @throws IllegalArgumentException if the parameter is null
 	 */
-	void removeConnection(Connection conn) {
+	void removeSourceConnection(Connection conn) {
 		if (conn == null) {
 			throw new IllegalArgumentException();
 		}
-		if (conn.getSource() == this) {
+		if (conn.getSource() == this
+				&& sourceConnections.contains(conn)) {
 			sourceConnections.remove(conn);
 			firePropertyChange(SOURCE_CONNECTIONS_PROP, null, conn);
-		} else if (conn.getTarget() == this) {
+		}
+	}
+	void removeTargetConnection(Connection conn) {
+		if (conn == null) {
+			throw new IllegalArgumentException();
+		}
+		if (conn.getTarget() == this
+				&& targetConnections.contains(conn)) {
 			targetConnections.remove(conn);
 			firePropertyChange(TARGET_CONNECTIONS_PROP, null, conn);
 		}
