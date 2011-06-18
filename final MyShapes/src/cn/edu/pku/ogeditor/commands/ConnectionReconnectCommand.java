@@ -10,14 +10,10 @@
 ?*******************************************************************************/
 package cn.edu.pku.ogeditor.commands;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.gef.commands.Command;
 
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
-import cn.edu.pku.ogeditor.model.ShapesDiagram;
 import cn.edu.pku.ogeditor.parts.DiagramEditPart;
 
 /**
@@ -60,7 +56,6 @@ public class ConnectionReconnectCommand extends Command {
 	private final Shape oldSource;
 	/** The original target endpoint. */
 	private final Shape oldTarget;
-	private DiagramEditPart diagramEditPart;
 
 	/**
 	 * Instantiate a command that can reconnect a Connection instance to a
@@ -79,7 +74,6 @@ public class ConnectionReconnectCommand extends Command {
 		this.connection = conn;
 		this.oldSource = conn.getSource();
 		this.oldTarget = conn.getTarget();
-		this.diagramEditPart = diagramEditPart;
 	}
 
 	/*
@@ -89,87 +83,25 @@ public class ConnectionReconnectCommand extends Command {
 	 */
 	public boolean canExecute() {
 		Connection parentConnection = connection.getParent();
-		if (newSource != null) {
-			if (!parentConnection.isRoot())
-				if (!parentConnection.isRequired()) {
-					if (newSource.getParent().getSourceConnections()
-							.indexOf(parentConnection) == -1)
-						return false;
-				} else {
-					if (newSource.getParent().getSourceConnections()
-							.indexOf(parentConnection) == -1)
-						return false;
-
-				}
-
-			return checkSourceReconnection();
-		} else if (newTarget != null) {
-			if (!parentConnection.isRoot())
-				if (!parentConnection.isRequired()) {
-					if (newTarget.getParent().getTargetConnections()
-							.indexOf(parentConnection) == -1)
-						return false;
-				} else {
-					if (newTarget.getParent().getTargetConnections()
-							.indexOf(parentConnection) == -1)
-						return false;
-				}
-			return checkTargetReconnection();
+		if (parentConnection.isRoot())
+		{
+			return true;
+		}
+		if (newSource != null)
+		{
+			if (newSource.getParent().getSourceConnections()
+					.indexOf(parentConnection) == -1)
+				return false;
+			return true;
+		}
+		else if (newTarget != null)
+		{
+			if (newTarget.getParent().getTargetConnections()
+					.indexOf(parentConnection) == -1)
+				return false;
+			return true;
 		}
 		return false;
-	}
-
-	private void removeConnections(List<Connection> connections) {
-		for (Iterator<Connection> iter = connections.iterator(); iter.hasNext();) {
-			Connection conn = (Connection) iter.next();
-			conn.disconnect();
-		}
-	}
-
-	/**
-	 * Return true, if reconnecting the connection-instance to newSource is
-	 * allowed.
-	 */
-	private boolean checkSourceReconnection() {
-		// connection endpoints must be different Shapes
-		if (newSource.equals(oldTarget)) {
-			return false;
-		}
-		// return false, if the connection exists already
-//		for (Iterator<Connection> iter = newSource.getSourceConnections()
-//				.iterator(); iter.hasNext();) {
-//			Connection conn = (Connection) iter.next();
-//			// return false if a newSource -> oldTarget connection exists
-//			// already
-//			// and it is a different instance than the connection-field
-//			if (conn.getTarget().equals(oldTarget) && !conn.equals(connection)) {
-//				return false;
-//			}
-//		}
-		return true;
-	}
-
-	/**
-	 * Return true, if reconnecting the connection-instance to newTarget is
-	 * allowed.
-	 */
-	private boolean checkTargetReconnection() {
-		// connection endpoints must be different Shapes
-		if (newTarget.equals(oldSource)) {
-			return false;
-		}
-		// return false, if the connection exists already
-//		for (Iterator<Connection> iter = newTarget.getTargetConnections()
-//				.iterator(); iter.hasNext();) {
-//			Connection conn = (Connection) iter.next();
-//			// return false if a oldSource -> newTarget connection exists
-//			// already
-//			// and it is a differenct instance that the connection-field
-//			if (conn.getSource().equals(oldSource) && !conn.equals(connection)) {
-//				return false;
-//			}
-//		}
-		return true;
 	}
 
 	/**
@@ -180,16 +112,9 @@ public class ConnectionReconnectCommand extends Command {
 
 		if (newSource != null) {
 			connection.reconnect(newSource, oldTarget);
-			
+
 		} else if (newTarget != null) {
 			connection.reconnect(oldSource, newTarget);
-			if (oldTarget.isTemporarily()
-					&& oldTarget.getSourceConnections().size() == 0
-					&& oldTarget.getTargetConnections().size() == 0) {
-				((ShapesDiagram) diagramEditPart.getModel()).removeChild(oldTarget);
-				removeConnections(oldTarget.getSourceConnections());
-				removeConnections(oldTarget.getTargetConnections());
-			}
 		} else {
 			throw new IllegalStateException("Should not happen");
 		}

@@ -51,11 +51,7 @@ implements PropertyChangeListener {
 
 	private Label label = null;
 	private ConnectionDirectEditManager directManager = null;
-	//*********************
 
-	/**
-	 * Upon activation, attach to the model element as a property change listener.
-	 */
 	public ConnectionEditPart(){
 		super();
 	}
