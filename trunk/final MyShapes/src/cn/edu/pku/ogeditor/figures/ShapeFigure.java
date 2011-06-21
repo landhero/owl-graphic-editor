@@ -14,6 +14,8 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * @author zhanghao
@@ -26,24 +28,20 @@ public class ShapeFigure extends Figure {
 	private Label label;
 	private Label labelParent;
 
-	public ShapeFigure(String name, String parentName) {
+	public ShapeFigure(String name, String parentName, RGB color) {
 		ellipseFigure = new Ellipse();
 		label = new Label();
-		// setLabel(new Label());
 		labelParent = new Label();
 		ellipseFigure.setBackgroundColor(ColorConstants.orange);
 		label.setText(name);
 		labelParent.setText("Parent: " + parentName);
+		ellipseFigure.setBackgroundColor(new Color(null, color));
 		
 		//添加顺序一定要注意
 		this.add(ellipseFigure);
 		this.add(labelParent);
 		this.add(label);
 
-	}
-	//下面的方法把继承下来的方法覆盖了
-	public void setBackgroundColor(Color color){
-		ellipseFigure.setBackgroundColor(color);
 	}
 
 	public Label getLabel() {

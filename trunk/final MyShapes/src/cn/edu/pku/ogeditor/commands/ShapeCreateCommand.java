@@ -77,7 +77,7 @@ extends Command
 		Dimension size = bounds.getSize();
 		if (size.width > 0 && size.height > 0)
 			newShape.setSize(size);
-
+		newShape.setColor(newShapeParent.getColor());
 		redo();
 //		requiredShapes.add(newShape);
 //		createRequiredShape(newShape);

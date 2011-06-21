@@ -16,7 +16,9 @@ import java.util.List;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
@@ -40,8 +42,12 @@ public class Shape extends ModelElement {
 	public static final String SIZE_PROP = "Shape.Size";
 	public static final String SOURCE_CONNECTIONS_PROP = "Shape.SourceConn";
 	public static final String TARGET_CONNECTIONS_PROP = "Shape.TargetConn";
+	public static final String FONT_PROP = "Shape.Font";
+	public static final String COLOR_PROP = "Shape.Color";
 
 
+	//private Font font;
+	private RGB color;
 	/** Location of this shape. */
 	private Point location = new Point(0, 0);
 	/** Size of this shape. */
@@ -56,8 +62,9 @@ public class Shape extends ModelElement {
 
 	private String description;
 	private boolean isRoot=false;
-	private boolean temporarily=false;
+	//private boolean temporarily=false;
 	private boolean isSeparator= false;
+
 
 	public Shape()
 	{
@@ -67,13 +74,6 @@ public class Shape extends ModelElement {
 		children=new ArrayList<Shape>();
 		sourceConnections = new ArrayList<Connection>();
 		targetConnections = new ArrayList<Connection>();
-	}
-	public boolean isTemporarily() {
-		return temporarily;
-	}
-
-	public void setTemporarily(boolean temporarily) {
-		this.temporarily = temporarily;
 	}
 
 	public boolean isRoot() {
@@ -153,7 +153,7 @@ public class Shape extends ModelElement {
 		}
 		if (conn.getSource() == this) {
 			//if(!sourceConnections.contains(conn))
-				sourceConnections.add(conn);
+			sourceConnections.add(conn);
 			firePropertyChange(SOURCE_CONNECTIONS_PROP, null, conn);
 		} 
 	}
@@ -168,7 +168,7 @@ public class Shape extends ModelElement {
 		}
 		if (conn.getTarget() == this) {
 			//if(!targetConnections.contains(conn))
-				targetConnections.add(conn);
+			targetConnections.add(conn);
 			firePropertyChange(TARGET_CONNECTIONS_PROP, null, conn);
 		}
 	}
@@ -353,5 +353,16 @@ public class Shape extends ModelElement {
 			}
 		}
 		return false;
+	}
+	public void setColor(RGB color) {
+		if(color != null)
+		{
+			this.color = color;
+			firePropertyChange(COLOR_PROP, null, color);
+		}
+	}
+
+	public RGB getColor() {
+		return color;
 	}
 }
