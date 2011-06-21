@@ -133,6 +133,24 @@
                   type="cn.edu.pku.ogeditor.parts.DiagramEditPart">
             </input>
          </propertySection>
+         <propertySection
+               afterSection="shapeBasicSection"
+               class="cn.edu.pku.ogeditor.properties.FontSection"
+               id="fontSection"
+               tab="basicTab">
+            <input
+                  type="cn.edu.pku.ogeditor.parts.ShapeEditPart">
+            </input>
+         </propertySection>
+         <propertySection
+               afterSection="shapeBasicSection"
+               class="cn.edu.pku.ogeditor.properties.ColorSection"
+               id="colorSection"
+               tab="basicTab">
+            <input
+                  type="cn.edu.pku.ogeditor.parts.ShapeEditPart">
+            </input>
+         </propertySection>
       </propertySections>
    </extension>
    <extension

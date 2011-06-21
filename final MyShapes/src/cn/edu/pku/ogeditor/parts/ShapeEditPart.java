@@ -12,7 +12,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
@@ -26,6 +25,7 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.requests.ReconnectRequest;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.graphics.Color;
 
 import cn.edu.pku.ogeditor.anchor.BorderAnchor;
 import cn.edu.pku.ogeditor.anchor.EllipseBorderAnchor;
@@ -61,17 +61,17 @@ public void activate() {
 	}
 }
 
-public boolean isTemporarily() {
-	return ((Shape)this.getModel()).isTemporarily();
-}
-
-public void setTemporarily(boolean temporarily) {
-	((Shape)this.getModel()).setTemporarily(temporarily);
-	if(temporarily==false)
-		this.getFigure().setBackgroundColor(ColorConstants.orange);
-	else 
-		this.getFigure().setBackgroundColor(ColorConstants.red);
-}
+//public boolean isTemporarily() {
+//	return ((Shape)this.getModel()).isTemporarily();
+//}
+//
+//public void setTemporarily(boolean temporarily) {
+//	((Shape)this.getModel()).setTemporarily(temporarily);
+//	if(temporarily==false)
+//		this.getFigure().setBackgroundColor(ColorConstants.orange);
+//	else 
+//		this.getFigure().setBackgroundColor(ColorConstants.red);
+//}
 
 //改变ShapeFigure的大小，但是这个函数还没有调试好
 //public void setArea(Point p) {
@@ -92,7 +92,7 @@ protected void createEditPolicies() {
 }
 	
 protected IFigure createFigure() {
-	return new ShapeFigure(getCastedModel().getName(),getCastedModel().getParent().getName());
+	return new ShapeFigure(getCastedModel().getName(),getCastedModel().getParent().getName(),getCastedModel().getColor());
 	
 }
 
@@ -241,13 +241,15 @@ public void propertyChange(PropertyChangeEvent evt) {
 		refreshTargetConnections();
 	} else if (Shape.NAME_PROP.equals(prop)){
 		((ShapeFigure)getFigure()).getLabel().setText(getCastedModel().getName());
+	} else if (Shape.COLOR_PROP.equals(prop)){
+		((ShapeFigure)getFigure()).getEllipseFigure().setBackgroundColor(new Color(null,getCastedModel().getColor()));
 	}
 }
 
 protected void refreshVisuals() {
 	Rectangle bounds = new Rectangle(getCastedModel().getLocation(),
 			getCastedModel().getSize());
-	setTemporarily(isTemporarily());
+//	setTemporarily(isTemporarily());
 	((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), bounds);
 }
 
@@ -264,9 +266,9 @@ private void performDirectEdit() {
 		directmanager = new ShapeDirectEditManager(this,TextCellEditor.class,
 				new ShapeCellEditorLocator((ShapeFigure) getFigure()));
 	}
-	if(getCastedModel().isTemporarily())
-		setTemporarily(false);
-	else
+//	if(getCastedModel().isTemporarily())
+//		setTemporarily(false);
+//	else
 		directmanager.show();
 }
 }
