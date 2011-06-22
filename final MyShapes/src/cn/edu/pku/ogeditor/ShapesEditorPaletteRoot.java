@@ -3,8 +3,6 @@ package cn.edu.pku.ogeditor;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.StyleConstants.FontConstants;
-
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
@@ -20,7 +18,6 @@ import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.tools.MarqueeSelectionTool;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Font;
 
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
