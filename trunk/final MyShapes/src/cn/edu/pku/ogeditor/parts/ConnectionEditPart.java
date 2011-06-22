@@ -27,7 +27,6 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import cn.edu.pku.ogeditor.anchor.BorderAnchor;
 import cn.edu.pku.ogeditor.commands.ConnectionDeleteCommand;
 import cn.edu.pku.ogeditor.figures.ConnectionFigure;
-import cn.edu.pku.ogeditor.figures.ShapeFigure;
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.ConnectionBendpoint;
 import cn.edu.pku.ogeditor.model.ModelElement;
