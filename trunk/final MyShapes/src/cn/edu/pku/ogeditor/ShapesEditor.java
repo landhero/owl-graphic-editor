@@ -339,12 +339,6 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 	protected void SaveAsOWL(String filepath,String fileextension){
 
 		System.out.println("----saveasowl:start");	
-
-		/* Creat Ontology classes and properties for sh
-		 */ 
-		//base namespace, not a real URI
-
-		//base model
 		System.out.println("saveasowl:no modelfactory");	
 		ontModel = ModelFactory.createOntologyModel();
 		System.out.println("saveasowl:create modelfactory");	
@@ -390,7 +384,6 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 		}
 		for(int i=0; i<curShapes.size(); i++){
 			Shape curShape = curShapes.get(i);
-			//create a shape individual
 			OntClass srcClass = ontModel.getOntClass(NS+curShape.getName());
 			OntClass tarClass ;
 
@@ -406,6 +399,8 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 					curOP = ontModel.createObjectProperty(NS+curCon.getName());
 				curOP.addDomain(srcClass);
 				curOP.addRange(tarClass);
+				System.out.println(curOP.getURI()+curOP.getDomain()+" holyshit");
+				System.out.println(curOP.getRange()+" endHolyshit");
 			}
 		}
 		for(int i = 0;i<curDiagram.getLowerLevelDiagrams().size();i++)
