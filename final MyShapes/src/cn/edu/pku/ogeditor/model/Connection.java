@@ -41,6 +41,7 @@ public class Connection extends ModelElement {
 	private String name="NewConnection";
 	private boolean required;
 	private boolean isSeparator = false;
+	private String description = new String();
 
 	static {
 		descriptors = new IPropertyDescriptor[] {
@@ -262,5 +263,11 @@ public class Connection extends ModelElement {
 	}
 	public boolean isSeparator() {
 		return isSeparator;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public String getDescription() {
+		return description;
 	}
 }
