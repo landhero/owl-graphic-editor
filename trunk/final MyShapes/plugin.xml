@@ -80,6 +80,12 @@
                id="objectPropertyTab"
                label="ObjectProperty">
          </propertyTab>
+         <propertyTab
+               afterTab="dataPropertyTab,objectPropertyTab"
+               category="all"
+               id="descriptionTab"
+               label="Descrpition">
+         </propertyTab>
       </propertyTabs>
    </extension>
    <extension
@@ -149,6 +155,17 @@
                tab="basicTab">
             <input
                   type="cn.edu.pku.ogeditor.parts.ShapeEditPart">
+            </input>
+         </propertySection>
+         <propertySection
+               class="cn.edu.pku.ogeditor.properties.DescriptionSection"
+               id="descriptionSection"
+               tab="descriptionTab">
+            <input
+                  type="cn.edu.pku.ogeditor.parts.ShapeEditPart">
+            </input>
+            <input
+                  type="cn.edu.pku.ogeditor.parts.ConnectionEditPart">
             </input>
          </propertySection>
       </propertySections>
