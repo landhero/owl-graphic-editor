@@ -192,14 +192,16 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 		removeShapeTool();
 		removeConnectionTool();
 
-		addShapeTool(rootShape);
-		addShapeTool(separatorShape);
-
-		addConnectionTool(rootConnection);
-		addConnectionTool(separatorConnection);
-
 		if(curDiagram.getFather() == null)
+		{
+			addShapeTool(rootShape);
+			addShapeTool(separatorShape);
+
+			addConnectionTool(rootConnection);
+			addConnectionTool(separatorConnection);
 			return;
+		}
+			
 		else
 		{
 			ShapesDiagram fatherDiagram = curDiagram.getFather();
