@@ -357,11 +357,20 @@ public class Shape extends ModelElement {
 		if(color != null)
 		{
 			this.color = color;
+			refreshChildrenColor();
 			firePropertyChange(COLOR_PROP, null, color);
 		}
 	}
 
 	public RGB getColor() {
 		return color;
+	}
+
+	public void refreshChildrenColor() {
+		// TODO Auto-generated method stub
+		for(int i = 0;i<getChildren().size();i++)
+		{
+			getChildren().get(i).setColor(this.getColor());
+		}
 	}
 }

@@ -24,8 +24,10 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.requests.ReconnectRequest;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 
 import cn.edu.pku.ogeditor.anchor.BorderAnchor;
 import cn.edu.pku.ogeditor.anchor.EllipseBorderAnchor;
@@ -242,7 +244,12 @@ public void propertyChange(PropertyChangeEvent evt) {
 	} else if (Shape.NAME_PROP.equals(prop)){
 		((ShapeFigure)getFigure()).getLabel().setText(getCastedModel().getName());
 	} else if (Shape.COLOR_PROP.equals(prop)){
-		((ShapeFigure)getFigure()).getEllipseFigure().setBackgroundColor(new Color(null,getCastedModel().getColor()));
+		//加一个对话框
+		boolean confirm = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "提示", "确实要改变该类及其所有子类颜色吗？");
+		if(confirm)
+			((ShapeFigure)getFigure()).getEllipseFigure().setBackgroundColor(new Color(null,getCastedModel().getColor()));
+
+//		getCastedModel().refreshChildrenColor();
 	}
 }
 
