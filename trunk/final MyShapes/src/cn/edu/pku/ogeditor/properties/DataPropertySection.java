@@ -24,11 +24,6 @@ public class DataPropertySection extends AbstractPropertySection {
 	public DataPropertySection() {
 		// TODO Auto-generated constructor stub
 	}
-
-	/**
-	 * @see org.eclipse.ui.views.properties.tabbed.ITabbedPropertySection#createControls(org.eclipse.swt.widgets.Composite,
-	 *      org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage)
-	 */
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage tabbedPropertySheetPage) {
 		super.createControls(parent, tabbedPropertySheetPage);
