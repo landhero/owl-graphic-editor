@@ -65,13 +65,13 @@ public class DataPropertySection extends AbstractPropertySection {
 		addPropertyButton = getWidgetFactory().createButton(composite, "Add", SWT.PUSH);
 		deletePropertyButton = getWidgetFactory().createButton(composite, "Delete", SWT.PUSH);
 		CLabel rangeLabel = getWidgetFactory().createCLabel(composite, "Range"); 
-		propertyList = getWidgetFactory().createList(composite, SWT.SINGLE);
+		propertyList = getWidgetFactory().createList(composite, SWT.SINGLE|SWT.BORDER|SWT.V_SCROLL);
 		rangeBox = getWidgetFactory().createCCombo(composite, SWT.READ_ONLY);
 		rangeBox.setItems(types);
 		CLabel valueLabel = getWidgetFactory().createCLabel(composite, "Allowed Values"); 
 		addValueButton = getWidgetFactory().createButton(composite, "Add", SWT.PUSH);
 		deleteValueButton = getWidgetFactory().createButton(composite, "Delete", SWT.PUSH);
-		allowedValueList = getWidgetFactory().createList(composite, SWT.SINGLE);
+		allowedValueList = getWidgetFactory().createList(composite, SWT.SINGLE|SWT.BORDER|SWT.V_SCROLL);
 
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
@@ -142,6 +142,7 @@ public class DataPropertySection extends AbstractPropertySection {
 		data.right = new FormAttachment(100,0);
 		data.top = new FormAttachment(addValueButton, 
 				ITabbedPropertyConstants.VSPACE);
+		data.height = 100;
 		allowedValueList.setLayoutData(data);
 
 		addPropertyButton.addSelectionListener(new AddPropertyListener());
@@ -160,6 +161,10 @@ public class DataPropertySection extends AbstractPropertySection {
 		}
 		propertyList.setItems((String[])ptNames.toArray(new String[0]));
 
+		rangeBox.setEnabled(false);
+		addValueButton.setEnabled(false);
+		deleteValueButton.setEnabled(false);
+		
 		if(pt.size() != 0)
 		{
 			curProp = pt.get(0);
@@ -167,8 +172,19 @@ public class DataPropertySection extends AbstractPropertySection {
 			propertyList.select(0);
 			rangeBox.setEnabled(true);
 			rangeBox.select(ShapeProperty.getSelectedIndex(curProp.getType()));
+			if(curProp.getType().equals(ShapeProperty.ANY_TYPE))
+			{
+				addValueButton.setEnabled(false);
+				deleteValueButton.setEnabled(false);
+			}
+			else
+			{
+				addValueButton.setEnabled(true);
+				deleteValueButton.setEnabled(true);
+			}
 			//lastRangeIndex = ShapeProperty.getSelectedIndex(curProp.getType());
 			//java.util.List<String> ptValues = new ArrayList<String>();
+			allowedValueList.removeAll();
 			for (int i = 0; i < curProp.getValues().size(); i++) {
 				allowedValueList.add(curProp.getValues().get(i));
 				//ptValues.add(curProp.getValues().get(i));
