@@ -119,14 +119,6 @@ public class ShapesDiagram extends ModelElement {
 			System.err.println("Can't remove Diagram "+childDiagram.getName());
 	}
 
-//	public void addShapeName(Shape newShapeName) {
-//		if(!ContainShapeName(newShapeName.getName()))
-//			allShapesNames.add(newShapeName);
-//	}
-//	public void removeShapeName(Shape newShapeName) {
-//		if(ContainShapeName(newShapeName.getName()))
-//			allShapesNames.remove(newShapeName);
-//	}
 	public boolean ContainShapeName(String name) {
 		// TODO Auto-generated method stub
 		for(int i=0;i<allShapesNames.size();i++)
@@ -228,11 +220,6 @@ public class ShapesDiagram extends ModelElement {
 		return false;
 	}
 
-	/**
-	 * Remove a shape from this diagram.
-	 * @param s a non-null shape instance;
-	 * @return true, if the shape was removed, false otherwise
-	 */
 	public boolean removeChild(Shape s) {
 		if (s != null && shapes.remove(s)
 				&& ContainShapeName(s.getName())) {

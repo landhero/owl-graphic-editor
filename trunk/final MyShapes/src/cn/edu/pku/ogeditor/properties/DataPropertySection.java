@@ -154,6 +154,8 @@ public class DataPropertySection extends AbstractPropertySection {
 		deleteValueButton.addSelectionListener(new DeleteValueListener());
 	}
 	public void refresh() {
+		propertyList.removeAll();
+		allowedValueList.removeAll();
 		java.util.List<ShapeProperty> pt = sep.getCastedModel().getProperties();
 		java.util.List<String> ptNames = new ArrayList<String>();
 		for (int i = 0; i < pt.size(); i++) {
@@ -191,6 +193,7 @@ public class DataPropertySection extends AbstractPropertySection {
 			}
 			//allowedValueList.setItems((String[]) ptValues.toArray(new String[0]));
 		}
+		sep = null;
 	}
 
 	private class AddPropertyListener implements SelectionListener

@@ -1,6 +1,8 @@
 package cn.edu.pku.ogeditor.properties;
 
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.FormAttachment;
@@ -8,9 +10,13 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+
+import cn.edu.pku.ogeditor.model.Shape;
+import cn.edu.pku.ogeditor.parts.ConnectionEditPart;
 
 public class ObjectPropertySection extends AbstractPropertySection {
 
@@ -20,11 +26,21 @@ public class ObjectPropertySection extends AbstractPropertySection {
 	private List rangeList;
 	private Button addRangeButton;
 	private Button deleteRangeButton;
+	private ConnectionEditPart cep;
 
 	public ObjectPropertySection() {
 		// TODO Auto-generated constructor stub
 	}
-	
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+		super.setInput(part, selection);
+		if(!(selection instanceof IStructuredSelection))
+		{
+			return;
+		}
+		Object input = ((IStructuredSelection) selection).getFirstElement();
+		if(input instanceof ConnectionEditPart)
+			cep = (ConnectionEditPart) input;
+	}
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage tabbedPropertySheetPage) {
 		super.createControls(parent, tabbedPropertySheetPage);
@@ -97,6 +113,20 @@ public class ObjectPropertySection extends AbstractPropertySection {
 		data.right = new FormAttachment(100,0);
 		data.top = new FormAttachment(rangeLabel, 
 				ITabbedPropertyConstants.VSPACE);
+		data.height = 100;
 		rangeList.setLayoutData(data);
+	}
+	public void refresh() 
+	{
+		domainList.removeAll();
+		rangeList.removeAll();
+		java.util.List<Shape> domain = cep.getCastedModel().getDomain();
+		java.util.List<Shape> range = cep.getCastedModel().getRange();
+		for (int i = 0; i < domain.size(); i++) {
+			domainList.add(domain.get(i).getName());
+		}
+		for (int i = 0; i < range.size(); i++) {
+			rangeList.add(range.get(i).getName());
+		}
 	}
 }

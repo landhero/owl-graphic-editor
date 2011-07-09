@@ -124,14 +124,6 @@
             </input>
          </propertySection>
          <propertySection
-               class="cn.edu.pku.ogeditor.properties.ObjectPropertySection"
-               id="objectPropertySection"
-               tab="objectPropertyTab">
-            <input
-                  type="cn.edu.pku.ogeditor.parts.ConnectionEditPart">
-            </input>
-         </propertySection>
-         <propertySection
                class="cn.edu.pku.ogeditor.properties.DiagramBasicSection"
                id="diagramBasicSection"
                tab="basicTab">
