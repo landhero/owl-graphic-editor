@@ -42,6 +42,8 @@ public class Connection extends ModelElement {
 	private boolean required;
 	private boolean isSeparator = false;
 	private String description = new String();
+	private List<Shape> domain = new ArrayList<Shape>();
+	private List<Shape> range =  new ArrayList<Shape>();
 
 	static {
 		descriptors = new IPropertyDescriptor[] {
@@ -269,5 +271,17 @@ public class Connection extends ModelElement {
 	}
 	public String getDescription() {
 		return description;
+	}
+	public void setDomain(List<Shape> domain) {
+		this.domain = domain;
+	}
+	public List<Shape> getDomain() {
+		return domain;
+	}
+	public void setRange(List<Shape> range) {
+		this.range = range;
+	}
+	public List<Shape> getRange() {
+		return range;
 	}
 }
