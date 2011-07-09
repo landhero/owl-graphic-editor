@@ -63,7 +63,7 @@ public class Shape extends ModelElement {
 	private boolean isRoot=false;
 	//private boolean temporarily=false;
 	private boolean isSeparator= false;
-
+	private List<ShapeProperty> properties;
 
 	public Shape()
 	{
@@ -73,6 +73,7 @@ public class Shape extends ModelElement {
 		children=new ArrayList<Shape>();
 		sourceConnections = new ArrayList<Connection>();
 		targetConnections = new ArrayList<Connection>();
+		properties = new ArrayList<ShapeProperty>();
 	}
 
 	public boolean isRoot() {
@@ -372,5 +373,54 @@ public class Shape extends ModelElement {
 		{
 			getChildren().get(i).setColor(this.getColor());
 		}
+	}
+
+	public void setProperties(List<ShapeProperty> properties) {
+		this.properties = properties;
+	}
+
+	public List<ShapeProperty> getProperties() {
+		return properties;
+	}
+
+	public boolean addProperty(ShapeProperty newProp) {
+		if(!containProperty(newProp))
+		{
+			properties.add(newProp);
+			return true;
+		}
+		else
+		{
+			//弹出个对话框之类
+			return false;
+		}
+	}
+
+	private boolean containProperty(ShapeProperty newProp) {
+		for (int i = 0; i < properties.size(); i++) {
+			if(properties.get(i).getName().equals(newProp.getName()))
+				return true;
+		}
+		return false;
+	}
+
+	public ShapeProperty getProperty(String propName) {
+		for (int i = 0; i < properties.size(); i++) {
+			if(properties.get(i).getName().equals(propName))
+				return properties.get(i);
+		}
+		return null;
+	}
+
+	public void deleteProperty(ShapeProperty prop) {
+		if(containProperty(prop))
+		{
+			properties.remove(prop);
+		}
+		else
+		{
+			//弹出个对话框之类
+		}
+		
 	}
 }
