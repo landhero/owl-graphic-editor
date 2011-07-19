@@ -162,7 +162,7 @@ public class DataPropertySection extends AbstractPropertySection {
 			ptNames.add(pt.get(i).getName());
 		}
 		propertyList.setItems((String[])ptNames.toArray(new String[0]));
-
+		rangeBox.deselectAll();
 		rangeBox.setEnabled(false);
 		addValueButton.setEnabled(false);
 		deleteValueButton.setEnabled(false);
@@ -193,7 +193,7 @@ public class DataPropertySection extends AbstractPropertySection {
 			}
 			//allowedValueList.setItems((String[]) ptValues.toArray(new String[0]));
 		}
-		sep = null;
+		//sep = null;
 	}
 
 	private class AddPropertyListener implements SelectionListener
