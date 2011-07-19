@@ -58,8 +58,8 @@ public class ConceptFilterDialog extends Dialog {
 		//preserveCase.setSelection(true);
 		tv = new CheckboxTreeViewer(container);
 		tv.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-		tv.setContentProvider(new HideConceptTreeContentProvider());
-		tv.setLabelProvider(new HideConceptTreeLabelProvider());
+		tv.setContentProvider(new ConceptFilterTreeContentProvider());
+		tv.setLabelProvider(new ConceptFilterTreeLabelProvider());
 		tv.setInput(diagram); // pass a non-null that will be ignored
 		ArrayList<Shape> visibleShapes = new ArrayList<Shape>();
 		List<Shape> allShapes = diagram.getAllShapesNames();
@@ -75,7 +75,7 @@ public class ConceptFilterDialog extends Dialog {
 		upperCase.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				boolean preserveCase = ((Button) event.widget).getSelection();
-				HideRelationTreeLabelProvider ftlp = (HideRelationTreeLabelProvider) tv
+				RelationFilterTreeLabelProvider ftlp = (RelationFilterTreeLabelProvider) tv
 						.getLabelProvider();
 				ftlp.setPreserveCase(preserveCase);
 			}
@@ -131,7 +131,7 @@ public class ConceptFilterDialog extends Dialog {
  * This class provides the content for the tree in FileTree
  */
 
-class HideConceptTreeContentProvider implements ITreeContentProvider {
+class ConceptFilterTreeContentProvider implements ITreeContentProvider {
 	public ShapesDiagram diagram = ShapesEditor.myselfShapesEditor.getDiagram();
 
 	/**
@@ -216,7 +216,7 @@ class HideConceptTreeContentProvider implements ITreeContentProvider {
  * This class provides the labels for the file tree
  */
 
-class HideConceptTreeLabelProvider implements ILabelProvider {
+class ConceptFilterTreeLabelProvider implements ILabelProvider {
 	// The listeners
 	private List listeners;
 	private Image image;
@@ -226,7 +226,7 @@ class HideConceptTreeLabelProvider implements ILabelProvider {
 	/**
 	 * Constructs a FileTreeLabelProvider
 	 */
-	public HideConceptTreeLabelProvider() {
+	public ConceptFilterTreeLabelProvider() {
 		// Create the list to hold the listeners
 		listeners = new ArrayList();
 		image = ImageDescriptor.createFromFile(ShapesPlugin.class,"icons/ellipse16.gif").createImage(); //new Image(null, new FileInputStream("../icons/ellipse16.gif"));

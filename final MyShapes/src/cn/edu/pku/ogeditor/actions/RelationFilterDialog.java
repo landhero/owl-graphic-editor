@@ -58,8 +58,8 @@ public class RelationFilterDialog extends Dialog {
 		//preserveCase.setSelection(true);
 		tv = new CheckboxTreeViewer(container);
 		tv.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-		tv.setContentProvider(new HideRelationTreeContentProvider());
-		tv.setLabelProvider(new HideRelationTreeLabelProvider());
+		tv.setContentProvider(new RelationFilterTreeContentProvider());
+		tv.setLabelProvider(new RelationFilterTreeLabelProvider());
 		tv.setInput(diagram); // pass a non-null that will be ignored
 		ArrayList<Connection> visibleConnections =  new ArrayList<Connection>();
 		List<Connection> allConnections = diagram.getAllConnectionsNames();
@@ -75,7 +75,7 @@ public class RelationFilterDialog extends Dialog {
 		upperCase.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				boolean preserveCase = ((Button) event.widget).getSelection();
-				HideRelationTreeLabelProvider ftlp = (HideRelationTreeLabelProvider) tv
+				RelationFilterTreeLabelProvider ftlp = (RelationFilterTreeLabelProvider) tv
 						.getLabelProvider();
 				ftlp.setPreserveCase(preserveCase);
 			}
@@ -133,7 +133,7 @@ public class RelationFilterDialog extends Dialog {
  * This class provides the content for the tree in FileTree
  */
 
-class HideRelationTreeContentProvider implements ITreeContentProvider {
+class RelationFilterTreeContentProvider implements ITreeContentProvider {
 	public ShapesDiagram diagram = ShapesEditor.myselfShapesEditor.getDiagram();
 
 	/**
@@ -218,7 +218,7 @@ class HideRelationTreeContentProvider implements ITreeContentProvider {
  * This class provides the labels for the file tree
  */
 
-class HideRelationTreeLabelProvider implements ILabelProvider {
+class RelationFilterTreeLabelProvider implements ILabelProvider {
 	// The listeners
 	private List listeners;
 	private Image image;
@@ -228,7 +228,7 @@ class HideRelationTreeLabelProvider implements ILabelProvider {
 	/**
 	 * Constructs a FileTreeLabelProvider
 	 */
-	public HideRelationTreeLabelProvider() {
+	public RelationFilterTreeLabelProvider() {
 		// Create the list to hold the listeners
 		listeners = new ArrayList();
 		image = ImageDescriptor.createFromFile(ShapesPlugin.class,"icons/ellipse16.gif").createImage(); //new Image(null, new FileInputStream("../icons/ellipse16.gif"));

@@ -289,8 +289,14 @@ public class Connection extends ModelElement {
 		return range;
 	}
 	public void setVisible(boolean visible) {
+		if(visible == true)
+		{
+			if(!(source.isVisible() && target.isVisible()))
+				return;
+		}
 		isVisible = visible;
 		firePropertyChange(VISIBLE_PROP, null, visible);
+
 	}
 	public boolean isVisible()
 	{
