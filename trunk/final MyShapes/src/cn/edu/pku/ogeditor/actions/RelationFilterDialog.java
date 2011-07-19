@@ -39,6 +39,13 @@ public class RelationFilterDialog extends Dialog {
 		// TODO Auto-generated constructor stub
 		diagram = ShapesEditor.myselfShapesEditor.getDiagram();
 	}
+	
+	@Override
+	protected void configureShell(Shell newShell) {
+		// TODO Auto-generated method stub
+		super.configureShell(newShell);
+	    newShell.setText("Relation Filter");
+	}
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
