@@ -63,7 +63,8 @@ public void buildContextMenu(IMenuManager menu) {
 	menu.appendToGroup(
 			GEFActionConstants.GROUP_EDIT,
 			getAction(ActionFactory.DELETE.getId()));
-	menu.appendToGroup(GEFActionConstants.GROUP_REST, getAction("ogeditor.Review"));
+	menu.appendToGroup(GEFActionConstants.GROUP_REST, getAction("ogeditor.Relocate"));
+	menu.appendToGroup(GEFActionConstants.GROUP_REST, getAction("ogeditor.HideConcept"));
 }
 
 private IAction getAction(String actionId) {

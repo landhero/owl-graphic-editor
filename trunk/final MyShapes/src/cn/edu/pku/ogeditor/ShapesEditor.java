@@ -87,7 +87,8 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import cn.edu.pku.ogeditor.actions.ReviewAction;
+import cn.edu.pku.ogeditor.actions.HideConceptAction;
+import cn.edu.pku.ogeditor.actions.RelocateAction;
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
@@ -135,8 +136,12 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 	@Override
 	protected void createActions(){
 		super.createActions();
-		IAction action=new ReviewAction(this);
-		action.setId("ogeditor.Review");
+		IAction action=new RelocateAction(this);
+		action.setId("ogeditor.Relocate");
+		getActionRegistry().registerAction(action);
+		getSelectionActions().add(action.getId());
+		action=new HideConceptAction(this);
+		action.setId("ogeditor.HideConcept");
 		getActionRegistry().registerAction(action);
 		getSelectionActions().add(action.getId());
 	}

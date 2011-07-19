@@ -6,14 +6,13 @@ import java.util.List;
 import org.eclipse.gef.ui.actions.SelectionAction;
 
 import cn.edu.pku.ogeditor.ShapesEditor;
-import cn.edu.pku.ogeditor.model.ShapesDiagram;
-import cn.edu.pku.ogeditor.parts.*;
+import cn.edu.pku.ogeditor.parts.DiagramEditPart;
 
-public class ReviewAction extends SelectionAction {
-	private ShapesDiagram diagram;
-	public ReviewAction(ShapesEditor shapesEditor) {
+public class HideRelationAction extends SelectionAction {
+	private ShapesEditor shapesEdtior;
+	public HideRelationAction(ShapesEditor shapesEditor) {
 		super(shapesEditor);
-		diagram = shapesEditor.getDiagram();
+		this.shapesEdtior = shapesEditor;
 		this.setText("Review");
 		// TODO Auto-generated constructor stub
 	}
@@ -31,6 +30,6 @@ public class ReviewAction extends SelectionAction {
 	}
 	@Override
 	public void run(){
-		diagram.fireRelocate();
+		shapesEdtior.getDiagram().fireRelocate();
 	}
 }
