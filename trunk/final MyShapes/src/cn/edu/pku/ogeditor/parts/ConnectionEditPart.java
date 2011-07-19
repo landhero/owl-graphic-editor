@@ -74,7 +74,13 @@ implements PropertyChangeListener {
 		if (!isActive()) {
 			super.activate();
 			((ModelElement) getModel()).addPropertyChangeListener(this);
+			refreshVisibility();
 		}
+	}
+	
+	private void refreshVisibility() {
+		// TODO Auto-generated method stub
+		getCastedModel().setVisible(getCastedModel().isVisible());
 	}
 
 	/* (non-Javadoc)
@@ -132,8 +138,11 @@ implements PropertyChangeListener {
 		if (Connection.LINENAME_PROP.equals(property)){
 			((ConnectionFigure)getFigure()).setLabelName(getCastedModel().getName());
 		}
-		if (Connection.PROP_BENDPOINT.equals(property)) {
+		else if (Connection.BENDPOINT_PROP.equals(property)) {
 			refreshBendpoints();
+		}
+		else if (Connection.VISIBLE_PROP.equals(property)) {
+			getFigure().setVisible((Boolean) event.getNewValue());
 		}
 	}
 	public void refresh(){

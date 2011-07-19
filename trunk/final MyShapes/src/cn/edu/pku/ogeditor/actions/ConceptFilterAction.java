@@ -9,12 +9,12 @@ import org.eclipse.swt.widgets.Display;
 import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.parts.DiagramEditPart;
 
-public class HideConceptAction extends SelectionAction {
+public class ConceptFilterAction extends SelectionAction {
 	//private ShapesEditor shapesEdtior;
-	public HideConceptAction(ShapesEditor shapesEditor) {
+	public ConceptFilterAction(ShapesEditor shapesEditor) {
 		super(shapesEditor);
 		//this.shapesEdtior = shapesEditor;
-		this.setText("HideConcept");
+		this.setText(ActionConstant.CONCEPTFILTER_TEXT);
 		// TODO Auto-generated constructor stub
 	}
 	@Override
@@ -31,7 +31,7 @@ public class HideConceptAction extends SelectionAction {
 	}
 	@Override
 	public void run(){
-		HideConceptDialog dialog = new HideConceptDialog(Display.getCurrent().getActiveShell());
+		ConceptFilterDialog dialog = new ConceptFilterDialog(Display.getCurrent().getActiveShell());
 		//dialog.set
 		dialog.open();
 	}

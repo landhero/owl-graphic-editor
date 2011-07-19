@@ -19,6 +19,8 @@ import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 
+import cn.edu.pku.ogeditor.actions.ActionConstant;
+
 
 /**
  * Provides context menu actions for the ShapesEditor.
@@ -63,8 +65,9 @@ public void buildContextMenu(IMenuManager menu) {
 	menu.appendToGroup(
 			GEFActionConstants.GROUP_EDIT,
 			getAction(ActionFactory.DELETE.getId()));
-	menu.appendToGroup(GEFActionConstants.GROUP_REST, getAction("ogeditor.Relocate"));
-	menu.appendToGroup(GEFActionConstants.GROUP_REST, getAction("ogeditor.HideConcept"));
+	menu.appendToGroup(GEFActionConstants.GROUP_REST, getAction(ActionConstant.RELOCATE_ID));
+	menu.appendToGroup(GEFActionConstants.GROUP_REST, getAction(ActionConstant.CONCEPTFILTER_ID));
+	menu.appendToGroup(GEFActionConstants.GROUP_REST, getAction(ActionConstant.RELATIONFILTER_ID));
 }
 
 private IAction getAction(String actionId) {

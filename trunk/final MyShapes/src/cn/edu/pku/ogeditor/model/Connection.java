@@ -20,17 +20,20 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 
 public class Connection extends ModelElement {
-	public static final String LINENAME_PROP = "ConnectionName";
+	public static final String LINENAME_PROP = "Connection.Name";
 	public static final String LINESTYLE_REQUIRED = "required";
 	public static final String LINESTYLE_ELECTIVE = "elective";
-	public static final String LINESTYLE_PROP = "Relation Style";
+	public static final String LINESTYLE_PROP = "Connection.Style";
+	public static final String VISIBLE_PROP = "Connection.Visible";
 	private static final IPropertyDescriptor[] descriptors;
 	private static final long serialVersionUID = 1;
 	private boolean isRoot=false;
 	/** True, if the connection is attached to its endpoints. */ 
 	private boolean isConnected;
 	protected List<ConnectionBendpoint> bendpoints;
-	final public static String PROP_BENDPOINT = "BENDPOINT";
+	final public static String BENDPOINT_PROP = "Connection.Bendpoint";
+	
+	private boolean isVisible = true;
 
 	/** Connection's source endpoint. */
 	private Shape source;
@@ -75,7 +78,7 @@ public class Connection extends ModelElement {
 	}
 	public void addBendpoint(int index, ConnectionBendpoint point) {
 		getBendpoints().add(index, point);
-		firePropertyChange(PROP_BENDPOINT, null, null);
+		firePropertyChange(BENDPOINT_PROP, null, null);
 	}
 	/**
 	 * 为了在更新两个dimension后能发送事件，在MoveBendpointCommand要在用这个方法设置新坐标，
@@ -86,12 +89,12 @@ public class Connection extends ModelElement {
 		ConnectionBendpoint cbp = (ConnectionBendpoint) getBendpoints().get(
 				index);
 		cbp.setRelativeDimensions(d1, d2);
-		firePropertyChange(PROP_BENDPOINT, null, null);
+		firePropertyChange(BENDPOINT_PROP, null, null);
 	}
 
 	public void removeBendpoint(int index) {
 		getBendpoints().remove(index);
-		firePropertyChange(PROP_BENDPOINT, null, null);
+		firePropertyChange(BENDPOINT_PROP, null, null);
 	}
 	public List<ConnectionBendpoint> getBendpoints() {
 		return bendpoints;
@@ -112,6 +115,7 @@ public class Connection extends ModelElement {
 	 */
 	private double sourceAngle = Double.MAX_VALUE;
 	private double targetAngle = Double.MAX_VALUE;
+	
 
 	public double getSourceAngle() {
 		return sourceAngle;
@@ -283,5 +287,13 @@ public class Connection extends ModelElement {
 	}
 	public List<Shape> getRange() {
 		return range;
+	}
+	public void setVisible(boolean visible) {
+		isVisible = visible;
+		firePropertyChange(VISIBLE_PROP, null, visible);
+	}
+	public boolean isVisible()
+	{
+		return isVisible;
 	}
 }

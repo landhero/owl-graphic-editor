@@ -60,6 +60,7 @@ public void activate() {
 	if (!isActive()) {
 		super.activate();
 		((ModelElement) getModel()).addPropertyChangeListener(this);
+		refreshVisibility();
 	}
 }
 
@@ -80,6 +81,11 @@ public void activate() {
 //	((ShapeFigure)this.getFigure()).setArea(p);
 //}
 	
+private void refreshVisibility() {
+	// TODO Auto-generated method stub
+	getCastedModel().setVisible(getCastedModel().isVisible());
+}
+
 /* (non-Javadoc)
 }
  * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
@@ -261,6 +267,7 @@ protected void refreshVisuals() {
 			getCastedModel().getSize());
 //	setTemporarily(isTemporarily());
 	((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), bounds);
+
 }
 
 public void  performRequest(Request req){
