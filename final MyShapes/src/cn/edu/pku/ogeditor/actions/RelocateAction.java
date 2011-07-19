@@ -13,7 +13,7 @@ public class RelocateAction extends SelectionAction {
 	public RelocateAction(ShapesEditor shapesEditor) {
 		super(shapesEditor);
 		this.shapesEdtior = shapesEditor;
-		this.setText("Relocate");
+		this.setText(ActionConstant.RELOCATE_TEXT);
 		// TODO Auto-generated constructor stub
 	}
 	@Override

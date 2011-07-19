@@ -1,7 +1,5 @@
 package cn.edu.pku.ogeditor.actions;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,11 +30,11 @@ import cn.edu.pku.ogeditor.ShapesPlugin;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
-public class HideConceptDialog extends Dialog {
+public class ConceptFilterDialog extends Dialog {
 	private CheckboxTreeViewer tv;
 	private ShapesDiagram diagram;
 
-	protected HideConceptDialog(Shell parentShell) {
+	protected ConceptFilterDialog(Shell parentShell) {
 		super(parentShell);
 		// TODO Auto-generated constructor stub
 		diagram = ShapesEditor.myselfShapesEditor.getDiagram();
@@ -48,12 +46,13 @@ public class HideConceptDialog extends Dialog {
 		// TODO Auto-generated method stub
 		container.setLayout(new GridLayout(1, false));
 		// Add a checkbox to toggle whether the labels preserve case
-		Button preserveCase = new Button(container, SWT.CHECK);
-		preserveCase.setText("&Preserve case");
+		Button upperCase = new Button(container, SWT.CHECK);
+		upperCase.setText("&Upper case");
+		//preserveCase.setSelection(true);
 		tv = new CheckboxTreeViewer(container);
 		tv.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-		tv.setContentProvider(new HideTreeContentProvider());
-		tv.setLabelProvider(new HideTreeLabelProvider());
+		tv.setContentProvider(new HideConceptTreeContentProvider());
+		tv.setLabelProvider(new HideConceptTreeLabelProvider());
 		tv.setInput(diagram); // pass a non-null that will be ignored
 		ArrayList<Shape> visibleShapes = new ArrayList<Shape>();
 		List<Shape> allShapes = diagram.getAllShapesNames();
@@ -66,10 +65,10 @@ public class HideConceptDialog extends Dialog {
 
 		// When user checks the checkbox, toggle the preserve case attribute
 		// of the label provider
-		preserveCase.addSelectionListener(new SelectionAdapter() {
+		upperCase.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				boolean preserveCase = ((Button) event.widget).getSelection();
-				HideTreeLabelProvider ftlp = (HideTreeLabelProvider) tv
+				HideRelationTreeLabelProvider ftlp = (HideRelationTreeLabelProvider) tv
 						.getLabelProvider();
 				ftlp.setPreserveCase(preserveCase);
 			}
@@ -110,10 +109,11 @@ public class HideConceptDialog extends Dialog {
 			for (int i = 0; i < shapes.size(); i++) {
 				if (tv.getChecked(shapes.get(i))) {
 					shapes.get(i).setVisible(true);
-				} else {
+				}
+				else
+				{
 					shapes.get(i).setVisible(false);
 				}
-
 			}
 		}
 		super.buttonPressed(buttonId);
@@ -124,7 +124,7 @@ public class HideConceptDialog extends Dialog {
  * This class provides the content for the tree in FileTree
  */
 
-class HideTreeContentProvider implements ITreeContentProvider {
+class HideConceptTreeContentProvider implements ITreeContentProvider {
 	public ShapesDiagram diagram = ShapesEditor.myselfShapesEditor.getDiagram();
 
 	/**
@@ -209,17 +209,17 @@ class HideTreeContentProvider implements ITreeContentProvider {
  * This class provides the labels for the file tree
  */
 
-class HideTreeLabelProvider implements ILabelProvider {
+class HideConceptTreeLabelProvider implements ILabelProvider {
 	// The listeners
 	private List listeners;
 	private Image image;
 	// Label provider state: preserve case of file names/directories
-	boolean preserveCase;
+	boolean upperCase;
 
 	/**
 	 * Constructs a FileTreeLabelProvider
 	 */
-	public HideTreeLabelProvider() {
+	public HideConceptTreeLabelProvider() {
 		// Create the list to hold the listeners
 		listeners = new ArrayList();
 		image = ImageDescriptor.createFromFile(ShapesPlugin.class,"icons/ellipse16.gif").createImage(); //new Image(null, new FileInputStream("../icons/ellipse16.gif"));
@@ -232,7 +232,7 @@ class HideTreeLabelProvider implements ILabelProvider {
 	 *            the preserve case attribute
 	 */
 	public void setPreserveCase(boolean preserveCase) {
-		this.preserveCase = preserveCase;
+		this.upperCase = preserveCase;
 
 		// Since this attribute affects how the labels are computed,
 		// notify all the listeners of the change.
@@ -267,7 +267,7 @@ class HideTreeLabelProvider implements ILabelProvider {
 		// Get the name of the file
 		String text = ((Shape) shape).getName();
 		// Check the case settings before returning the text
-		return preserveCase ? text : text.toUpperCase();
+		return upperCase ? text.toUpperCase() : text;
 	}
 
 	/**

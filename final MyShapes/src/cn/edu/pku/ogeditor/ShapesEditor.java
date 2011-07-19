@@ -87,7 +87,9 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import cn.edu.pku.ogeditor.actions.HideConceptAction;
+import cn.edu.pku.ogeditor.actions.ActionConstant;
+import cn.edu.pku.ogeditor.actions.ConceptFilterAction;
+import cn.edu.pku.ogeditor.actions.RelationFilterAction;
 import cn.edu.pku.ogeditor.actions.RelocateAction;
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
@@ -137,11 +139,15 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 	protected void createActions(){
 		super.createActions();
 		IAction action=new RelocateAction(this);
-		action.setId("ogeditor.Relocate");
+		action.setId(ActionConstant.RELOCATE_ID);
 		getActionRegistry().registerAction(action);
 		getSelectionActions().add(action.getId());
-		action=new HideConceptAction(this);
-		action.setId("ogeditor.HideConcept");
+		action=new ConceptFilterAction(this);
+		action.setId(ActionConstant.CONCEPTFILTER_ID);
+		getActionRegistry().registerAction(action);
+		getSelectionActions().add(action.getId());
+		action=new RelationFilterAction(this);
+		action.setId(ActionConstant.RELATIONFILTER_ID);
 		getActionRegistry().registerAction(action);
 		getSelectionActions().add(action.getId());
 	}

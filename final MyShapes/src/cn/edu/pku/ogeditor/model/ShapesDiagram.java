@@ -368,4 +368,14 @@ public class ShapesDiagram extends ModelElement {
 			connectionRouter = ROUTER_MANUAL;
 		return connectionRouter;
 	}
+	public void setConnectionsVisible(Connection connection, boolean b) {
+		// TODO Auto-generated method stub
+		String cname = connection.getName();
+		for (int i = 0; i < allConnections.size(); i++) {
+			if(allConnections.get(i).getName().equals(cname))
+			{
+				allConnections.get(i).setVisible(b);
+			}
+		}
+	}
 }
