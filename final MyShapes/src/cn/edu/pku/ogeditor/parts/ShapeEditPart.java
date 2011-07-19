@@ -251,6 +251,9 @@ public void propertyChange(PropertyChangeEvent evt) {
 
 //		getCastedModel().refreshChildrenColor();
 	}
+	 else if (Shape.VISIBLE_PROP.equals(prop)){
+			((ShapeFigure)getFigure()).setVisible((Boolean) evt.getNewValue());
+	 }
 }
 
 protected void refreshVisuals() {

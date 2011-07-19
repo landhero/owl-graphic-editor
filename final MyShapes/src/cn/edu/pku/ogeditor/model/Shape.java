@@ -43,8 +43,9 @@ public class Shape extends ModelElement {
 	public static final String TARGET_CONNECTIONS_PROP = "Shape.TargetConn";
 	public static final String FONT_PROP = "Shape.Font";
 	public static final String COLOR_PROP = "Shape.Color";
+	public static final String VISIBLE_PROP = "Shape.Visible";
 
-
+	private boolean isVisible;
 	//private Font font;
 	private RGB color;
 	/** Location of this shape. */
@@ -74,6 +75,7 @@ public class Shape extends ModelElement {
 		sourceConnections = new ArrayList<Connection>();
 		targetConnections = new ArrayList<Connection>();
 		properties = new ArrayList<ShapeProperty>();
+		isVisible = true;
 	}
 
 	public boolean isRoot() {
@@ -422,5 +424,15 @@ public class Shape extends ModelElement {
 			//弹出个对话框之类
 		}
 		
+	}
+
+	public void setVisible(boolean visible) {
+		// TODO Auto-generated method stub
+		isVisible = visible;
+		firePropertyChange(VISIBLE_PROP, null, visible);	
+	}
+	public boolean isVisible()
+	{
+		return isVisible;
 	}
 }
