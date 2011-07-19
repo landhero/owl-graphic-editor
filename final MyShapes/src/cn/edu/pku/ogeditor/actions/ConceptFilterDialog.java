@@ -41,6 +41,13 @@ public class ConceptFilterDialog extends Dialog {
 	}
 
 	@Override
+	protected void configureShell(Shell newShell) {
+		// TODO Auto-generated method stub
+		super.configureShell(newShell);
+	    newShell.setText("Concept Filter");
+	}
+
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
 		// TODO Auto-generated method stub
