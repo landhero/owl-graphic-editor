@@ -1,14 +1,18 @@
 package cn.edu.pku.ogeditor.properties;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
@@ -33,27 +37,23 @@ public class DescriptionSection extends AbstractPropertySection {
 	private ModifyListener listener = new ModifyListener() {
 
 		public void modifyText(ModifyEvent arg0) {
-			if(isSep)
+			if (isSep)
 				sep.getCastedModel().setDescription(descriptionText.getText());
-			else 
-				cep.getCastedModel().setDescription(descriptionText.getText())	;
+			else
+				cep.getCastedModel().setDescription(descriptionText.getText());
 		}
 	};
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {
 		super.setInput(part, selection);
-		if(!(selection instanceof IStructuredSelection))
-		{
+		if (!(selection instanceof IStructuredSelection)) {
 			return;
 		}
 		Object input = ((IStructuredSelection) selection).getFirstElement();
-		if(input instanceof ShapeEditPart)
-		{
+		if (input instanceof ShapeEditPart) {
 			isSep = true;
 			sep = (ShapeEditPart) input;
-		}	
-		else if(input instanceof ConnectionEditPart)
-		{
+		} else if (input instanceof ConnectionEditPart) {
 			isSep = false;
 			cep = (ConnectionEditPart) input;
 		}
@@ -63,33 +63,58 @@ public class DescriptionSection extends AbstractPropertySection {
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
 		Composite composite = getWidgetFactory()
-		.createFlatFormComposite(parent);
+				.createFlatFormComposite(parent);
 		FormData data;
-		//composite.setLayout(new FillLayout());
+		// composite.setLayout(new FillLayout());
 
-		descriptionText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+		descriptionText = getWidgetFactory()
+				.createText(
+						composite,
+						"",
+						SWT.WRAP | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL
+								| SWT.V_SCROLL); //$NON-NLS-1$
 		data = new FormData();
-		data.left = new FormAttachment(0, 100);
+		data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+		data.height = 100;
 		descriptionText.setLayoutData(data);
 		descriptionText.addModifyListener(listener);
-		
-		CLabel labelLabel = getWidgetFactory()
-		.createCLabel(composite, "description:"); //$NON-NLS-1$
+		//
+		// CLabel labelLabel = getWidgetFactory()
+		//		.createCLabel(composite, "description:"); //$NON-NLS-1$
+		// data = new FormData();
+		// data.left = new FormAttachment(0, 0);
+		// data.right = new FormAttachment(descriptionText,
+		// -ITabbedPropertyConstants.HSPACE);
+		// data.top = new FormAttachment(descriptionText, 0, SWT.CENTER);
+		// labelLabel.setLayoutData(data);
+		Button button = getWidgetFactory().createButton(composite,
+				IDialogConstants.OK_LABEL, SWT.PUSH);
 		data = new FormData();
-		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(descriptionText,
-				-ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(descriptionText, 0, SWT.CENTER);
-		labelLabel.setLayoutData(data);
-
+		// data.left = new FormAttachment(0,ITabbedPropertyConstants.HSPACE);
+		data.right = new FormAttachment(100, 0);
+		data.top = new FormAttachment(descriptionText,
+				ITabbedPropertyConstants.VSPACE);
+		data.width = STANDARD_LABEL_WIDTH;
+		button.setLayoutData(data);
+		button.addSelectionListener(new ButtonListener());
 	}
 
 	public void refresh() {
 		descriptionText.removeModifyListener(listener);
-		descriptionText.setText(isSep?
-				sep.getCastedModel().getDescription() : cep.getCastedModel().getDescription());
+		descriptionText.setText(isSep ? sep.getCastedModel().getDescription()
+				: cep.getCastedModel().getDescription());
 		descriptionText.addModifyListener(listener);
+	}
+
+	private class ButtonListener extends SelectionAdapter {
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			// TODO Auto-generated method stub
+			//使editor变脏并保存结果
+		}
+		
 	}
 }
