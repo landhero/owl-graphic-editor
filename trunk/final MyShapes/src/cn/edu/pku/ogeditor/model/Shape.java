@@ -443,30 +443,18 @@ public class Shape extends ModelElement {
 	public void setVisible(boolean visible) {
 		isVisible = visible;
 		firePropertyChange(VISIBLE_PROP, null, visible);
-		if (visible == false) {
-			for (int i = 0; i < sourceConnections.size(); i++) {
-				sourceConnections.get(i).setVisible(visible);
-			}
-			for (int i = 0; i < targetConnections.size(); i++) {
-				targetConnections.get(i).setVisible(visible);
-			}
+		//if (visible == false) {
+		for (int i = 0; i < sourceConnections.size(); i++) {
+			sourceConnections.get(i).setVisible(visible);
 		}
+		for (int i = 0; i < targetConnections.size(); i++) {
+			targetConnections.get(i).setVisible(visible);
+		}
+		//}
 		for(int i = 0;i<children.size();i++)
 		{
 			children.get(i).setVisible(visible);
 		}
-//		else {
-//			for (int i = 0; i < sourceConnections.size(); i++) {
-//				if (sourceConnections.get(i).getTarget().isVisible()) {
-//					sourceConnections.get(i).setVisible(visible);
-//				}
-//			}
-//			for (int i = 0; i < targetConnections.size(); i++) {
-//				if (targetConnections.get(i).getSource().isVisible()) {
-//					targetConnections.get(i).setVisible(visible);
-//				}
-//			}
-//		}
 	}
 
 	public boolean isVisible() {
