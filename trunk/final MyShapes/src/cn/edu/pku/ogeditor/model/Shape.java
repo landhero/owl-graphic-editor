@@ -451,6 +451,10 @@ public class Shape extends ModelElement {
 				targetConnections.get(i).setVisible(visible);
 			}
 		}
+		for(int i = 0;i<children.size();i++)
+		{
+			children.get(i).setVisible(visible);
+		}
 //		else {
 //			for (int i = 0; i < sourceConnections.size(); i++) {
 //				if (sourceConnections.get(i).getTarget().isVisible()) {

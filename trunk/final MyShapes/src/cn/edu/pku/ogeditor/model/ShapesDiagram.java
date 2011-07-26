@@ -369,7 +369,6 @@ public class ShapesDiagram extends ModelElement {
 		return connectionRouter;
 	}
 	public void setConnectionsVisible(Connection connection, boolean b) {
-		// TODO Auto-generated method stub
 		String cname = connection.getName();
 		for (int i = 0; i < allConnections.size(); i++) {
 			if(allConnections.get(i).getName().equals(cname))
@@ -377,5 +376,18 @@ public class ShapesDiagram extends ModelElement {
 				allConnections.get(i).setVisible(b);
 			}
 		}
+		if(b == false)
+		{
+			refreshShapesVisible();
+		}
+	}
+	private void refreshShapesVisible() {
+		for(int i=0;i<allShapes.size();i++)
+		{
+			Shape curShape = allShapes.get(i);
+			if(curShape.getSourceConnections().size() <=0 && curShape.getTargetConnections().size() <= 0)
+				curShape.setVisible(false);
+		}
+
 	}
 }

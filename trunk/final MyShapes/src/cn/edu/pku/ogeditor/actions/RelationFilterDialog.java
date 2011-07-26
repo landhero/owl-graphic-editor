@@ -105,18 +105,18 @@ public class RelationFilterDialog extends Dialog {
 	}
 
 	protected void buttonPressed(int buttonId) {
-		// 如果是点了 OK 按钮，则将值取回变量
 		if (buttonId == IDialogConstants.OK_ID) {
-			// List<Connection> connections = diagram.getAllConnections();
 			List<Connection> connections = diagram.getAllConnectionsNames();
 			for (int i = 0; i < connections.size(); i++) {
-				if (tv.getChecked(connections.get(i))) {
-					diagram.setConnectionsVisible(connections.get(i), true);
+				Connection curConnection = connections.get(i);
+				if (tv.getChecked(curConnection)) {
+					diagram.setConnectionsVisible(curConnection, true);
 				}
 			}
 			for (int i = 0; i < connections.size(); i++) {
-				if (!tv.getChecked(connections.get(i))) {
-					diagram.setConnectionsVisible(connections.get(i), false);
+				Connection curConnection = connections.get(i);
+				if (!tv.getChecked(curConnection)) {
+					diagram.setConnectionsVisible(curConnection, false);
 				}
 			}
 		}
@@ -131,30 +131,18 @@ class RelationFilterTreeContentProvider implements ITreeContentProvider {
 	public ShapesDiagram diagram = ShapesEditor.myselfShapesEditor.getDiagram();
 
 	public Object[] getChildren(Object connection) {
-		// Return the files and subdirectories in this directory
-		// return ((Shape)shape).getChildren().toArray();
 		return null;
 	}
 
 	public Object getParent(Object connection) {
-		// Return this file's parent file
-		// return ((Shape) shape).getParent();
 		return null;
 	}
 
 	public boolean hasChildren(Object connection) {
-		// Get the children
-		// Object[] obj = getChildren(shape);
-
-		// Return whether the parent has children
-		// return obj == null ? false : obj.length > 0;
 		return false;
 	}
 
 	public Object[] getElements(Object diagram) {
-		// These are the root elements of the tree
-		// We don't care what arg0 is, because we just want all
-		// the root nodes in the file system
 		return ((ShapesDiagram) diagram).getAllConnectionsNames().toArray();
 	}
 
@@ -162,11 +150,9 @@ class RelationFilterTreeContentProvider implements ITreeContentProvider {
 	 * Disposes any created resources
 	 */
 	public void dispose() {
-		// Nothing to dispose
 	}
 
 	public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
-		// Nothing to change
 	}
 }
 
@@ -180,19 +166,13 @@ class RelationFilterTreeLabelProvider implements ILabelProvider {
 	boolean upperCase;
 
 	public RelationFilterTreeLabelProvider() {
-		// Create the list to hold the listeners
 		listeners = new ArrayList<ILabelProviderListener>();
 		image = ImageDescriptor.createFromFile(ShapesPlugin.class,
-				"icons/connection_common.gif").createImage(); // new Image(null,
-																// new
-																// FileInputStream("../icons/ellipse16.gif"));
+				"icons/connection_common.gif").createImage(); 
 	}
 
 	public void setPreserveCase(boolean preserveCase) {
 		this.upperCase = preserveCase;
-
-		// Since this attribute affects how the labels are computed,
-		// notify all the listeners of the change.
 		LabelProviderChangedEvent event = new LabelProviderChangedEvent(this);
 		for (int i = 0, n = listeners.size(); i < n; i++) {
 			ILabelProviderListener ilpl = (ILabelProviderListener) listeners
@@ -202,14 +182,11 @@ class RelationFilterTreeLabelProvider implements ILabelProvider {
 	}
 
 	public Image getImage(Object connection) {
-		// 以后可拓展
 		return image;
 	}
 
 	public String getText(Object connection) {
-		// Get the name of the file
 		String text = ((Connection) connection).getName();
-		// Check the case settings before returning the text
 		return upperCase ? text.toUpperCase() : text;
 	}
 
@@ -218,7 +195,6 @@ class RelationFilterTreeLabelProvider implements ILabelProvider {
 	}
 
 	public void dispose() {
-		// Dispose the images
 		if (image != null)
 			image.dispose();
 	}
