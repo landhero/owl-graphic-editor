@@ -491,6 +491,7 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 	public void setDirty(boolean dirty) {
 		// TODO Auto-generated method stub
 		this.dirty = dirty;
+		firePropertyChange(PROP_DIRTY);
 	}
 
 	public void refreshModel(ShapesDiagram diagram) {

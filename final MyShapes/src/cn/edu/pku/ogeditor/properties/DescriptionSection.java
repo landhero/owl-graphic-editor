@@ -4,12 +4,10 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
@@ -20,6 +18,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
+import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.parts.ConnectionEditPart;
 import cn.edu.pku.ogeditor.parts.ShapeEditPart;
 
@@ -37,10 +36,11 @@ public class DescriptionSection extends AbstractPropertySection {
 	private ModifyListener listener = new ModifyListener() {
 
 		public void modifyText(ModifyEvent arg0) {
-			if (isSep)
-				sep.getCastedModel().setDescription(descriptionText.getText());
-			else
-				cep.getCastedModel().setDescription(descriptionText.getText());
+			if(!ShapesEditor.myselfShapesEditor.isDirty())
+			{
+				ShapesEditor.myselfShapesEditor.setDirty(true);
+			}
+
 		}
 	};
 
@@ -112,8 +112,12 @@ public class DescriptionSection extends AbstractPropertySection {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			// TODO Auto-generated method stub
-			//使editor变脏并保存结果
+			if (isSep)
+				sep.getCastedModel().setDescription(descriptionText.getText());
+			else
+				cep.getCastedModel().setDescription(descriptionText.getText());
+			ShapesEditor.myselfShapesEditor.doSave(null);
+			ShapesEditor.myselfShapesEditor.setDirty(false);
 		}
 		
 	}
