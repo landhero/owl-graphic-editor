@@ -41,14 +41,14 @@ public class ShapesDiagram extends ModelElement {
 
 	private String name;
 	private ShapesDiagram father;
-	private List<Shape> shapes;
+	private List<Shape> allShapes;
 	private List<ShapesDiagram> lowerLevelDiagrams;
 	private List<Shape> allShapesNames;
 	private List<Connection> allConnectionsNames;
 	private List<Connection> allConnections;
 
 	public ShapesDiagram(){
-		shapes=new ArrayList<Shape>();
+		allShapes=new ArrayList<Shape>();
 		lowerLevelDiagrams = new ArrayList<ShapesDiagram>();
 		allShapesNames = new ArrayList<Shape>();
 		allConnectionsNames = new ArrayList<Connection>();
@@ -202,7 +202,7 @@ public class ShapesDiagram extends ModelElement {
 	}
 	/** Return a List of Shapes in this diagram.  The returned List should not be modified. */
 	public List<Shape> getChildren() {
-		return shapes;
+		return allShapes;
 	}
 
 	/** 
@@ -211,7 +211,7 @@ public class ShapesDiagram extends ModelElement {
 	 * @return true, if the shape was added, false otherwise
 	 */
 	public boolean addChild(Shape s) {
-		if (s != null && shapes.add(s)
+		if (s != null && allShapes.add(s)
 				&& !ContainShapeName(s.getName())) {
 			allShapesNames.add(s);
 			firePropertyChange(CHILD_ADDED_PROP, null, s);
@@ -221,7 +221,7 @@ public class ShapesDiagram extends ModelElement {
 	}
 
 	public boolean removeChild(Shape s) {
-		if (s != null && shapes.remove(s)
+		if (s != null && allShapes.remove(s)
 				&& ContainShapeName(s.getName())) {
 			firePropertyChange(CHILD_REMOVED_PROP, null, s);
 			allShapesNames.remove(s);
@@ -233,7 +233,7 @@ public class ShapesDiagram extends ModelElement {
 		firePropertyChange(ALLCHILDREN_RELOCATED_PROP, null, null);
 	}
 	public void relocatedAll(Rectangle rect){
-		int size = shapes.size();
+		int size = allShapes.size();
 		int sides[][] = new int[size][size];
 		boolean used[] = new boolean[size];
 		int allocated[] = new int[size];
@@ -271,14 +271,14 @@ public class ShapesDiagram extends ModelElement {
 			}
 		}
 		for (i=0; i<size; i++){
-			List<?> list = ((Shape)shapes.get(i)).getSourceConnections();
+			List<?> list = ((Shape)allShapes.get(i)).getSourceConnections();
 			int tsize = list.size();
 			for (j=0; j<tsize; j++){
-				int temp  = shapes.indexOf(((Connection)list.get(j)).getTarget());
+				int temp  = allShapes.indexOf(((Connection)list.get(j)).getTarget());
 				sides[i][temp] = 0;
 			}
 			degree[i] = tsize;
-			list = ((Shape)shapes.get(i)).getTargetConnections();
+			list = ((Shape)allShapes.get(i)).getTargetConnections();
 			degree[i] += list.size();
 		}
 		for (i=0; i<size; i++){
@@ -292,7 +292,7 @@ public class ShapesDiagram extends ModelElement {
 				choose = i;
 			}
 		}
-		((Shape)shapes.get(choose)).setLocation(points[0]);
+		((Shape)allShapes.get(choose)).setLocation(points[0]);
 		used[choose] = true;
 		allocated[0] = choose;
 		for (i=1; i<size; i++){
@@ -337,7 +337,7 @@ public class ShapesDiagram extends ModelElement {
 					choose = j;
 				}
 			}
-			((Shape)shapes.get(choose)).setLocation(points[i]);
+			((Shape)allShapes.get(choose)).setLocation(points[i]);
 			used[choose] = true;
 			allocated[i] = choose;
 		}
