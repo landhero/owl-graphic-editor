@@ -110,16 +110,16 @@ public class ConceptFilterDialog extends Dialog {
 	}
 
 	protected void buttonPressed(int buttonId) {
-		// 如果是点了 OK 按钮，则将值取回变量
 		if (buttonId == IDialogConstants.OK_ID) {
 			List<Shape> shapes = diagram.getAllShapesNames();
 			for (int i = 0; i < shapes.size(); i++) {
-				if (tv.getChecked(shapes.get(i))) {
-					shapes.get(i).setVisible(true);
+				Shape curShape = shapes.get(i);
+				if (tv.getChecked(curShape)) {
+					curShape.setVisible(true);
 				}
 				else
 				{
-					shapes.get(i).setVisible(false);
+					curShape.setVisible(false);
 				}
 			}
 		}
