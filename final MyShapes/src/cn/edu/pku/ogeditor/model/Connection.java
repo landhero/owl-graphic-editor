@@ -155,10 +155,7 @@ public class Connection extends ModelElement {
 			source.removeSourceConnection(this);
 			target.removeTargetConnection(this);
 			isConnected = false;
-//			if(domain.contains(source))
-//				domain.remove(source);
-//			if(range.contains(target))
-//				range.remove(target);
+			source.getDiagram().removeConnection(this);
 		}
 	}
 	public void reconnect() {
@@ -166,10 +163,7 @@ public class Connection extends ModelElement {
 			source.addSourceConnection(this);
 			target.addTargetConnection(this);
 			isConnected = true;
-//			if(!domain.contains(source))
-//				domain.add(source);
-//			if(!range.contains(target))
-//				range.add(target);
+			source.getDiagram().addConnection(this);
 		}
 	}
 
