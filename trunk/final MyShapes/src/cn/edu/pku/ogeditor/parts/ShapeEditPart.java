@@ -63,13 +63,13 @@ public class ShapeEditPart extends AbstractGraphicalEditPart implements
 		if (!isActive()) {
 			super.activate();
 			((ModelElement) getModel()).addPropertyChangeListener(this);
-			refreshVisibility();
+			//refreshVisibility();
 		}
 	}
-
-	private void refreshVisibility() {
-		getCastedModel().setVisible(getCastedModel().isVisible());
-	}
+//
+//	private void refreshVisibility() {
+//		getCastedModel().setVisible(getCastedModel().isVisible());
+//	}
 
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
@@ -256,6 +256,7 @@ public class ShapeEditPart extends AbstractGraphicalEditPart implements
 		// setTemporarily(isTemporarily());
 		((GraphicalEditPart) getParent()).setLayoutConstraint(this,
 				getFigure(), bounds);
+		getFigure().setVisible(getCastedModel().isVisible());
 
 	}
 

@@ -51,6 +51,6 @@ public void execute() {
  */
 public void undo() {
 	connection.reconnect();
-	connection.getSource().getDiagram().addConnection(connection);
+	//connection.getSource().getDiagram().addConnection(connection);
 }
 }
