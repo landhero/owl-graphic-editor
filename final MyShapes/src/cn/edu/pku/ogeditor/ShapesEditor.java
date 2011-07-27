@@ -384,7 +384,7 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 	private void createOntologyForDiagram(ShapesDiagram curDiagram) {
 		// TODO Auto-generated method stub
 		List<Shape> curShapes = curDiagram.getChildren();
-		String std = "http://www.w3.org/2001/XMLSchema";
+		//String std = "http://www.w3.org/2001/XMLSchema";
 		for(int i=0; i<curShapes.size(); i++){
 			Shape curShape = curShapes.get(i);
 			//不进行是否有重复的判断的前提是本体中所有类的名字都是唯一的
@@ -663,7 +663,6 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 				getEditor().removeDisposeListener(disposeListener);
 		}
 	}
-	@Override
 	public String getContributorId() {
 		return getSite().getId();
 	}

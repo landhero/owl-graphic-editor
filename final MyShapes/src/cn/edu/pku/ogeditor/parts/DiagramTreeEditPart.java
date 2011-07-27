@@ -10,25 +10,15 @@ package cn.edu.pku.ogeditor.parts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import cn.edu.pku.ogeditor.ShapesEditor;
-import cn.edu.pku.ogeditor.model.Shape;
-
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.RootEditPart;
-import org.eclipse.gef.TreeEditPart;
 import org.eclipse.gef.editparts.AbstractTreeEditPart;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.swt.widgets.Widget;
 
+import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.model.ModelElement;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
@@ -137,106 +127,106 @@ implements PropertyChangeListener {
 			refreshVisuals();
 		}
 	}
-
-	protected void refreshChildren() {
-		ShapesDiagram currentDiagram;
-		ShapesDiagram shapesDiagram = ShapesEditor.myselfShapesEditor.getDiagram();
-		currentDiagram=shapesDiagram;
-		while(shapesDiagram != null)
-		{
-			this.setModel(shapesDiagram);
-			_refreshChildren();
-			for (int i = 0; i < getChildren().size(); i++) {
-				EditPart editPart = (EditPart) getChildren().get(i);
-				addChildVisual(editPart, i);
-				editPart.refresh();
-			}
-			
-			shapesDiagram = shapesDiagram.getFather();
-		}
-		
-		this.setModel(currentDiagram);//重新设置回来
-
-
-
-	}
-
-	private void _refreshChildren() {
-		int i;
-		EditPart editPart;
-		Object model;
-
-		Map<Object, EditPart> modelToEditPart = new HashMap<Object, EditPart>();
-		List<?> children = getChildren();
-
-		for (i = 0; i < children.size(); i++) {
-			editPart = (EditPart) children.get(i);
-			modelToEditPart.put(editPart.getModel(), editPart);
-		}
-
-		List<?> modelObjects = getModelChildren();
-
-		for (i = 0; i < modelObjects.size(); i++) {
-			model = modelObjects.get(i);
-
-			// Do a quick check to see if editPart[i] == model[i]
-			if (i < children.size()
-					&& ((EditPart) children.get(i)).getModel() == model)
-				continue;
-
-			// Look to see if the EditPart is already around but in the wrong
-			// location
-			editPart = (EditPart) modelToEditPart.get(model);
-
-			if (editPart != null)
-				reorderChild(editPart, i);
-			else {
-				// An editpart for this model doesn't exist yet. Create and
-				// insert one.
-				editPart = createChild(model);
-				_addChild(editPart, i);
-			}
-		}
-		
-		// 调用每一个EditPart的setParent()这样就把它们连成了一棵单向的树
-
-	}
-	protected void _addChild(EditPart child, int index) {
-		Assert.isNotNull(child);
-		if (index == -1)
-			index = getChildren().size();
-		if (children == null)
-			children = new ArrayList<EditPart>(2);
-
-		children.add(index, child);
-		child.setParent(this);
-		child.addNotify();
-
-		if (isActive())
-			child.activate();
-		fireChildAdded(child, index);
-	}
-
-	protected void addChildVisual(EditPart childEditPart, int index) {
-		int i;
-		EditPart editPart;
-		Map<Shape, EditPart> modelToEditPart = new HashMap<Shape, EditPart>();
-		List<?> children = getChildren();
-		for (i = 0; i < children.size(); i++) {
-			editPart = (EditPart) children.get(i);
-			modelToEditPart.put((Shape) editPart.getModel(), editPart);
-		}
-		TreeItem item;
-		Widget widget;
-		Shape parentShape = ((Shape) childEditPart.getModel()).getParent();
-		if (parentShape.getParent() == null) {
-			widget = getWidget();
-			item = new TreeItem((Tree) widget, 0);//到时候要修改，要改成树而不是现在的树林@吴韬
-
-		} else {
-			widget = ((TreeEditPart) modelToEditPart.get(parentShape)).getWidget();
-			item = new TreeItem((TreeItem) widget, 0);
-		}
-		((TreeEditPart) childEditPart).setWidget(item);
-	}
+//
+//	protected void refreshChildren() {
+//		ShapesDiagram currentDiagram;
+//		ShapesDiagram shapesDiagram = ShapesEditor.myselfShapesEditor.getDiagram();
+//		currentDiagram=shapesDiagram;
+//		while(shapesDiagram != null)
+//		{
+//			this.setModel(shapesDiagram);
+//			_refreshChildren();
+//			for (int i = 0; i < getChildren().size(); i++) {
+//				EditPart editPart = (EditPart) getChildren().get(i);
+//				addChildVisual(editPart, i);
+//				editPart.refresh();
+//			}
+//			
+//			shapesDiagram = shapesDiagram.getFather();
+//		}
+//		
+//		this.setModel(currentDiagram);//重新设置回来
+//
+//
+//
+//	}
+//
+//	private void _refreshChildren() {
+//		int i;
+//		EditPart editPart;
+//		Object model;
+//
+//		Map<Object, EditPart> modelToEditPart = new HashMap<Object, EditPart>();
+//		List<?> children = getChildren();
+//
+//		for (i = 0; i < children.size(); i++) {
+//			editPart = (EditPart) children.get(i);
+//			modelToEditPart.put(editPart.getModel(), editPart);
+//		}
+//
+//		List<?> modelObjects = getModelChildren();
+//
+//		for (i = 0; i < modelObjects.size(); i++) {
+//			model = modelObjects.get(i);
+//
+//			// Do a quick check to see if editPart[i] == model[i]
+//			if (i < children.size()
+//					&& ((EditPart) children.get(i)).getModel() == model)
+//				continue;
+//
+//			// Look to see if the EditPart is already around but in the wrong
+//			// location
+//			editPart = (EditPart) modelToEditPart.get(model);
+//
+//			if (editPart != null)
+//				reorderChild(editPart, i);
+//			else {
+//				// An editpart for this model doesn't exist yet. Create and
+//				// insert one.
+//				editPart = createChild(model);
+//				_addChild(editPart, i);
+//			}
+//		}
+//		
+//		// 调用每一个EditPart的setParent()这样就把它们连成了一棵单向的树
+//
+//	}
+//	protected void _addChild(EditPart child, int index) {
+//		Assert.isNotNull(child);
+//		if (index == -1)
+//			index = getChildren().size();
+//		if (children == null)
+//			children = new ArrayList<EditPart>(2);
+//
+//		children.add(index, child);
+//		child.setParent(this);
+//		child.addNotify();
+//
+//		if (isActive())
+//			child.activate();
+//		fireChildAdded(child, index);
+//	}
+//
+//	protected void addChildVisual(EditPart childEditPart, int index) {
+//		int i;
+//		EditPart editPart;
+//		Map<Shape, EditPart> modelToEditPart = new HashMap<Shape, EditPart>();
+//		List<?> children = getChildren();
+//		for (i = 0; i < children.size(); i++) {
+//			editPart = (EditPart) children.get(i);
+//			modelToEditPart.put((Shape) editPart.getModel(), editPart);
+//		}
+//		TreeItem item;
+//		Widget widget;
+//		Shape parentShape = ((Shape) childEditPart.getModel()).getParent();
+//		if (parentShape.getParent() == null) {
+//			widget = getWidget();
+//			item = new TreeItem((Tree) widget, 0);//到时候要修改，要改成树而不是现在的树林@吴韬
+//
+//		} else {
+//			widget = ((TreeEditPart) modelToEditPart.get(parentShape)).getWidget();
+//			item = new TreeItem((TreeItem) widget, 0);
+//		}
+//		((TreeEditPart) childEditPart).setWidget(item);
+//	}
 }

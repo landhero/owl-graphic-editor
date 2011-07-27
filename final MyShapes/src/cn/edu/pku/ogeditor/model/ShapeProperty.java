@@ -1,8 +1,6 @@
 package cn.edu.pku.ogeditor.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ShapeProperty implements Serializable{
 
