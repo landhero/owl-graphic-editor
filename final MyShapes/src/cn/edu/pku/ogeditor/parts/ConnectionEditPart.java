@@ -74,14 +74,14 @@ implements PropertyChangeListener {
 		if (!isActive()) {
 			super.activate();
 			((ModelElement) getModel()).addPropertyChangeListener(this);
-			refreshVisibility();
+			//refreshVisibility();
 		}
 	}
-	
-	private void refreshVisibility() {
-		// TODO Auto-generated method stub
-		getCastedModel().setVisible(getCastedModel().isVisible());
-	}
+//	
+//	private void refreshVisibility() {
+//		// TODO Auto-generated method stub
+//		getCastedModel().setVisible(getCastedModel().isVisible());
+//	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
@@ -114,6 +114,12 @@ implements PropertyChangeListener {
 //		label.setBackgroundColor(ColorConstants.lightGray);
 //		connection.add(label, new MidpointLocator(connection, 0));
 		return new ConnectionFigure(((Connection)this.getModel()).getName());
+	}
+
+	@Override
+	protected void refreshVisuals() {
+		//super.refreshVisuals();
+		getFigure().setVisible(getCastedModel().isVisible());
 	}
 
 	/**

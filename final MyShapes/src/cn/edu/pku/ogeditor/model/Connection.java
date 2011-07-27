@@ -163,7 +163,7 @@ public class Connection extends ModelElement {
 			source.addSourceConnection(this);
 			target.addTargetConnection(this);
 			isConnected = true;
-			source.getDiagram().addConnection(this);
+			//source.getDiagram().addConnection(this);
 		}
 	}
 

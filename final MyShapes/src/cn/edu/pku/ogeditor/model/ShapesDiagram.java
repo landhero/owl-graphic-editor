@@ -133,6 +133,14 @@ public class ShapesDiagram extends ModelElement {
 	public List<Shape> getAllShapesNames() {
 		return allShapesNames;
 	}
+	public void addConnection(Connection newConnection) {
+		if(!allConnections.contains(newConnection))
+		{
+			allConnections.add(newConnection);
+			addConnectionName(newConnection);
+		}
+
+	}
 	public void addConnectionName(Connection newConnection) {
 		if(!ContainConnectionName(newConnection.getName()))
 			allConnectionsNames.add(newConnection);
@@ -161,14 +169,7 @@ public class ShapesDiagram extends ModelElement {
 		}
 		return false;
 	}
-	public void addConnection(Connection newConnection) {
-		if(!allConnections.contains(newConnection))
-		{
-			allConnections.add(newConnection);
-			addConnectionName(newConnection);
-		}
 
-	}
 	public void removeConnection(Connection connection) {
 		if(allConnections.contains(connection))
 		{

@@ -69,12 +69,6 @@ public ConnectionCreateCommand(Shape source, String name) {
  * @see org.eclipse.gef.commands.Command#canExecute()
  */
 public boolean canExecute() {
-	// disallow source -> source connections
-	/*if (source.equals(target)) {
-		return false;
-	}*/
-	// return false, if the source -> target connection exists already
-
 	Connection parentConnection;
 	parentConnection=getParent();
 	if(!parentConnection.isRoot()) 
@@ -121,7 +115,7 @@ public void execute() {
 		}
 	}
 	if(connectionExist)
-		connection = new Connection(source, target,Double.MAX_VALUE*Math.random(),Double.MAX_VALUE*Math.random());
+		connection = new Connection(source, target,Math.PI*(Math.random()*2-1),Math.PI*(Math.random()*2-1));
 	else
 		connection = new Connection(source, target);
 
