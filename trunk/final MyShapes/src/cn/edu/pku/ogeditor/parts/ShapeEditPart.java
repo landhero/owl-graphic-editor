@@ -86,7 +86,6 @@ public class ShapeEditPart extends AbstractGraphicalEditPart implements
 	protected IFigure createFigure() {
 		return new ShapeFigure(getCastedModel().getName(), getCastedModel()
 				.getParent().getName(), getCastedModel().getColor());
-
 	}
 
 	public void deactivate() {

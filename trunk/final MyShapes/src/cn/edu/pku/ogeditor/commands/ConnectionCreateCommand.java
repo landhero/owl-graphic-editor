@@ -16,6 +16,8 @@ import java.util.List;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.palette.ToolEntry;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 
 import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.ShapesEditorPaletteRoot;
@@ -88,10 +90,12 @@ private Connection getParent(){
 	return newConnectionParent;
 }
 
-/* (non-Javadoc)
- * @see org.eclipse.gef.commands.Command#execute()
- */
 public void execute() {
+	if(existSameConnection())
+	{
+		MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error", "The \""+name+"\" Relation has existed!");
+		return;
+	}
 	boolean connectionExist = false;
 	Connection parentConnection;
 	parentConnection=getParent();
@@ -137,6 +141,15 @@ public void execute() {
 	parentConnection.addChild(connection);
 	source.getDiagram().addConnection(connection);
 
+}
+
+private boolean existSameConnection() {
+	List<Connection> connections = source.getSourceConnections();
+	for (int i = 0; i < connections.size(); i++) {
+		if(connections.get(i).getName().equals(name))
+			return true;
+	}
+	return false;
 }
 
 /* (non-Javadoc)

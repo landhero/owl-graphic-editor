@@ -218,7 +218,7 @@ class ConceptFilterTreeContentProvider implements ITreeContentProvider {
 
 class ConceptFilterTreeLabelProvider implements ILabelProvider {
 	// The listeners
-	private List listeners;
+	private List<ILabelProviderListener> listeners;
 	private Image image;
 	// Label provider state: preserve case of file names/directories
 	boolean upperCase;
@@ -228,7 +228,7 @@ class ConceptFilterTreeLabelProvider implements ILabelProvider {
 	 */
 	public ConceptFilterTreeLabelProvider() {
 		// Create the list to hold the listeners
-		listeners = new ArrayList();
+		listeners = new ArrayList<ILabelProviderListener>();
 		image = ImageDescriptor.createFromFile(ShapesPlugin.class,"icons/ellipse16.gif").createImage(); //new Image(null, new FileInputStream("../icons/ellipse16.gif"));
 	}
 

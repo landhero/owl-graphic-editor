@@ -162,7 +162,6 @@ public class DataPropertySection extends AbstractPropertySection {
 		clearValueButton.addSelectionListener(new DeleteValueListener());
 		valueTextListener = new ModifyListener() {
 			
-			@Override
 			public void modifyText(ModifyEvent e) {
 				// TODO Auto-generated method stub
 				ShapesEditor.myselfShapesEditor.setDirty(true);
@@ -216,7 +215,6 @@ public class DataPropertySection extends AbstractPropertySection {
 	}
 
 	private class AddPropertyListener implements SelectionListener {
-		@Override
 		public void widgetSelected(SelectionEvent e) {
 			// TODO Auto-generated method stub
 			InputDialog dialog = new InputDialog(Display.getCurrent()
@@ -236,7 +234,6 @@ public class DataPropertySection extends AbstractPropertySection {
 			ShapesEditor.myselfShapesEditor.setDirty(true);
 		}
 
-		@Override
 		public void widgetDefaultSelected(SelectionEvent e) {
 			// TODO Auto-generated method stub
 
@@ -244,7 +241,6 @@ public class DataPropertySection extends AbstractPropertySection {
 	}
 
 	private class DeletePropertyListener implements SelectionListener {
-		@Override
 		public void widgetSelected(SelectionEvent e) {
 			// TODO Auto-generated method stub
 			boolean confirm = MessageDialog.openConfirm(Display
@@ -266,7 +262,6 @@ public class DataPropertySection extends AbstractPropertySection {
 
 		}
 
-		@Override
 		public void widgetDefaultSelected(SelectionEvent e) {
 			// TODO Auto-generated method stub
 
@@ -274,7 +269,6 @@ public class DataPropertySection extends AbstractPropertySection {
 	}
 
 	private class PropertyListener implements SelectionListener {
-		@Override
 		public void widgetSelected(SelectionEvent e) {
 			if (propertyList.getSelection().length > 0) {
 				String propName = propertyList.getSelection()[0];
@@ -310,7 +304,6 @@ public class DataPropertySection extends AbstractPropertySection {
 			}
 		}
 
-		@Override
 		public void widgetDefaultSelected(SelectionEvent e) {
 			// TODO Auto-generated method stub
 
@@ -318,7 +311,6 @@ public class DataPropertySection extends AbstractPropertySection {
 	}
 
 	private class RangeBoxListener implements SelectionListener {
-		@Override
 		public void widgetSelected(SelectionEvent e) {
 			// int i = rangeBox.getSelectionIndex();
 			valueText.setText("");
@@ -339,7 +331,6 @@ public class DataPropertySection extends AbstractPropertySection {
 			ShapesEditor.myselfShapesEditor.setDirty(true);
 		}
 
-		@Override
 		public void widgetDefaultSelected(SelectionEvent e) {
 			// TODO Auto-generated method stub
 
@@ -347,7 +338,6 @@ public class DataPropertySection extends AbstractPropertySection {
 	}
 
 	private class AddValueListener implements SelectionListener {
-		@Override
 		public void widgetSelected(SelectionEvent e) {
 			String type = rangeBox.getText();
 			String value = valueText.getText().trim();
@@ -387,7 +377,6 @@ public class DataPropertySection extends AbstractPropertySection {
 			ShapesEditor.myselfShapesEditor.doSave(null);
 			}
 
-		@Override
 		public void widgetDefaultSelected(SelectionEvent e) {
 			// TODO Auto-generated method stub
 
@@ -395,7 +384,6 @@ public class DataPropertySection extends AbstractPropertySection {
 	}
 
 	private class DeleteValueListener implements SelectionListener {
-		@Override
 		public void widgetSelected(SelectionEvent e) {
 			// TODO Auto-generated method stub
 			boolean confirm = MessageDialog.openConfirm(Display.getCurrent()
@@ -408,7 +396,6 @@ public class DataPropertySection extends AbstractPropertySection {
 			ShapesEditor.myselfShapesEditor.setDirty(true);
 		}
 
-		@Override
 		public void widgetDefaultSelected(SelectionEvent e) {
 			// TODO Auto-generated method stub
 
