@@ -24,6 +24,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
+import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.figures.ShapeFigure;
 import cn.edu.pku.ogeditor.parts.ShapeEditPart;
 
@@ -77,6 +78,7 @@ public class ColorSection extends AbstractPropertySection {
 					Color newColor = new Color(null,clData);
 					sep.getCastedModel().setColor(newColor.getRGB());
 					colorText.setText(StringConverter.asString(clData));
+					ShapesEditor.myselfShapesEditor.setDirty(true);
 				}
 			}
 		});

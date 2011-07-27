@@ -182,12 +182,6 @@ public class Shape extends ModelElement {
 		}
 	}
 
-	/**
-	 * Return a pictogram (small icon) describing this model element. Children
-	 * should override this method and return an appropriate Image.
-	 * 
-	 * @return a 16x16 Image or null
-	 */
 	public Image getIcon() {
 		return RECTANGLE_ICON;
 	}
@@ -196,35 +190,14 @@ public class Shape extends ModelElement {
 		return this.getName();
 	}
 
-	/**
-	 * Return the Location of this shape.
-	 * 
-	 * @return a non-null location instance
-	 */
 	public Point getLocation() {
 		return location.getCopy();
 	}
 
-	/**
-	 * Returns an array of IPropertyDescriptors for this shape.
-	 * <p>
-	 * The returned array is used to fill the property view, when the edit-part
-	 * corresponding to this model element is selected.
-	 * </p>
-	 * 
-	 * @see #descriptors
-	 * @see #getPropertyValue(Object)
-	 * @see #setPropertyValue(Object, Object)
-	 */
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		return descriptors;
 	}
 
-	/**
-	 * Return the Size of this shape.
-	 * 
-	 * @return a non-null Dimension instance
-	 */
 	public Dimension getSize() {
 		return size.getCopy();
 	}
@@ -237,28 +210,14 @@ public class Shape extends ModelElement {
 		return description;
 	}
 
-	/**
-	 * Return a List of outgoing Connections.
-	 */
 	public List<Connection> getSourceConnections() {
 		return new ArrayList<Connection>(sourceConnections);
 	}
 
-	/**
-	 * Return a List of incoming Connections.
-	 */
 	public List<Connection> getTargetConnections() {
 		return new ArrayList<Connection>(targetConnections);
 	}
 
-	/**
-	 * Remove an incoming or outgoing connection from this shape.
-	 * 
-	 * @param conn
-	 *            a non-null connection instance
-	 * @throws IllegalArgumentException
-	 *             if the parameter is null
-	 */
 	void removeSourceConnection(Connection conn) {
 		if (conn == null) {
 			throw new IllegalArgumentException();
@@ -279,14 +238,6 @@ public class Shape extends ModelElement {
 		}
 	}
 
-	/**
-	 * Set the Location of this shape.
-	 * 
-	 * @param newLocation
-	 *            a non-null Point instance
-	 * @throws IllegalArgumentException
-	 *             if the parameter is null
-	 */
 	public void setLocation(Point newLocation) {
 		if (newLocation == null) {
 			throw new IllegalArgumentException();
@@ -295,12 +246,6 @@ public class Shape extends ModelElement {
 		firePropertyChange(LOCATION_PROP, null, location);
 	}
 
-	/**
-	 * Set the Size of this shape. Will not modify the size if newSize is null.
-	 * 
-	 * @param newSize
-	 *            a non-null Dimension instance or null
-	 */
 	public void setSize(Dimension newSize) {
 		if (newSize != null) {
 			size.setSize(newSize);
@@ -323,16 +268,6 @@ public class Shape extends ModelElement {
 		}
 	}
 
-	/**
-	 * Return the property value for the given propertyId, or null.
-	 * <p>
-	 * The property view uses the IDs from the IPropertyDescriptors array to
-	 * obtain the value of the corresponding properties.
-	 * </p>
-	 * 
-	 * @see #descriptors
-	 * @see #getPropertyDescriptors()
-	 */
 	public Object getPropertyValue(Object propertyId) {
 		if (NAME_PROP.equals(propertyId)) {
 			return name;
@@ -340,17 +275,6 @@ public class Shape extends ModelElement {
 		return super.getPropertyValue(propertyId);
 	}
 
-	/**
-	 * Set the property value for the given property id. If no matching id is
-	 * found, the call is forwarded to the superclass.
-	 * <p>
-	 * The property view uses the IDs from the IPropertyDescriptors array to set
-	 * the values of the corresponding properties.
-	 * </p>
-	 * 
-	 * @see #descriptors
-	 * @see #getPropertyDescriptors()
-	 */
 	public void setPropertyValue(Object propertyId, Object value) {
 		if (NAME_PROP.equals(propertyId)) {
 			setName((String) value);
@@ -360,7 +284,6 @@ public class Shape extends ModelElement {
 	}
 
 	public boolean containSourceConnectionName(Connection connection) {
-		// TODO Auto-generated method stub
 		for (int i = 0; i < sourceConnections.size(); i++) {
 			if (sourceConnections.get(i).getName().equals(connection.getName())) {
 				return true;
@@ -370,7 +293,6 @@ public class Shape extends ModelElement {
 	}
 
 	public boolean containTargetConnectionName(Connection connection) {
-		// TODO Auto-generated method stub
 		for (int i = 0; i < targetConnections.size(); i++) {
 			if (targetConnections.get(i).getName().equals(connection.getName())) {
 				return true;
@@ -392,7 +314,6 @@ public class Shape extends ModelElement {
 	}
 
 	public void refreshChildrenColor() {
-		// TODO Auto-generated method stub
 		for (int i = 0; i < getChildren().size(); i++) {
 			getChildren().get(i).setColor(this.getColor());
 		}
@@ -443,16 +364,15 @@ public class Shape extends ModelElement {
 	public void setVisible(boolean visible) {
 		isVisible = visible;
 		firePropertyChange(VISIBLE_PROP, null, visible);
-		//if (visible == false) {
+		// if (visible == false) {
 		for (int i = 0; i < sourceConnections.size(); i++) {
 			sourceConnections.get(i).setVisible(visible);
 		}
 		for (int i = 0; i < targetConnections.size(); i++) {
 			targetConnections.get(i).setVisible(visible);
 		}
-		//}
-		for(int i = 0;i<children.size();i++)
-		{
+		// }
+		for (int i = 0; i < children.size(); i++) {
 			children.get(i).setVisible(visible);
 		}
 	}

@@ -93,11 +93,13 @@ import cn.edu.pku.ogeditor.actions.RelationFilterAction;
 import cn.edu.pku.ogeditor.actions.RelocateAction;
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
+import cn.edu.pku.ogeditor.model.ShapeProperty;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 import cn.edu.pku.ogeditor.parts.ShapesEditPartFactory;
 import cn.edu.pku.ogeditor.parts.ShapesTreeEditPartFactory;
 import cn.edu.pku.ogeditor.views.DecriptionView;
 
+import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -382,7 +384,7 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 	private void createOntologyForDiagram(ShapesDiagram curDiagram) {
 		// TODO Auto-generated method stub
 		List<Shape> curShapes = curDiagram.getChildren();
-		//add shape individuals and connection individuals
+		String std = "http://www.w3.org/2001/XMLSchema";
 		for(int i=0; i<curShapes.size(); i++){
 			Shape curShape = curShapes.get(i);
 			//不进行是否有重复的判断的前提是本体中所有类的名字都是唯一的
@@ -399,7 +401,15 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 			OntClass tarClass ;
 
 			List<Connection> sCons = curShape.getSourceConnections();
-			//List<Connection> tCons = curShape.getTargetConnections();
+			List<ShapeProperty> properties = curShape.getProperties();
+			for (int j = 0; j < properties.size(); j++) {
+				ShapeProperty curProp = properties.get(i);
+				DatatypeProperty curDp = ontModel.createDatatypeProperty(NS+curProp.getName());
+				curDp.setDomain(srcClass);
+				//保存这部分问一问鲁扬扬
+				//curDp.setRange(std+curProp.getType());
+			}
+			
 			for(int j=0; j<sCons.size(); j++){
 				Connection curCon = sCons.get(j);
 				Shape tarShape = curCon.getTarget();

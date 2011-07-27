@@ -385,9 +385,27 @@ public class ShapesDiagram extends ModelElement {
 		for(int i=0;i<allShapes.size();i++)
 		{
 			Shape curShape = allShapes.get(i);
-			if(curShape.getSourceConnections().size() <=0 && curShape.getTargetConnections().size() <= 0)
+			if(allSourceConnectionsHide(curShape) && allTargetConnectionsHide(curShape))
 				curShape.setVisible(false);
 		}
 
+	}
+	private boolean allTargetConnectionsHide(Shape curShape) {
+		List<Connection> connections = curShape.getSourceConnections();
+		for(int i=0;i<connections.size();i++)
+		{
+			if(connections.get(i).isVisible())
+				return false;
+		}
+		return true;
+	}
+	private boolean allSourceConnectionsHide(Shape curShape) {
+		List<Connection> connections = curShape.getTargetConnections();
+		for(int i=0;i<connections.size();i++)
+		{
+			if(connections.get(i).isVisible())
+				return false;
+		}
+		return true;
 	}
 }
