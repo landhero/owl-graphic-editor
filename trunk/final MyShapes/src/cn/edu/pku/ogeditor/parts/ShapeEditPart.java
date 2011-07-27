@@ -42,250 +42,239 @@ import cn.edu.pku.ogeditor.policies.ShapeNodeEditPolicy;
 /**
  * EditPart used for Shape instances (more specific for EllipticalShape and
  * RectangularShape instances).
- * <p>This edit part must implement the PropertyChangeListener interface, 
- * so it can be notified of property changes in the corresponding model element.
+ * <p>
+ * This edit part must implement the PropertyChangeListener interface, so it can
+ * be notified of property changes in the corresponding model element.
  * </p>
  * 
  * @author Elias Volanakis
  */
-public class ShapeEditPart extends AbstractGraphicalEditPart 
-	implements PropertyChangeListener, NodeEditPart{
-	
-//private ConnectionAnchor anchor;
-private ShapeDirectEditManager directmanager = null;
-/**
- * Upon activation, attach to the model element as a property change listener.
- */
-public void activate() {
-	if (!isActive()) {
-		super.activate();
-		((ModelElement) getModel()).addPropertyChangeListener(this);
-		refreshVisibility();
+public class ShapeEditPart extends AbstractGraphicalEditPart implements
+		PropertyChangeListener, NodeEditPart {
+
+	// private ConnectionAnchor anchor;
+	private ShapeDirectEditManager directmanager = null;
+
+	/**
+	 * Upon activation, attach to the model element as a property change
+	 * listener.
+	 */
+	public void activate() {
+		if (!isActive()) {
+			super.activate();
+			((ModelElement) getModel()).addPropertyChangeListener(this);
+			refreshVisibility();
+		}
 	}
-}
 
-//public boolean isTemporarily() {
-//	return ((Shape)this.getModel()).isTemporarily();
-//}
-//
-//public void setTemporarily(boolean temporarily) {
-//	((Shape)this.getModel()).setTemporarily(temporarily);
-//	if(temporarily==false)
-//		this.getFigure().setBackgroundColor(ColorConstants.orange);
-//	else 
-//		this.getFigure().setBackgroundColor(ColorConstants.red);
-//}
-
-//改变ShapeFigure的大小，但是这个函数还没有调试好
-//public void setArea(Point p) {
-//	((ShapeFigure)this.getFigure()).setArea(p);
-//}
-	
-private void refreshVisibility() {
-	// TODO Auto-generated method stub
-	getCastedModel().setVisible(getCastedModel().isVisible());
-}
-
-/* (non-Javadoc)
-}
- * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
- */
-protected void createEditPolicies() {
-	installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new ShapeDirectEditPolicy());
-	// allow removal of the associated model element
-	installEditPolicy(EditPolicy.COMPONENT_ROLE, new ShapeComponentEditPolicy());
-	// allow the creation of connections and 
-	// and the reconnection of connections between Shape instances
-	installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new ShapeNodeEditPolicy());
-}
-	
-protected IFigure createFigure() {
-	return new ShapeFigure(getCastedModel().getName(),getCastedModel().getParent().getName(),getCastedModel().getColor());
-	
-}
-
-/**
- * Upon deactivation, detach from the model element as a property change listener.
- */
-public void deactivate() {
-	if (isActive()) {
-		super.deactivate();
-		((ModelElement) getModel()).removePropertyChangeListener(this);
+	private void refreshVisibility() {
+		getCastedModel().setVisible(getCastedModel().isVisible());
 	}
-}
 
-public Shape getCastedModel() {
-	return (Shape) getModel();
-}
-public Shape getModelFromOut(){
-	return getCastedModel();
-}
-
-protected List<Connection> getModelSourceConnections() {
-	return getCastedModel().getSourceConnections();
-}
-
-protected List<?> getModelTargetConnections() {
-	return getCastedModel().getTargetConnections();
-}
-
-public ConnectionAnchor getSourceConnectionAnchor
-(ConnectionEditPart connection) {
-	cn.edu.pku.ogeditor.parts.ConnectionEditPart con =
-	(cn.edu.pku.ogeditor.parts.ConnectionEditPart)connection;
-	BorderAnchor anchor = con.getSourceAnchor();
-	if(anchor == null || anchor.getOwner() != getFigure()) {
-		if(getModel() instanceof Shape)
-			anchor = new EllipseBorderAnchor(((ShapeFigure)getFigure()).getEllipseFigure());
-		else
-			throw new IllegalArgumentException("unexpected model");
-		
-		Connection conModel = (Connection)con.getModel();
-		anchor.setAngle(conModel.getSourceAngle());
-		con.setSourceAnchor(anchor);
+	protected void createEditPolicies() {
+		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
+				new ShapeDirectEditPolicy());
+		// allow removal of the associated model element
+		installEditPolicy(EditPolicy.COMPONENT_ROLE,
+				new ShapeComponentEditPolicy());
+		// allow the creation of connections and
+		// and the reconnection of connections between Shape instances
+		installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
+				new ShapeNodeEditPolicy());
 	}
-	return anchor;
-}
 
-public ConnectionAnchor getSourceConnectionAnchor(Request request) {
-	if(request instanceof ReconnectRequest) {
-		ReconnectRequest r = (ReconnectRequest)request;
-		cn.edu.pku.ogeditor.parts.ConnectionEditPart con =
-		(cn.edu.pku.ogeditor.parts.ConnectionEditPart)r.
-		getConnectionEditPart();
-		Connection conModel = (Connection)con.getModel();
+	protected IFigure createFigure() {
+		return new ShapeFigure(getCastedModel().getName(), getCastedModel()
+				.getParent().getName(), getCastedModel().getColor());
+
+	}
+
+	public void deactivate() {
+		if (isActive()) {
+			super.deactivate();
+			((ModelElement) getModel()).removePropertyChangeListener(this);
+		}
+	}
+
+	public Shape getCastedModel() {
+		return (Shape) getModel();
+	}
+
+	public Shape getModelFromOut() {
+		return getCastedModel();
+	}
+
+	protected List<Connection> getModelSourceConnections() {
+		return getCastedModel().getSourceConnections();
+	}
+
+	protected List<?> getModelTargetConnections() {
+		return getCastedModel().getTargetConnections();
+	}
+
+	public ConnectionAnchor getSourceConnectionAnchor(
+			ConnectionEditPart connection) {
+		cn.edu.pku.ogeditor.parts.ConnectionEditPart con = (cn.edu.pku.ogeditor.parts.ConnectionEditPart) connection;
 		BorderAnchor anchor = con.getSourceAnchor();
-		GraphicalEditPart part = (GraphicalEditPart)r.getTarget();
-		if(anchor == null || anchor.getOwner() != part.getFigure()) {
-			if(getModel() instanceof Shape)
-				anchor = new EllipseBorderAnchor(((ShapeFigure)getFigure()).getEllipseFigure());
+		if (anchor == null || anchor.getOwner() != getFigure()) {
+			if (getModel() instanceof Shape)
+				anchor = new EllipseBorderAnchor(
+						((ShapeFigure) getFigure()).getEllipseFigure());
 			else
 				throw new IllegalArgumentException("unexpected model");
-			
+
+			Connection conModel = (Connection) con.getModel();
 			anchor.setAngle(conModel.getSourceAngle());
 			con.setSourceAnchor(anchor);
 		}
-		
-		Point loc = r.getLocation();
-		Rectangle rect = Rectangle.SINGLETON;
-		rect.setBounds(getFigure().getBounds());
-		getFigure().translateToAbsolute(rect);
-		Point ref = rect.getCenter();
-		double dx = loc.x - ref.x;
-		double dy = loc.y - ref.y;
-		anchor.setAngle(Math.atan2(dy, dx));	
-		conModel.setSourceAngle(anchor.getAngle());
-		return anchor;		
-	} else {
-		if(getModel() instanceof Shape)
-			return new EllipseBorderAnchor(((ShapeFigure)getFigure()).getEllipseFigure());
-		else
-			throw new IllegalArgumentException("unexpected model");
+		return anchor;
 	}
-}
 
-public ConnectionAnchor getTargetConnectionAnchor
-(ConnectionEditPart connection) {
-	cn.edu.pku.ogeditor.parts.ConnectionEditPart con =
-	(cn.edu.pku.ogeditor.parts.ConnectionEditPart)connection;
-	BorderAnchor anchor = con.getTargetAnchor();
-	if(anchor == null || anchor.getOwner() != getFigure()) {
-		if(getModel() instanceof Shape)
-			anchor = new EllipseBorderAnchor(((ShapeFigure)getFigure()).getEllipseFigure());
-		else
-			throw new IllegalArgumentException("unexpected model");
-		
-		Connection conModel = (Connection)con.getModel();
-		anchor.setAngle(conModel.getTargetAngle());
-		con.setTargetAnchor(anchor);
-	}
-	return anchor;
-}
+	public ConnectionAnchor getSourceConnectionAnchor(Request request) {
+		if (request instanceof ReconnectRequest) {
+			ReconnectRequest r = (ReconnectRequest) request;
+			cn.edu.pku.ogeditor.parts.ConnectionEditPart con = (cn.edu.pku.ogeditor.parts.ConnectionEditPart) r
+					.getConnectionEditPart();
+			Connection conModel = (Connection) con.getModel();
+			BorderAnchor anchor = con.getSourceAnchor();
+			GraphicalEditPart part = (GraphicalEditPart) r.getTarget();
+			if (anchor == null || anchor.getOwner() != part.getFigure()) {
+				if (getModel() instanceof Shape)
+					anchor = new EllipseBorderAnchor(
+							((ShapeFigure) getFigure()).getEllipseFigure());
+				else
+					throw new IllegalArgumentException("unexpected model");
 
-public ConnectionAnchor getTargetConnectionAnchor(Request request) {
-	if(request instanceof ReconnectRequest) {
-		ReconnectRequest r = (ReconnectRequest)request;
-		cn.edu.pku.ogeditor.parts.ConnectionEditPart con =
-		(cn.edu.pku.ogeditor.parts.ConnectionEditPart)r.
-		getConnectionEditPart();
-		Connection conModel = (Connection)con.getModel();
-		BorderAnchor anchor = con.getTargetAnchor();
-		GraphicalEditPart part = (GraphicalEditPart)r.getTarget();
-		if(anchor == null || anchor.getOwner() != part.getFigure()) {
-			if(getModel() instanceof Shape)
-				anchor = new EllipseBorderAnchor(((ShapeFigure)getFigure()).getEllipseFigure());
+				anchor.setAngle(conModel.getSourceAngle());
+				con.setSourceAnchor(anchor);
+			}
+
+			Point loc = r.getLocation();
+			Rectangle rect = Rectangle.SINGLETON;
+			rect.setBounds(getFigure().getBounds());
+			getFigure().translateToAbsolute(rect);
+			Point ref = rect.getCenter();
+			double dx = loc.x - ref.x;
+			double dy = loc.y - ref.y;
+			anchor.setAngle(Math.atan2(dy, dx));
+			conModel.setSourceAngle(anchor.getAngle());
+			return anchor;
+		} else {
+			if (getModel() instanceof Shape)
+				return new EllipseBorderAnchor(
+						((ShapeFigure) getFigure()).getEllipseFigure());
 			else
 				throw new IllegalArgumentException("unexpected model");
-			
+		}
+	}
+
+	public ConnectionAnchor getTargetConnectionAnchor(
+			ConnectionEditPart connection) {
+		cn.edu.pku.ogeditor.parts.ConnectionEditPart con = (cn.edu.pku.ogeditor.parts.ConnectionEditPart) connection;
+		BorderAnchor anchor = con.getTargetAnchor();
+		if (anchor == null || anchor.getOwner() != getFigure()) {
+			if (getModel() instanceof Shape)
+				anchor = new EllipseBorderAnchor(
+						((ShapeFigure) getFigure()).getEllipseFigure());
+			else
+				throw new IllegalArgumentException("unexpected model");
+
+			Connection conModel = (Connection) con.getModel();
 			anchor.setAngle(conModel.getTargetAngle());
 			con.setTargetAnchor(anchor);
 		}
-		
-		Point loc = r.getLocation();
-		Rectangle rect = Rectangle.SINGLETON;
-		rect.setBounds(getFigure().getBounds());
-		getFigure().translateToAbsolute(rect);
-		Point ref = rect.getCenter();
-		double dx = loc.x - ref.x;
-		double dy = loc.y - ref.y;
-		anchor.setAngle(Math.atan2(dy, dx));	
-		conModel.setTargetAngle(anchor.getAngle());
-		return anchor;		
-	} else {
-		if(getModel() instanceof Shape)
-			return new EllipseBorderAnchor(((ShapeFigure)getFigure()).getEllipseFigure());
-		else
-			throw new IllegalArgumentException("unexpected model");
+		return anchor;
 	}
-}
 
-public void propertyChange(PropertyChangeEvent evt) {
-	String prop = evt.getPropertyName();
-	if (Shape.SIZE_PROP.equals(prop) || Shape.LOCATION_PROP.equals(prop)) {
-		refreshVisuals();
-	} else if (Shape.SOURCE_CONNECTIONS_PROP.equals(prop)) {
-		refreshSourceConnections();
-	} else if (Shape.TARGET_CONNECTIONS_PROP.equals(prop)) {
-		refreshTargetConnections();
-	} else if (Shape.NAME_PROP.equals(prop)){
-		((ShapeFigure)getFigure()).getLabel().setText(getCastedModel().getName());
-	} else if (Shape.COLOR_PROP.equals(prop)){
-		//加一个对话框
-		boolean confirm = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "提示", "确实要改变该类及其所有子类颜色吗？");
-		if(confirm)
-			((ShapeFigure)getFigure()).getEllipseFigure().setBackgroundColor(new Color(null,getCastedModel().getColor()));
+	public ConnectionAnchor getTargetConnectionAnchor(Request request) {
+		if (request instanceof ReconnectRequest) {
+			ReconnectRequest r = (ReconnectRequest) request;
+			cn.edu.pku.ogeditor.parts.ConnectionEditPart con = (cn.edu.pku.ogeditor.parts.ConnectionEditPart) r
+					.getConnectionEditPart();
+			Connection conModel = (Connection) con.getModel();
+			BorderAnchor anchor = con.getTargetAnchor();
+			GraphicalEditPart part = (GraphicalEditPart) r.getTarget();
+			if (anchor == null || anchor.getOwner() != part.getFigure()) {
+				if (getModel() instanceof Shape)
+					anchor = new EllipseBorderAnchor(
+							((ShapeFigure) getFigure()).getEllipseFigure());
+				else
+					throw new IllegalArgumentException("unexpected model");
 
-//		getCastedModel().refreshChildrenColor();
+				anchor.setAngle(conModel.getTargetAngle());
+				con.setTargetAnchor(anchor);
+			}
+
+			Point loc = r.getLocation();
+			Rectangle rect = Rectangle.SINGLETON;
+			rect.setBounds(getFigure().getBounds());
+			getFigure().translateToAbsolute(rect);
+			Point ref = rect.getCenter();
+			double dx = loc.x - ref.x;
+			double dy = loc.y - ref.y;
+			anchor.setAngle(Math.atan2(dy, dx));
+			conModel.setTargetAngle(anchor.getAngle());
+			return anchor;
+		} else {
+			if (getModel() instanceof Shape)
+				return new EllipseBorderAnchor(
+						((ShapeFigure) getFigure()).getEllipseFigure());
+			else
+				throw new IllegalArgumentException("unexpected model");
+		}
 	}
-	 else if (Shape.VISIBLE_PROP.equals(prop)){
-			((ShapeFigure)getFigure()).setVisible((Boolean) evt.getNewValue());
-	 }
-}
 
-protected void refreshVisuals() {
-	Rectangle bounds = new Rectangle(getCastedModel().getLocation(),
-			getCastedModel().getSize());
-//	setTemporarily(isTemporarily());
-	((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), bounds);
+	public void propertyChange(PropertyChangeEvent evt) {
+		String prop = evt.getPropertyName();
+		if (Shape.SIZE_PROP.equals(prop) || Shape.LOCATION_PROP.equals(prop)) {
+			refreshVisuals();
+		} else if (Shape.SOURCE_CONNECTIONS_PROP.equals(prop)) {
+			refreshSourceConnections();
+		} else if (Shape.TARGET_CONNECTIONS_PROP.equals(prop)) {
+			refreshTargetConnections();
+		} else if (Shape.NAME_PROP.equals(prop)) {
+			((ShapeFigure) getFigure()).getLabel().setText(
+					getCastedModel().getName());
+		} else if (Shape.COLOR_PROP.equals(prop)) {
+			// 加一个对话框
+			boolean confirm = MessageDialog.openConfirm(Display.getDefault()
+					.getActiveShell(), "提示", "确实要改变该类及其所有子类颜色吗？");
+			if (confirm)
+				((ShapeFigure) getFigure()).getEllipseFigure()
+						.setBackgroundColor(
+								new Color(null, getCastedModel().getColor()));
 
-}
-
-public void  performRequest(Request req){
-	if (req.getType().equals(RequestConstants.REQ_OPEN)){
-		performDirectEdit();
+			// getCastedModel().refreshChildrenColor();
+		} else if (Shape.VISIBLE_PROP.equals(prop)) {
+			((ShapeFigure) getFigure()).setVisible((Boolean) evt.getNewValue());
+		}
 	}
-	else
-		super.performRequest(req);
-}
 
-private void performDirectEdit() {
-	if (directmanager == null){
-		directmanager = new ShapeDirectEditManager(this,TextCellEditor.class,
-				new ShapeCellEditorLocator((ShapeFigure) getFigure()));
+	protected void refreshVisuals() {
+		Rectangle bounds = new Rectangle(getCastedModel().getLocation(),
+				getCastedModel().getSize());
+		// setTemporarily(isTemporarily());
+		((GraphicalEditPart) getParent()).setLayoutConstraint(this,
+				getFigure(), bounds);
+
 	}
-//	if(getCastedModel().isTemporarily())
-//		setTemporarily(false);
-//	else
+
+	public void performRequest(Request req) {
+		if (req.getType().equals(RequestConstants.REQ_OPEN)) {
+			performDirectEdit();
+		} else
+			super.performRequest(req);
+	}
+
+	private void performDirectEdit() {
+		if (directmanager == null) {
+			directmanager = new ShapeDirectEditManager(this,
+					TextCellEditor.class, new ShapeCellEditorLocator(
+							(ShapeFigure) getFigure()));
+		}
+		// if(getCastedModel().isTemporarily())
+		// setTemporarily(false);
+		// else
 		directmanager.show();
-}
+	}
 }
