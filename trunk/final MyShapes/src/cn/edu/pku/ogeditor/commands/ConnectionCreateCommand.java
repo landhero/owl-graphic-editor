@@ -146,7 +146,8 @@ public void execute() {
 private boolean existSameConnection() {
 	List<Connection> connections = source.getSourceConnections();
 	for (int i = 0; i < connections.size(); i++) {
-		if(connections.get(i).getName().equals(name))
+		Connection curConnection = connections.get(i);
+		if(curConnection.getTarget() == target && connections.get(i).getName().equals(name))
 			return true;
 	}
 	return false;
