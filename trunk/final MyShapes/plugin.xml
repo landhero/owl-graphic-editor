@@ -210,4 +210,22 @@
             name="OWL Graphic Editor">
       </perspective>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="cn.edu.pku.perspective">
+         <view
+               id="org.eclipse.jdt.ui.PackageExplorer"
+               relationship="stack"
+               relative="cn.edu.pku.ogeditor.views.hierarchyView"
+               visible="true">
+         </view>
+         <viewShortcut
+               id="cn.edu.pku.ogeditor.views.hierarchyView">
+         </viewShortcut>
+         <perspectiveShortcut
+               id="cn.edu.pku.perspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+   </extension>
 </plugin>
