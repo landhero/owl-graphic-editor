@@ -201,4 +201,13 @@
             commandId="cn.edu.pku.ogeditor.commands.createChild">
       </handler>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="cn.edu.pku.ogeditor.ShapesEditorPerspective"
+            icon="ogeditor.gif"
+            id="cn.edu.pku.perspective"
+            name="OWL Graphic Editor">
+      </perspective>
+   </extension>
 </plugin>
