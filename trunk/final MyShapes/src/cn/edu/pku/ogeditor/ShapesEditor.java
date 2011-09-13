@@ -109,13 +109,14 @@ import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
- * A graphical editor with flyout palette that can edit .shapes files.
- * The binding between the .shapes file extension and this editor is done in plugin.xml
+ * A graphical editor with flyout palette that can edit .shapes files. The
+ * binding between the .shapes file extension and this editor is done in
+ * plugin.xml
+ * 
  * @author Elias Volanakis
  */
-public class ShapesEditor 
-extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedPropertySheetPageContributor
-{
+public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
+		Serializable, ITabbedPropertySheetPageContributor {
 	private static final long serialVersionUID = 1L;
 	private static final String NS = "http://ogeidtor/concept-ont#";
 	/** This is the root of the editor's model. */
@@ -127,38 +128,45 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 	private boolean dirty = false;
 	private OntModel ontModel;
 	public static ShapesEditor myselfShapesEditor;
+
 	/** Create a new ShapesEditor instance. This is called by the Workspace. */
 	public ShapesEditor() {
 		setEditDomain(new DefaultEditDomain(this));
-		myselfShapesEditor=this;
+		myselfShapesEditor = this;
 	}
 
-	public ShapesDiagram getDiagram(){
+	public ShapesDiagram getDiagram() {
 		return diagram;
 	}
+
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void createActions(){
+	protected void createActions() {
 		super.createActions();
-		IAction action=new RelocateAction(this);
+		IAction action = new RelocateAction(this);
 		action.setId(ActionConstant.RELOCATE_ID);
 		getActionRegistry().registerAction(action);
 		getSelectionActions().add(action.getId());
-		action=new ConceptFilterAction(this);
+		action = new ConceptFilterAction(this);
 		action.setId(ActionConstant.CONCEPTFILTER_ID);
 		getActionRegistry().registerAction(action);
 		getSelectionActions().add(action.getId());
-		action=new RelationFilterAction(this);
+		action = new RelationFilterAction(this);
 		action.setId(ActionConstant.RELATIONFILTER_ID);
 		getActionRegistry().registerAction(action);
 		getSelectionActions().add(action.getId());
 	}
+
 	/**
 	 * Configure the graphical viewer before it receives contents.
-	 * <p>This is the place to choose an appropriate RootEditPart and EditPartFactory
-	 * for your editor. The RootEditPart determines the behavior of the editor's "work-area".
-	 * For example, GEF includes zoomable and scrollable root edit parts. The EditPartFactory
-	 * maps model elements to edit parts (controllers).</p>
+	 * <p>
+	 * This is the place to choose an appropriate RootEditPart and
+	 * EditPartFactory for your editor. The RootEditPart determines the behavior
+	 * of the editor's "work-area". For example, GEF includes zoomable and
+	 * scrollable root edit parts. The EditPartFactory maps model elements to
+	 * edit parts (controllers).
+	 * </p>
+	 * 
 	 * @see org.eclipse.gef.ui.parts.GraphicalEditor#configureGraphicalViewer()
 	 */
 	protected void configureGraphicalViewer() {
@@ -170,16 +178,17 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
 
 		// configure the context menu provider
-		ContextMenuProvider cmProvider =
-			new ShapesEditorContextMenuProvider(viewer, getActionRegistry());
+		ContextMenuProvider cmProvider = new ShapesEditorContextMenuProvider(
+				viewer, getActionRegistry());
 		viewer.setContextMenu(cmProvider);
 		getSite().registerContextMenu(cmProvider, viewer);
-        getSite().setSelectionProvider(viewer);
+		getSite().setSelectionProvider(viewer);
 		initZoomManager();
 	}
 
 	/**
 	 * Set up the editor's inital content (after creation).
+	 * 
 	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#initializeGraphicalViewer()
 	 */
 	protected void initializeGraphicalViewer() {
@@ -191,22 +200,28 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 	}
 
 	private void initZoomManager() {
-		ZoomManager manager = ((ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager(); 
-		getActionRegistry().registerAction(new ZoomInAction(manager)); 
-		getActionRegistry().registerAction(new ZoomOutAction(manager)); 
-		double[] zoomLevels; 
-		zoomLevels = new double[] {0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 10.0, 20.0}; 
+		ZoomManager manager = ((ScalableFreeformRootEditPart) getGraphicalViewer()
+				.getRootEditPart()).getZoomManager();
+		getActionRegistry().registerAction(new ZoomInAction(manager));
+		getActionRegistry().registerAction(new ZoomOutAction(manager));
+		double[] zoomLevels;
+		zoomLevels = new double[] { 0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 2.5, 3.0,
+				4.0, 5.0, 10.0, 20.0 };
 		manager.setZoomLevels(zoomLevels);
 		ArrayList<String> zoomContributions;
-		zoomContributions = new ArrayList<String>(); 
-		zoomContributions.add(ZoomManager.FIT_ALL); 
-		zoomContributions.add(ZoomManager.FIT_HEIGHT); 
-		zoomContributions.add(ZoomManager.FIT_WIDTH); 
+		zoomContributions = new ArrayList<String>();
+		zoomContributions.add(ZoomManager.FIT_ALL);
+		zoomContributions.add(ZoomManager.FIT_HEIGHT);
+		zoomContributions.add(ZoomManager.FIT_WIDTH);
 		manager.setZoomLevelContributions(zoomContributions);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.gef.ui.parts.GraphicalEditor#commandStackChanged(java.util.EventObject)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.gef.ui.parts.GraphicalEditor#commandStackChanged(java.util
+	 * .EventObject)
 	 */
 	public void commandStackChanged(EventObject event) {
 		firePropertyChange(IEditorPart.PROP_DIRTY);
@@ -216,78 +231,101 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 	private void createOutputStream(OutputStream os) throws IOException {
 		ObjectOutputStream oos = new ObjectOutputStream(os);
 		ShapesDiagram tempDiagram = getModel();
-		while(tempDiagram.getFather() != null)
+		while (tempDiagram.getFather() != null)
 			tempDiagram = tempDiagram.getFather();
 		oos.writeObject(tempDiagram);
 		oos.close();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#createPaletteViewerProvider()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#
+	 * createPaletteViewerProvider()
 	 */
 	protected PaletteViewerProvider createPaletteViewerProvider() {
 		return new PaletteViewerProvider(getEditDomain()) {
 			protected void configurePaletteViewer(PaletteViewer viewer) {
 				super.configurePaletteViewer(viewer);
-				paletteViewer=viewer;
+				paletteViewer = viewer;
 				viewer.addDragSourceListener(createTransferDragSourceListener());
-			}	
+			}
 		};
 	}
 
 	private TransferDragSourceListener createTransferDragSourceListener() {
-		return new TemplateTransferDragSourceListener(paletteViewer){
-			public void dragStart(DragSourceEvent event)
-			{
+		return new TemplateTransferDragSourceListener(paletteViewer) {
+			public void dragStart(DragSourceEvent event) {
 				super.dragStart(event);
 				List<?> selection = getViewer().getSelectedEditParts();
 				if (selection.size() == 1) {
-					EditPart editpart = (EditPart) getViewer().getSelectedEditParts()
-					.get(0);
+					EditPart editpart = (EditPart) getViewer()
+							.getSelectedEditParts().get(0);
 					Object model = editpart.getModel();
 					if (model instanceof PaletteEntry)
-						ShapesEditor.myselfShapesEditor.selectedDragSourceToolLabel = ((PaletteEntry) model).getLabel();
-					else ShapesEditor.myselfShapesEditor.selectedDragSourceToolLabel = "Error";
+						ShapesEditor.myselfShapesEditor.selectedDragSourceToolLabel = ((PaletteEntry) model)
+								.getLabel();
+					else
+						ShapesEditor.myselfShapesEditor.selectedDragSourceToolLabel = "Error";
 				}
 			}
 		};
 	}
+
 	/**
-	 * Create a transfer drop target listener. When using a CombinedTemplateCreationEntry
-	 * tool in the palette, this will enable model element creation by dragging from the palette.
+	 * Create a transfer drop target listener. When using a
+	 * CombinedTemplateCreationEntry tool in the palette, this will enable model
+	 * element creation by dragging from the palette.
+	 * 
 	 * @see #createPaletteViewerProvider()
 	 */
 	private TransferDropTargetListener createTransferDropTargetListener() {
 		return new TemplateTransferDropTargetListener(getGraphicalViewer()) {
 			protected CreationFactory getFactory(Object template) {
-				return new ShapesCreationFactory(ShapesEditor.myselfShapesEditor.selectedDragSourceToolLabel);
+				return new ShapesCreationFactory(
+						ShapesEditor.myselfShapesEditor.selectedDragSourceToolLabel);
 			}
 		};
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor
+	 * )
 	 */
 	public void doSave(IProgressMonitor monitor) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
 			createOutputStream(out);
 			IFile file = ((IFileEditorInput) getEditorInput()).getFile();
-			file.setContents(
-					new ByteArrayInputStream(out.toByteArray()), 
-					true,  // keep saving, even if IFile is out of sync with the Workspace
+			file.setContents(new ByteArrayInputStream(out.toByteArray()), true, // keep
+																				// saving,
+																				// even
+																				// if
+																				// IFile
+																				// is
+																				// out
+																				// of
+																				// sync
+																				// with
+																				// the
+																				// Workspace
 					false, // dont keep history
 					monitor); // progress monitor
 			getCommandStack().markSaveLocation();
 			setDirty(false);
-		} catch (CoreException ce) { 
+		} catch (CoreException ce) {
 			ce.printStackTrace();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
 	 */
 	public void doSaveAs() {
@@ -296,86 +334,94 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 		SaveAsDialog dialog = new SaveAsDialog(shell);
 		dialog.setOriginalFile(((IFileEditorInput) getEditorInput()).getFile());
 		dialog.open();
-		IPath path = dialog.getResult();	
+		IPath path = dialog.getResult();
 
 		if (path != null) {
 			System.out.println("dosaveas:path not null");
-			//save as owl file
-			String fileextension= path.getFileExtension();
-			String filepath = Platform.getLocation().toString()+path.toString();
+			// save as owl file
+			String fileextension = path.getFileExtension();
+			String filepath = Platform.getLocation().toString()
+					+ path.toString();
 
-			if(fileextension.equals("owl") || fileextension.equals("rdf") || fileextension.equals("ttl")){
+			if (fileextension.equals("owl") || fileextension.equals("rdf")
+					|| fileextension.equals("ttl")) {
 				System.out.println("dosaveas: is .owl");
-				System.out.println("path:"+filepath);
-				System.out.println("ws: "+ResourcesPlugin.getWorkspace());
+				System.out.println("path:" + filepath);
+				System.out.println("ws: " + ResourcesPlugin.getWorkspace());
 
-				SaveAsOWL(filepath,fileextension);
+				SaveAsOWL(filepath, fileextension);
 
-			}
-			else{
+			} else {
 				System.out.println("dosaveas: not .owl");
 				// try to save the editor's contents under a different file name
-				final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+				final IFile file = ResourcesPlugin.getWorkspace().getRoot()
+						.getFile(path);
 				try {
-					new ProgressMonitorDialog(shell).run(
-							false, // don't fork
+					new ProgressMonitorDialog(shell).run(false, // don't fork
 							false, // not cancelable
-							new WorkspaceModifyOperation() { // run this operation
-								public void execute(final IProgressMonitor monitor) {
+							new WorkspaceModifyOperation() { // run this
+																// operation
+								public void execute(
+										final IProgressMonitor monitor) {
 									try {
 										ByteArrayOutputStream out = new ByteArrayOutputStream();
 										createOutputStream(out);
-										file.create(
-												new ByteArrayInputStream(out.toByteArray()), // contents
-												true, // keep saving, even if IFile is out of sync with the Workspace
+										file.create(new ByteArrayInputStream(
+												out.toByteArray()), // contents
+												true, // keep saving, even if
+														// IFile is out of sync
+														// with the Workspace
 												monitor); // progress monitor
 									} catch (CoreException ce) {
 										ce.printStackTrace();
 									} catch (IOException ioe) {
 										ioe.printStackTrace();
-									} 
+									}
 								}
 							});
 					// set input to the new file
 					setInput(new FileEditorInput(file));
 					getCommandStack().markSaveLocation();
 				} catch (InterruptedException ie) {
-					// should not happen, since the monitor dialog is not cancelable
-					ie.printStackTrace(); 
-				} catch (InvocationTargetException ite) { 
-					ite.printStackTrace(); 
+					// should not happen, since the monitor dialog is not
+					// cancelable
+					ie.printStackTrace();
+				} catch (InvocationTargetException ite) {
+					ite.printStackTrace();
 				}
 			}
-		}	
+		}
 	}
 
-	protected void SaveAsOWL(String filepath,String fileextension){
+	protected void SaveAsOWL(String filepath, String fileextension) {
 
-		System.out.println("----saveasowl:start");	
-		System.out.println("saveasowl:no modelfactory");	
+		System.out.println("----saveasowl:start");
+		System.out.println("saveasowl:no modelfactory");
 		ontModel = ModelFactory.createOntologyModel();
-		System.out.println("saveasowl:create modelfactory");	
-		//creat ontology
+		System.out.println("saveasowl:create modelfactory");
+		// creat ontology
 		Ontology shOnt = ontModel.createOntology(NS);
-		shOnt.addProperty(RDFS.comment, "This is an ontology for a process-oriented requirement modeling tool.");
+		shOnt.addProperty(RDFS.comment,
+				"This is an ontology for a process-oriented requirement modeling tool.");
 		shOnt.addProperty(RDFS.label, "Concept Ontology");
 		shOnt.addProperty(OWL.versionInfo, "$serialVersionUID:1.0 Dec. 2010$");
 
 		ShapesDiagram rootDiagram = diagram.getRootDiagram();
 		createOntologyForDiagram(rootDiagram);
 
-		/* Save OntModel ontM to the OWL file
-		 */ 
-		try{	
+		/*
+		 * Save OntModel ontM to the OWL file
+		 */
+		try {
 
 			FileOutputStream out = new FileOutputStream(filepath);
-			if(fileextension.equals("owl") || fileextension.equals("rdf"))
+			if (fileextension.equals("owl") || fileextension.equals("rdf"))
 				ontModel.write(out);
-			else if(fileextension.equals("ttl"))
-				ontModel.write(out,"Turtle");
-			System.out.println("has written to "+filepath);
+			else if (fileextension.equals("ttl"))
+				ontModel.write(out, "Turtle");
+			System.out.println("has written to " + filepath);
 
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -384,61 +430,66 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 	private void createOntologyForDiagram(ShapesDiagram curDiagram) {
 		// TODO Auto-generated method stub
 		List<Shape> curShapes = curDiagram.getChildren();
-		//String std = "http://www.w3.org/2001/XMLSchema";
-		for(int i=0; i<curShapes.size(); i++){
+		// String std = "http://www.w3.org/2001/XMLSchema";
+		for (int i = 0; i < curShapes.size(); i++) {
 			Shape curShape = curShapes.get(i);
-			//不进行是否有重复的判断的前提是本体中所有类的名字都是唯一的
-			OntClass curClass = ontModel.createClass(NS+curShape.getName());
+			// 不进行是否有重复的判断的前提是本体中所有类的名字都是唯一的
+			OntClass curClass = ontModel.createClass(NS + curShape.getName());
 			Shape parentShape = curShape.getParent();
-			OntClass parentClass = ontModel.getOntClass(NS+parentShape.getName());
-			if(parentClass == null)
+			OntClass parentClass = ontModel.getOntClass(NS
+					+ parentShape.getName());
+			if (parentClass == null)
 				continue;
 			parentClass.addSubClass(curClass);
 		}
-		for(int i=0; i<curShapes.size(); i++){
+		for (int i = 0; i < curShapes.size(); i++) {
 			Shape curShape = curShapes.get(i);
-			OntClass srcClass = ontModel.getOntClass(NS+curShape.getName());
-			OntClass tarClass ;
+			OntClass srcClass = ontModel.getOntClass(NS + curShape.getName());
+			OntClass tarClass;
 
 			List<Connection> sCons = curShape.getSourceConnections();
 			List<ShapeProperty> properties = curShape.getProperties();
 			for (int j = 0; j < properties.size(); j++) {
 				ShapeProperty curProp = properties.get(i);
-				DatatypeProperty curDp = ontModel.createDatatypeProperty(NS+curProp.getName());
+				DatatypeProperty curDp = ontModel.createDatatypeProperty(NS
+						+ curProp.getName());
 				curDp.setDomain(srcClass);
-				//保存这部分问一问鲁扬扬
-				//curDp.setRange(std+curProp.getType());
+				// 保存这部分问一问鲁扬扬
+				// curDp.setRange(std+curProp.getType());
 			}
-			
-			for(int j=0; j<sCons.size(); j++){
+
+			for (int j = 0; j < sCons.size(); j++) {
 				Connection curCon = sCons.get(j);
 				Shape tarShape = curCon.getTarget();
-				tarClass = ontModel.getOntClass(NS+tarShape.getName()); 
+				tarClass = ontModel.getOntClass(NS + tarShape.getName());
 
-				ObjectProperty curOP = ontModel.getObjectProperty(NS+curCon.getName());
-				if(curOP == null)
-					curOP = ontModel.createObjectProperty(NS+curCon.getName());
+				ObjectProperty curOP = ontModel.getObjectProperty(NS
+						+ curCon.getName());
+				if (curOP == null)
+					curOP = ontModel
+							.createObjectProperty(NS + curCon.getName());
 				curOP.addDomain(srcClass);
 				curOP.addRange(tarClass);
-				System.out.println(curOP.getURI()+curOP.getDomain()+" holyshit");
-				System.out.println(curOP.getRange()+" endHolyshit");
+				System.out.println(curOP.getURI() + curOP.getDomain()
+						+ " holyshit");
+				System.out.println(curOP.getRange() + " endHolyshit");
 			}
 		}
-		for(int i = 0;i<curDiagram.getLowerLevelDiagrams().size();i++)
-		{
+		for (int i = 0; i < curDiagram.getLowerLevelDiagrams().size(); i++) {
 			createOntologyForDiagram(curDiagram.getLowerLevelDiagrams().get(i));
 		}
 	}
 
 	public Object getAdapter(Class type) {
-		myselfShapesEditor= this;
+		myselfShapesEditor = this;
 
 		if (type == IPropertySheetPage.class)
-	            return new TabbedPropertySheetPage(this);
+			return new TabbedPropertySheetPage(this);
 		else if (type == IContentOutlinePage.class)
 			return new OutlinePage(new TreeViewer());
-		else if (type == ZoomManager.class) 
-			return ((ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager(); 
+		else if (type == ZoomManager.class)
+			return ((ScalableFreeformRootEditPart) getGraphicalViewer()
+					.getRootEditPart()).getZoomManager();
 		return super.getAdapter(type);
 	}
 
@@ -446,33 +497,41 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 		return diagram;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot
+	 * ()
 	 */
 	public PaletteRoot getPaletteRoot() {
 		if (PALETTE_MODEL == null)
 			PALETTE_MODEL = new ShapesEditorPaletteRoot();
 		return PALETTE_MODEL;
 	}
+
 	private void handleLoadException(Exception e) {
 		System.err.println("** Load failed. Using default model. **");
 		e.printStackTrace();
 		diagram = new ShapesDiagram();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
 	 */
 	public boolean isSaveAsAllowed() {
 		return true;
 	}
 
-	public boolean isDirty()
-	{
+	public boolean isDirty() {
 		return getCommandStack().isDirty() || dirty;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.part.EditorPart#setInput(org.eclipse.ui.IEditorInput)
 	 */
 	protected void setInput(IEditorInput input) {
@@ -483,18 +542,20 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 			diagram = (ShapesDiagram) in.readObject();
 			in.close();
 			setPartName(file.getName());
-			((ShapesEditorPaletteRoot)getPaletteRoot()).refresh();
-		} catch (IOException e) { 
-			handleLoadException(e); 
-		} catch (CoreException e) { 
-			handleLoadException(e); 
-		} catch (ClassNotFoundException e) { 
-			handleLoadException(e); 
+			((ShapesEditorPaletteRoot) getPaletteRoot()).refresh();
+		} catch (IOException e) {
+			handleLoadException(e);
+		} catch (CoreException e) {
+			handleLoadException(e);
+		} catch (ClassNotFoundException e) {
+			handleLoadException(e);
 		}
 	}
-	public DecriptionView getDescription(){
+
+	public DecriptionView getDescription() {
 		DecriptionView dv = null;
-		dv =(DecriptionView) getSite().getWorkbenchWindow().getActivePage().findView("cn.edu.pku.ogeditor.descriptionView");
+		dv = (DecriptionView) getSite().getWorkbenchWindow().getActivePage()
+				.findView("cn.edu.pku.ogeditor.descriptionView");
 		return dv;
 	}
 
@@ -508,30 +569,31 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 		// TODO Auto-generated method stub
 		this.diagram = diagram;
 		getGraphicalViewer().setContents(getModel());
-		((ShapesEditorPaletteRoot)getPaletteRoot()).refresh();
+		((ShapesEditorPaletteRoot) getPaletteRoot()).refresh();
 	}
 
-	protected FigureCanvas getEditor(){
-		return (FigureCanvas)getGraphicalViewer().getControl();
+	protected FigureCanvas getEditor() {
+		return (FigureCanvas) getGraphicalViewer().getControl();
 	}
+
 	/**
 	 * Creates an outline pagebook for this editor.
 	 */
-	class OutlinePage extends ContentOutlinePage implements IAdaptable
-	{
+	class OutlinePage extends ContentOutlinePage implements IAdaptable {
 
 		private PageBook pageBook;
 		private Control outline;
 		private Canvas overview;
 		private IAction showOutlineAction, showOverviewAction;
-		static final int ID_OUTLINE  = 0;
+		static final int ID_OUTLINE = 0;
 		static final int ID_OVERVIEW = 1;
 		private Thumbnail thumbnail;
 		private DisposeListener disposeListener;
 
-		public OutlinePage(EditPartViewer viewer){
+		public OutlinePage(EditPartViewer viewer) {
 			super(viewer);
 		}
+
 		public void init(IPageSite pageSite) {
 			super.init(pageSite);
 			ActionRegistry registry = getActionRegistry();
@@ -544,25 +606,27 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 			bars.updateActionBars();
 		}
 
-		protected void configureOutlineViewer(){
+		protected void configureOutlineViewer() {
 			getViewer().setEditDomain(getEditDomain());
 			getViewer().setEditPartFactory(new ShapesTreeEditPartFactory());
-			ContextMenuProvider provider = new ShapesEditorContextMenuProvider(getViewer(), getActionRegistry());
+			ContextMenuProvider provider = new ShapesEditorContextMenuProvider(
+					getViewer(), getActionRegistry());
 			getViewer().setContextMenu(provider);
-			getSite().registerContextMenu(
-					"cn.edu.pku.ogeditor.contextmenu", //$NON-NLS-1$
+			getSite().registerContextMenu("cn.edu.pku.ogeditor.contextmenu", //$NON-NLS-1$
 					provider, getSite().getSelectionProvider());
-//			getViewer().setKeyHandler(getCommonKeyHandler());
-			getViewer().addDropTargetListener((TransferDropTargetListener)
-					new TemplateTransferDropTargetListener(getViewer()));
+			// getViewer().setKeyHandler(getCommonKeyHandler());
+			getViewer()
+					.addDropTargetListener(
+							(TransferDropTargetListener) new TemplateTransferDropTargetListener(
+									getViewer()));
 			IToolBarManager tbm = getSite().getActionBars().getToolBarManager();
 			showOutlineAction = new Action() {
 				public void run() {
 					showPage(ID_OUTLINE);
 				}
 			};
-			showOutlineAction.setImageDescriptor(ImageDescriptor.createFromFile(
-					ShapesPlugin.class,"icons/outline.gif")); //$NON-NLS-1$
+			showOutlineAction.setImageDescriptor(ImageDescriptor
+					.createFromFile(ShapesPlugin.class, "icons/outline.gif")); //$NON-NLS-1$
 			showOutlineAction.setToolTipText("Show Outline");
 			tbm.add(showOutlineAction);
 			showOverviewAction = new Action() {
@@ -570,14 +634,14 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 					showPage(ID_OVERVIEW);
 				}
 			};
-			showOverviewAction.setImageDescriptor(ImageDescriptor.createFromFile(
-					ShapesPlugin.class,"icons/overview.gif")); //$NON-NLS-1$
+			showOverviewAction.setImageDescriptor(ImageDescriptor
+					.createFromFile(ShapesPlugin.class, "icons/overview.gif")); //$NON-NLS-1$
 			showOverviewAction.setToolTipText("Show Overview");
 			tbm.add(showOverviewAction);
 			showPage(ID_OUTLINE);
 		}
 
-		public void createControl(Composite parent){
+		public void createControl(Composite parent) {
 			pageBook = new PageBook(parent, SWT.NONE);
 			outline = getViewer().createControl(pageBook);
 			overview = new Canvas(pageBook, SWT.NONE);
@@ -587,7 +651,7 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 			initializeOutlineViewer();
 		}
 
-		public void dispose(){
+		public void dispose() {
 			unhookOutlineViewer();
 			if (thumbnail != null) {
 				thumbnail.deactivate();
@@ -598,7 +662,8 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 
 		public Object getAdapter(Class type) {
 			if (type == ZoomManager.class)
-				return getGraphicalViewer().getProperty(ZoomManager.class.toString());
+				return getGraphicalViewer().getProperty(
+						ZoomManager.class.toString());
 			return null;
 		}
 
@@ -606,11 +671,11 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 			return pageBook;
 		}
 
-		protected void hookOutlineViewer(){
+		protected void hookOutlineViewer() {
 			getSelectionSynchronizer().addViewer(getViewer());
 		}
 
-		protected void initializeOutlineViewer(){
+		protected void initializeOutlineViewer() {
 			setContents(getDiagram());
 		}
 
@@ -618,10 +683,11 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 			LightweightSystem lws = new LightweightSystem(overview);
 			RootEditPart rep = getGraphicalViewer().getRootEditPart();
 			if (rep instanceof ScalableFreeformRootEditPart) {
-				ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart)rep;
-				thumbnail = new ScrollableThumbnail((Viewport)root.getFigure());
+				ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) rep;
+				thumbnail = new ScrollableThumbnail((Viewport) root.getFigure());
 				thumbnail.setBorder(new MarginBorder(3));
-				thumbnail.setSource(root.getLayer(LayerConstants.PRINTABLE_LAYERS));
+				thumbnail.setSource(root
+						.getLayer(LayerConstants.PRINTABLE_LAYERS));
 				lws.setContents(thumbnail);
 				disposeListener = new DisposeListener() {
 					public void widgetDisposed(DisposeEvent e) {
@@ -656,13 +722,14 @@ extends GraphicalEditorWithFlyoutPalette implements Serializable , ITabbedProper
 			}
 		}
 
-		
-		protected void unhookOutlineViewer(){
+		protected void unhookOutlineViewer() {
 			getSelectionSynchronizer().removeViewer(getViewer());
-			if (disposeListener != null && getEditor() != null && !getEditor().isDisposed())
+			if (disposeListener != null && getEditor() != null
+					&& !getEditor().isDisposed())
 				getEditor().removeDisposeListener(disposeListener);
 		}
 	}
+
 	public String getContributorId() {
 		return getSite().getId();
 	}
