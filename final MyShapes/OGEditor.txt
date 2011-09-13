@@ -1,0 +1,7 @@
+操作等用扩展点来实现
+调色板里的工具和Shape、Connection的对应关系用HashMap实现
+
+javascript
+jquery
+prototype and Scritpaculous
+数据库的问题

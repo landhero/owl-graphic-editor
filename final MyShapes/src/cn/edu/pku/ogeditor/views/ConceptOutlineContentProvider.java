@@ -23,15 +23,19 @@ public class ConceptOutlineContentProvider implements ITreeContentProvider {
 
 	public Object[] getElements(Object inputElement) {
 		// TODO Auto-generated method stub
-		ShapesDiagram shapesDiagram=(ShapesDiagram)inputElement;
-		return shapesDiagram.getChildren().toArray();
+		if (inputElement instanceof ShapesDiagram) {
+			ShapesDiagram shapesDiagram = (ShapesDiagram) inputElement;
+			return shapesDiagram.getChildren().toArray();
+		} else
+			return new Object[0];
 	}
 
 	public Object[] getChildren(Object parentElement) {
 		// TODO Auto-generated method stub
-		Shape shape=(Shape)parentElement;
-		List<Shape> list=shape.getChildren();
-		if(list==null)return new Object[0];
+		Shape shape = (Shape) parentElement;
+		List<Shape> list = shape.getChildren();
+		if (list == null)
+			return new Object[0];
 		return list.toArray();
 	}
 
@@ -42,9 +46,9 @@ public class ConceptOutlineContentProvider implements ITreeContentProvider {
 
 	public boolean hasChildren(Object element) {
 		// TODO Auto-generated method stub
-		Shape shape=(Shape)element;
-		List<?> list=shape.getChildren();
-		return !(list==null||list.isEmpty());
+		Shape shape = (Shape) element;
+		List<?> list = shape.getChildren();
+		return !(list == null || list.isEmpty());
 	}
 
 }
