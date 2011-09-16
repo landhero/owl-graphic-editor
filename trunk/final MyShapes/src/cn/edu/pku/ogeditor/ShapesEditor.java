@@ -103,10 +103,12 @@ import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.ontology.Ontology;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 /**
  * A graphical editor with flyout palette that can edit .shapes files. The
@@ -397,7 +399,7 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 
 		System.out.println("----saveasowl:start");
 		System.out.println("saveasowl:no modelfactory");
-		ontModel = ModelFactory.createOntologyModel();
+		ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
 		System.out.println("saveasowl:create modelfactory");
 		// creat ontology
 		Ontology shOnt = ontModel.createOntology(NS);
@@ -416,7 +418,7 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 
 			FileOutputStream out = new FileOutputStream(filepath);
 			if (fileextension.equals("owl") || fileextension.equals("rdf"))
-				ontModel.write(out);
+				ontModel.write(out,"RDF/XML-ABBREV");
 			else if (fileextension.equals("ttl"))
 				ontModel.write(out, "Turtle");
 			System.out.println("has written to " + filepath);
@@ -447,7 +449,6 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 			OntClass srcClass = ontModel.getOntClass(NS + curShape.getName());
 			OntClass tarClass;
 
-			List<Connection> sCons = curShape.getSourceConnections();
 			List<ShapeProperty> properties = curShape.getProperties();
 			for (int j = 0; j < properties.size(); j++) {
 				ShapeProperty curProp = properties.get(i);
@@ -456,8 +457,11 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 				curDp.setDomain(srcClass);
 				// 保存这部分问一问鲁扬扬
 				// curDp.setRange(std+curProp.getType());
+				curDp.setRange(ShapeProperty.type2XSDType(curProp.getType()));
+				srcClass.addProperty(curDp, curProp.getValue());
+				//curDp.setPropertyValue(arg0, arg1);
 			}
-
+			List<Connection> sCons = curShape.getSourceConnections();
 			for (int j = 0; j < sCons.size(); j++) {
 				Connection curCon = sCons.get(j);
 				Shape tarShape = curCon.getTarget();

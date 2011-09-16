@@ -2,6 +2,9 @@ package cn.edu.pku.ogeditor.model;
 
 import java.io.Serializable;
 
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.XSD;
+
 public class ShapeProperty implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -22,6 +25,10 @@ public class ShapeProperty implements Serializable{
 		FLOAT_TYPE, INT_TYPE, STRING_TYPE,
 		ANY_TYPE, DATE_TYPE, DATETIME_TYPE,
 		TIME_TYPE};
+	private static final Resource[] XSD_TYPES = { XSD.xboolean,
+		XSD.xfloat, XSD.xint, XSD.xstring,
+		XSD.anyURI, XSD.date, XSD.dateTime,
+		XSD.time};
 	public static String[] getAllTypes()
 	{
 		return TYPES;
@@ -102,6 +109,8 @@ public class ShapeProperty implements Serializable{
 		this.value = "";
 		
 	}
-
-
+	public static Resource type2XSDType(String type)
+	{
+		return XSD_TYPES[getSelectedIndex(type)];
+	}
 }
