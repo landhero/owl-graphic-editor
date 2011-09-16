@@ -367,7 +367,8 @@ public class DataPropertySection extends AbstractPropertySection {
 				}
 				curProp.setValue(v.toString());
 				valueText.setText(v.toString());
-			} else if (type.equals(ShapeProperty.STRING_TYPE)
+			} else if (type.equals(ShapeProperty.ANY_TYPE)
+					||type.equals(ShapeProperty.STRING_TYPE)
 					|| type.equals(ShapeProperty.DATE_TYPE)
 					|| type.equals(ShapeProperty.DATETIME_TYPE)
 					|| type.equals(ShapeProperty.TIME_TYPE)) {
