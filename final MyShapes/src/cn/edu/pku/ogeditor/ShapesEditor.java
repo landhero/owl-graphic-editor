@@ -99,12 +99,14 @@ import cn.edu.pku.ogeditor.parts.ShapesEditPartFactory;
 import cn.edu.pku.ogeditor.parts.ShapesTreeEditPartFactory;
 import cn.edu.pku.ogeditor.views.DecriptionView;
 
+import com.hp.hpl.jena.ontology.AllValuesFromRestriction;
 import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.ontology.Ontology;
+import com.hp.hpl.jena.ontology.SomeValuesFromRestriction;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -448,19 +450,20 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 			Shape curShape = curShapes.get(i);
 			OntClass srcClass = ontModel.getOntClass(NS + curShape.getName());
 			OntClass tarClass;
-
-			List<ShapeProperty> properties = curShape.getProperties();
-			for (int j = 0; j < properties.size(); j++) {
-				ShapeProperty curProp = properties.get(i);
-				DatatypeProperty curDp = ontModel.createDatatypeProperty(NS
-						+ curProp.getName());
-				curDp.setDomain(srcClass);
-				// 保存这部分问一问鲁扬扬
-				// curDp.setRange(std+curProp.getType());
-				curDp.setRange(ShapeProperty.type2XSDType(curProp.getType()));
-				srcClass.addProperty(curDp, curProp.getValue());
-				//curDp.setPropertyValue(arg0, arg1);
-			}
+//
+//			List<ShapeProperty> properties = curShape.getProperties();
+//			for (int j = 0; j < properties.size(); j++) {
+//				ShapeProperty curProp = properties.get(i);
+//				DatatypeProperty curDp = ontModel.createDatatypeProperty(NS
+//						+ curProp.getName());
+//				curDp.setDomain(srcClass);
+//				// 保存这部分问一问鲁扬扬
+//				// curDp.setRange(std+curProp.getType());
+//				curDp.setRange(ShapeProperty.type2XSDType(curProp.getType()));
+//				srcClass.addProperty(curDp, curProp.getValue());
+//				//srcClass.add
+//				//curDp.setPropertyValue(arg0, arg1);
+//			}
 			List<Connection> sCons = curShape.getSourceConnections();
 			for (int j = 0; j < sCons.size(); j++) {
 				Connection curCon = sCons.get(j);
@@ -470,13 +473,13 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 				ObjectProperty curOP = ontModel.getObjectProperty(NS
 						+ curCon.getName());
 				if (curOP == null)
-					curOP = ontModel
-							.createObjectProperty(NS + curCon.getName());
-				curOP.addDomain(srcClass);
-				curOP.addRange(tarClass);
-				System.out.println(curOP.getURI() + curOP.getDomain()
-						+ " holyshit");
-				System.out.println(curOP.getRange() + " endHolyshit");
+					curOP = ontModel.createObjectProperty(NS + curCon.getName());
+				//curOP.addDomain(srcClass);
+				//curOP.addRange(tarClass);
+				SomeValuesFromRestriction svf = ontModel.createSomeValuesFromRestriction( null, curOP, tarClass );
+				srcClass.addSuperClass(svf);
+				System.out.println("svfname:"+svf.getSomeValuesFrom().getLocalName());
+				//System.out.println(curOP.getRange() + " endHolyshit");
 			}
 		}
 		for (int i = 0; i < curDiagram.getLowerLevelDiagrams().size(); i++) {
