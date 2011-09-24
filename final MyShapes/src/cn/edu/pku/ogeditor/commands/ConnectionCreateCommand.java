@@ -119,9 +119,9 @@ public void execute() {
 		}
 	}
 	if(connectionExist)
-		connection = new Connection(source, target,Math.PI*(Math.random()*2-1),Math.PI*(Math.random()*2-1));
+		connection = new Connection(source, target,name,Math.PI*(Math.random()*2-1),Math.PI*(Math.random()*2-1));
 	else
-		connection = new Connection(source, target);
+		connection = new Connection(source, target,name);
 
 	if (source == target) {
         //The start and end points of our connection are both at the center of the rectangle,

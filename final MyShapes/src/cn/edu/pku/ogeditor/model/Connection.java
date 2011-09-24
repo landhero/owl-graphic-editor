@@ -41,7 +41,7 @@ public class Connection extends ModelElement {
 	private Shape target;
 	private Connection parent;
 	private ArrayList<Connection> children;
-	private String name="NewConnection";
+	private String name = null;
 	private boolean required;
 	private boolean isSeparator = false;
 	private String description = new String();
@@ -62,16 +62,18 @@ public class Connection extends ModelElement {
 			System.err.println("Construct an incorrect connection!");
 		setRoot(true);
 	}
-	public Connection(Shape source, Shape target) {
+	public Connection(Shape source, Shape target, String name) {
 		children=new ArrayList<Connection>();
 		bendpoints = new ArrayList<ConnectionBendpoint>();
+		this.name = name;
 		reconnect(source, target);
 	}
 	
-	public Connection(Shape source, Shape target, double sourceAngle,
+	public Connection(Shape source, Shape target, String name, double sourceAngle,
 			double targetAngle) {
 		children=new ArrayList<Connection>();
 		bendpoints = new ArrayList<ConnectionBendpoint>();
+		this.name = name;
 		setSourceAngle(sourceAngle);
 		setTargetAngle(targetAngle);
 		reconnect(source, target);
@@ -163,7 +165,7 @@ public class Connection extends ModelElement {
 			source.addSourceConnection(this);
 			target.addTargetConnection(this);
 			isConnected = true;
-			//source.getDiagram().addConnection(this);
+			source.getDiagram().addConnection(this);
 		}
 	}
 
