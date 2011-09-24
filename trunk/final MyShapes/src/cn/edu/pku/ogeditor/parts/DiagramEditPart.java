@@ -79,7 +79,7 @@ implements PropertyChangeListener  {
 	 */
 	protected IFigure createFigure() {
 		Figure f = new FreeformLayer();
-		f.setBorder(new MarginBorder(800));
+		f.setBorder(new MarginBorder(150));
 		f.setLayoutManager(new FreeformLayout());
 		return f;
 	}
