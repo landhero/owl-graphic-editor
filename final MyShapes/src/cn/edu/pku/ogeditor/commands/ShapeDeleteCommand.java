@@ -37,7 +37,7 @@ public class ShapeDeleteCommand extends Command {
 	/**
 	 * Create a command that will remove the shape from its parent.
 	 * 
-	 * @param parent
+	 * @param parentDiagram
 	 *            the ShapesDiagram containing the child
 	 * @param child
 	 *            the Shape to remove

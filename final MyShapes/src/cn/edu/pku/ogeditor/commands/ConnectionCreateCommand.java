@@ -41,9 +41,9 @@ private String name;
 /**
  *	Instantiate a command that can create a connection between two shapes.
  * @param source the source endpoint (a non-null Shape instance)
- * @param lineStyle the desired line style. See Connection#setLineStyle(int) for details
+ * @param name the desired line style. See Connection#setLineStyle(int) for details
  * @throws IllegalArgumentException if source is null
- * @see Connection#setLineStyle(int)
+ 
  */
 public ConnectionCreateCommand(Shape source, String name) {
 	if (source == null) {
