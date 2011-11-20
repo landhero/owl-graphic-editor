@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+?*******************************************************************************/
 package cn.edu.pku.ogeditor.parts;
 
 import org.eclipse.gef.GraphicalEditPart;
@@ -11,7 +19,11 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Text;
 
 import cn.edu.pku.ogeditor.model.Shape;
-
+/**
+ * edit manager of the concept. used to rename a concept.
+ * @author Xueyuan Xing
+ *
+ */
 public class ShapeDirectEditManager extends DirectEditManager {
 	private Shape shape;
 	protected VerifyListener verifyListener;

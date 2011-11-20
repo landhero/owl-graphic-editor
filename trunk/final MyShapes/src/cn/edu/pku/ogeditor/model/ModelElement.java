@@ -1,10 +1,10 @@
 /*******************************************************************************
-?* All rights reserved. This program and the accompanying materials
-?* are made available under the terms of the Eclipse Public License v1.0
-?* which accompanies this distribution, and is available at
-?* http://www.eclipse.org/legal/epl-v10.html
-?*
-?* Contributors:
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
 ?*******************************************************************************/
 package cn.edu.pku.ogeditor.model;
 
@@ -27,6 +27,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * save and restore a binary representation. You might not need this, if you store the model
  * a non-binary form like XML).</li>
  * </ul>
+ * @author Xueyuan Xing
  */
 public abstract class ModelElement implements IPropertySource,Serializable {
 /** An empty property descriptor. */

@@ -42,7 +42,7 @@ import cn.edu.pku.ogeditor.parts.DiagramEditPart;
  * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy
  * @see #setNewSource(Shape)
  * @see #setNewTarget(Shape)
- * @author Elias Volanakis
+ * @author Xueyuan Xing
  */
 public class ConnectionReconnectCommand extends Command {
 

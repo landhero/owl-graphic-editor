@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+?*******************************************************************************/
 package cn.edu.pku.ogeditor.views;
 
 import org.eclipse.draw2d.ColorConstants;
@@ -32,7 +40,10 @@ import org.eclipse.ui.part.ViewPart;
 
 import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
-
+/**
+ * hierachy view of ontology
+ * @author Xueyuan Xing
+ */
 public class HierarchyView extends ViewPart implements ISelectionListener {
 
 	private TreeViewer viewer;

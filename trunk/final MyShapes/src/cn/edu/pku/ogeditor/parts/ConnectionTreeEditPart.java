@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+?*******************************************************************************/
 package cn.edu.pku.ogeditor.parts;
 
 import java.beans.PropertyChangeEvent;
@@ -7,7 +15,10 @@ import org.eclipse.gef.editparts.AbstractTreeEditPart;
 
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.ModelElement;
-
+/**
+ * @author Xueyuan Xing
+ * @author Tao Wu
+ */
 public class ConnectionTreeEditPart extends AbstractTreeEditPart implements
 		PropertyChangeListener {
 

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005 Elias Volanakis and others.
-?* All rights reserved. This program and the accompanying materials
-?* are made available under the terms of the Eclipse Public License v1.0
-?* which accompanies this distribution, and is available at
-?* http://www.eclipse.org/legal/epl-v10.html
-?*
-?* Contributors:
-?*????Elias Volanakis - initial API and implementation
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
 ?*******************************************************************************/
 package cn.edu.pku.ogeditor.commands;
 
@@ -15,9 +13,9 @@ import org.eclipse.gef.commands.Command;
 import cn.edu.pku.ogeditor.model.Connection;
 
 /**
- * A command to disconnect (remove) a connection from its endpoints.
- * The command can be undone or redone.
- * @author Elias Volanakis
+ * command used to delete a relation between two concepts
+ * @author Xueyuan Xing
+ * @author Tao Wu
  */
 public class ConnectionDeleteCommand extends Command {
 

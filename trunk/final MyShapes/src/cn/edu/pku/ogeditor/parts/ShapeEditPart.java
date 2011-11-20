@@ -47,7 +47,7 @@ import cn.edu.pku.ogeditor.policies.ShapeNodeEditPolicy;
  * be notified of property changes in the corresponding model element.
  * </p>
  * 
- * @author Elias Volanakis
+ * @author Xueyuan Xing
  */
 public class ShapeEditPart extends AbstractGraphicalEditPart implements
 		PropertyChangeListener, NodeEditPart {

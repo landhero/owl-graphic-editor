@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+?*******************************************************************************/
 package cn.edu.pku.ogeditor.properties;
 
 import org.eclipse.jface.resource.StringConverter;
@@ -27,7 +35,10 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.figures.ShapeFigure;
 import cn.edu.pku.ogeditor.parts.ShapeEditPart;
-
+/**
+ * color section in property sheet
+ * @author Xueyuan Xing
+ */
 public class ColorSection extends AbstractPropertySection {
 
 	private Text colorText;
