@@ -27,8 +27,6 @@ import cn.edu.pku.ogeditor.ShapesPlugin;
  * @author Xueyuan Xing
  * @author Tao Wu
  * @author Hansheng Zhang
- * @see cn.edu.pku.ogeditor.model.EllipseShape
- * @see org.eclipse.gef.examples.shapes.model.Shape
  */
 public class Shape extends ModelElement {
 
