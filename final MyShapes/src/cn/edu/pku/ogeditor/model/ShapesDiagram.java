@@ -17,9 +17,10 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 /**
- * A container for multiple shapes.
- * This is the "root" of the model data structure.
- * @author Elias Volanakis
+ * the diagram that contains all the concepts and relations
+ * @author Xueyuan Xing
+ * @author Tao Wu
+ * @author Hansheng Zhang
  */
 public class ShapesDiagram extends ModelElement {
 

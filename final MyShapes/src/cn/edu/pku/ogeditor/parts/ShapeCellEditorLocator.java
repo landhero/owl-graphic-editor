@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+?*******************************************************************************/
 package cn.edu.pku.ogeditor.parts;
 
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -6,7 +14,10 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Text;
 
 import cn.edu.pku.ogeditor.figures.ShapeFigure;
-
+/**
+ * CellEditorLocator of the relation. used to rename the relation
+ * @author Xueyuan Xing
+ */
 public class ShapeCellEditorLocator implements CellEditorLocator{
 	private ShapeFigure shapeFigure;
 	public ShapeCellEditorLocator(ShapeFigure f){

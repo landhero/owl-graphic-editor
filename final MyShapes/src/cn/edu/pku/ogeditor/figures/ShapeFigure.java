@@ -1,9 +1,11 @@
-/*
- * Created on 2005-1-24
+/*******************************************************************************
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
+ * Contributors:
+?*******************************************************************************/
 package cn.edu.pku.ogeditor.figures;
 
 import org.eclipse.draw2d.ColorConstants;
@@ -17,10 +19,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 /**
- * @author zhanghao
- * 
- *         TODO To change the template for this generated type comment go to
- *         Window - Preferences - Java - Code Style - Code Templates
+ * the figure of relation
+ * @author Xueyuan Xing
  */
 public class ShapeFigure extends Figure {
 	private Ellipse ellipseFigure;

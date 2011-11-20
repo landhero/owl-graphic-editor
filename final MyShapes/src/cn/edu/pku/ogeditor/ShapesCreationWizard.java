@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005 Elias Volanakis and others.
-?* All rights reserved. This program and the accompanying materials
-?* are made available under the terms of the Eclipse Public License v1.0
-?* which accompanies this distribution, and is available at
-?* http://www.eclipse.org/legal/epl-v10.html
-?*
-?* Contributors:
-?*????Elias Volanakis - initial API and implementation
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
 ?*******************************************************************************/
 package cn.edu.pku.ogeditor;
 
@@ -31,9 +29,11 @@ import org.eclipse.ui.ide.IDE;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
 /**
- * Create new new .shape-file. 
+ * Create new new .ogeditor-file. 
  * Those files can be used with the ShapesEditor (see plugin.xml).
- * @author Elias Volanakis
+ * @author Xueyuan Xing
+ * @author Hansheng Zhang
+ * @author Tao Wu
  */
 public class ShapesCreationWizard extends Wizard implements INewWizard {
 

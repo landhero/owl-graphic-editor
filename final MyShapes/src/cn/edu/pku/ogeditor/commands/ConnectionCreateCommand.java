@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005 Elias Volanakis and others.
-?* All rights reserved. This program and the accompanying materials
-?* are made available under the terms of the Eclipse Public License v1.0
-?* which accompanies this distribution, and is available at
-?* http://www.eclipse.org/legal/epl-v10.html
-?*
-?* Contributors:
-?*????Elias Volanakis - initial API and implementation
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
 ?*******************************************************************************/
 package cn.edu.pku.ogeditor.commands;
 
@@ -28,20 +26,9 @@ import cn.edu.pku.ogeditor.model.Shape;
 
 
 /**
- * A command to create a connection between two shapes.
- * The command can be undone or redone.
- * <p>
- * This command is designed to be used together with a GraphicalNodeEditPolicy.
- * To use this command properly, following steps are necessary:
- * </p>
- * <ol>
- * <li>Create a subclass of GraphicalNodeEditPolicy.</li>
- * <li>Override the <tt>getConnectionCreateCommand(...)</tt> method, 
- * to create a new instance of this class and put it into the CreateConnectionRequest.</li>
- * <li>Override the <tt>getConnectionCompleteCommand(...)</tt>  method,
- * to obtain the Command from the ConnectionRequest, call setTarget(...) to set the
- * target endpoint of the connection and return this command instance.</li>
- * </ol>
+ * command used to add a relation between two concepts
+ * @author Xueyuan Xing
+ * @author Tao Wu
  */
 public class ConnectionCreateCommand extends Command {
 /** The connection instance. */

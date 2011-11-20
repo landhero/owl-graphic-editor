@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005 Elias Volanakis and others.
-?* All rights reserved. This program and the accompanying materials
-?* are made available under the terms of the Eclipse Public License v1.0
-?* which accompanies this distribution, and is available at
-?* http://www.eclipse.org/legal/epl-v10.html
-?*
-?* Contributors:
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
 ?*******************************************************************************/
 package cn.edu.pku.ogeditor.model;
 
@@ -24,10 +23,10 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import cn.edu.pku.ogeditor.ShapesPlugin;
 
 /**
- * Abstract prototype of a shape. Has a size (width and height), a location (x
- * and y position) and a list of incoming and outgoing connections. Use
- * subclasses to instantiate a specific shape.
- * 
+ * model of concept. 
+ * @author Xueyuan Xing
+ * @author Tao Wu
+ * @author Hansheng Zhang
  * @see cn.edu.pku.ogeditor.model.EllipseShape
  * @see org.eclipse.gef.examples.shapes.model.Shape
  */

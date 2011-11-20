@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+?*******************************************************************************/
 package cn.edu.pku.ogeditor.actions;
 
 import java.util.Iterator;
@@ -7,7 +15,10 @@ import org.eclipse.gef.ui.actions.SelectionAction;
 
 import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.parts.DiagramEditPart;
-
+/**
+ * the action used to relocate all the shapes
+ * @author Hansheng Zhang
+ */
 public class RelocateAction extends SelectionAction {
 	private ShapesEditor shapesEdtior;
 	public RelocateAction(ShapesEditor shapesEditor) {

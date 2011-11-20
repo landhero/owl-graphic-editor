@@ -29,7 +29,7 @@ import cn.edu.pku.ogeditor.policies.ShapeComponentEditPolicy;
  * so it can be notified of property changes in the corresponding model element.
  * </p>
  * 
- * @author Elias Volanakis
+ * @author Xueyuan Xing
  */
 public class ShapeTreeEditPart extends AbstractTreeEditPart implements
 		PropertyChangeListener {

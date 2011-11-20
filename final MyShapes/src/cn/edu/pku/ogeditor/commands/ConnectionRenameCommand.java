@@ -4,10 +4,8 @@ import org.eclipse.gef.commands.Command;
 
 import cn.edu.pku.ogeditor.model.Connection;
 /**
- * @author zhanghao
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * rename the relation between two concepts
+ * @author Hansheng Zhang
  */
 public class ConnectionRenameCommand extends Command {
 
@@ -29,7 +27,6 @@ public class ConnectionRenameCommand extends Command {
 	{
 		if(connection.getSource().getDiagram().ContainConnectionName(newName))
 		{
-			//弹出对话框之类
 			connection.setName(connection.getName());
 			return false;
 		}	

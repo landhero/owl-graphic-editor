@@ -29,7 +29,7 @@ import cn.edu.pku.ogeditor.model.ShapesDiagram;
  * <p>This edit part must implement the PropertyChangeListener interface, 
  * so it can be notified of property changes in the corresponding model element.
  * </p>
- * 
+ * @author Xueyuan Xing
  */
 public class DiagramTreeEditPart extends AbstractTreeEditPart
 implements PropertyChangeListener {

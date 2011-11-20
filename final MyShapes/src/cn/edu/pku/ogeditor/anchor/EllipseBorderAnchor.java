@@ -1,10 +1,21 @@
+/*******************************************************************************
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+?*******************************************************************************/
 package cn.edu.pku.ogeditor.anchor;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PrecisionPoint;
 import org.eclipse.draw2d.geometry.Rectangle;
-
+/**
+ * the border anchor for the ellipse in the editor
+ * @author Xueyuan Xing
+ */
 public class EllipseBorderAnchor extends BorderAnchor {
 	public EllipseBorderAnchor(IFigure figure) {
 		super(figure);

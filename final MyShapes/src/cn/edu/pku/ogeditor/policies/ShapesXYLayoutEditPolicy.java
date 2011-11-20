@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+?*******************************************************************************/
 package cn.edu.pku.ogeditor.policies;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
@@ -15,7 +23,7 @@ import cn.edu.pku.ogeditor.parts.ShapeEditPart;
 /**
  * EditPolicy for the Figure used by this edit part.
  * Children of XYLayoutEditPolicy can be used in Figures with XYLayout.
- * @author Elias Volanakis
+ * @author Xueyuan Xing
  */
 public class ShapesXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	

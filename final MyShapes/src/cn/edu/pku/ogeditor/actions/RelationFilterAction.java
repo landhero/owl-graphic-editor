@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+?*******************************************************************************/
 package cn.edu.pku.ogeditor.actions;
 
 import java.util.Iterator;
@@ -8,7 +16,10 @@ import org.eclipse.swt.widgets.Display;
 
 import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.parts.DiagramEditPart;
-
+/**
+ * action used to filter certain relations
+ * @author Xueyuan Xing
+ */
 public class RelationFilterAction extends SelectionAction {
 	public RelationFilterAction(ShapesEditor shapesEditor) {
 		super(shapesEditor);

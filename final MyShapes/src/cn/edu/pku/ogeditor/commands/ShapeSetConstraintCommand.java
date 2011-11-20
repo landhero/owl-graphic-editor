@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005 Elias Volanakis and others.
-?* All rights reserved. This program and the accompanying materials
-?* are made available under the terms of the Eclipse Public License v1.0
-?* which accompanies this distribution, and is available at
-?* http://www.eclipse.org/legal/epl-v10.html
-?*
-?* Contributors:
-?*????Elias Volanakis - initial API and implementation
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
 ?*******************************************************************************/
 package cn.edu.pku.ogeditor.commands;
 
@@ -20,8 +18,7 @@ import cn.edu.pku.ogeditor.model.Shape;
 
 /**
  * A command to resize and/or move a shape.
- * The command can be undone or redone.
- * @author Elias Volanakis
+ * @author Xueyuan Xing
  */
 public class ShapeSetConstraintCommand extends Command {
 /** Stores the new size and location. */

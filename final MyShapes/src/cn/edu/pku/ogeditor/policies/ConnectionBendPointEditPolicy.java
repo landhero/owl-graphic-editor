@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+?*******************************************************************************/
 package cn.edu.pku.ogeditor.policies;
 
 import org.eclipse.draw2d.Connection;
@@ -12,7 +20,10 @@ import cn.edu.pku.ogeditor.commands.DeleteBendpointCommand;
 import cn.edu.pku.ogeditor.commands.MoveBendpointCommand;
 
 
-
+/**
+ * Edit policy to create a bend point
+ * @author Tao Wu
+ */
 public class ConnectionBendPointEditPolicy extends BendpointEditPolicy {
 
 	protected Command getCreateBendpointCommand(BendpointRequest request) {

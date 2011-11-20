@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+?*******************************************************************************/
 package cn.edu.pku.ogeditor.properties;
 
 import org.eclipse.jface.viewers.ISelection;
@@ -10,7 +18,10 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-
+/**
+ * diagram basic section in property sheet.
+ * @author Xueyuan Xing
+ */
 public class DiagramBasicSection extends AbstractPropertySection {
 	protected PropertySheetPage page;
 	
