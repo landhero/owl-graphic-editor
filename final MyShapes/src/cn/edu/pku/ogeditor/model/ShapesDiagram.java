@@ -16,6 +16,8 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+
+import cn.edu.pku.ogeditor.views.SWRLRule;
 /**
  * the diagram that contains all the concepts and relations
  * @author Xueyuan Xing
@@ -47,6 +49,7 @@ public class ShapesDiagram extends ModelElement {
 	private List<Shape> allShapesNames;
 	private List<Connection> allConnectionsNames;
 	private List<Connection> allConnections;
+	private ArrayList<SWRLRule> rules;
 
 	public ShapesDiagram(){
 		allShapes=new ArrayList<Shape>();
@@ -54,6 +57,7 @@ public class ShapesDiagram extends ModelElement {
 		allShapesNames = new ArrayList<Shape>();
 		allConnectionsNames = new ArrayList<Connection>();
 		allConnections = new ArrayList<Connection>();
+		rules = new ArrayList<SWRLRule>();
 		setName("New Ontology");
 		setFather(null);
 
@@ -409,5 +413,19 @@ public class ShapesDiagram extends ModelElement {
 				return false;
 		}
 		return true;
+	}
+	public boolean addRule(SWRLRule r)
+	{
+		return getRootDiagram().getRules().add(r);
+	}
+	public boolean removeRule(SWRLRule r)
+	{
+		return getRootDiagram().getRules().remove(r);
+	}
+	public void setRules(ArrayList<SWRLRule> rules) {
+		this.rules = rules;
+	}
+	public ArrayList<SWRLRule> getRules() {
+		return rules;
 	}
 }

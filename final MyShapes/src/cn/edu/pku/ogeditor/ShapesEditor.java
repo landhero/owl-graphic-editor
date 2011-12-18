@@ -89,15 +89,18 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import cn.edu.pku.ogeditor.actions.ActionConstant;
 import cn.edu.pku.ogeditor.actions.ConceptFilterAction;
+import cn.edu.pku.ogeditor.actions.DeployAction;
 import cn.edu.pku.ogeditor.actions.RelationFilterAction;
 import cn.edu.pku.ogeditor.actions.RelocateAction;
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
+import cn.edu.pku.ogeditor.model.ShapeProperty;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 import cn.edu.pku.ogeditor.parts.ShapesEditPartFactory;
 import cn.edu.pku.ogeditor.parts.ShapesTreeEditPartFactory;
 import cn.edu.pku.ogeditor.views.DecriptionView;
 
+import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -155,6 +158,10 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 		getSelectionActions().add(action.getId());
 		action = new RelationFilterAction(this);
 		action.setId(ActionConstant.RELATIONFILTER_ID);
+		getActionRegistry().registerAction(action);
+		getSelectionActions().add(action.getId());
+		action = new DeployAction(this);
+		action.setId(ActionConstant.DEPLOY_ID);
 		getActionRegistry().registerAction(action);
 		getSelectionActions().add(action.getId());
 	}
@@ -383,7 +390,7 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 		}
 	}
 
-	protected void SaveAsOWL(String filepath, String fileextension) {
+	public void SaveAsOWL(String filepath, String fileextension) {
 
 		System.out.println("----saveasowl:start");
 		System.out.println("saveasowl:no modelfactory");
@@ -424,6 +431,28 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 			Shape curShape = curShapes.get(i);
 			// 不进行是否有重复的判断的前提是本体中所有类的名字都是唯一的
 			OntClass curClass = ontModel.createClass(NS + curShape.getName());
+			List<ShapeProperty> curPros = curShape.getProperties();
+			for(ShapeProperty pro : curPros)
+			{
+				DatatypeProperty property = ontModel.createDatatypeProperty(NS + pro.getName());
+				property.setRange(ShapeProperty.type2XSDType(pro.getType()));
+				if(pro.getType().equals(ShapeProperty.BOOLEAN_TYPE))
+				{
+					curClass.addLiteral(property, Boolean.parseBoolean(pro.getValue()));
+				}
+				else if(pro.getType().equals(ShapeProperty.FLOAT_TYPE))
+				{
+					curClass.addLiteral(property, Float.parseFloat(pro.getValue()));
+				}
+				else if(pro.getType().equals(ShapeProperty.INT_TYPE))
+				{
+					curClass.addLiteral(property, Integer.parseInt(pro.getValue()));
+				}
+				else
+				{
+					curClass.addLiteral(property, pro.getValue());
+				}
+			}
 			Shape parentShape = curShape.getParent();
 			OntClass parentClass = ontModel.getOntClass(NS
 					+ parentShape.getName());
