@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Plugin.name
 Bundle-SymbolicName: cn.edu.pku.ogeditor;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Bundle-Activator: cn.edu.pku.ogeditor.ShapesPlugin
 Bundle-Vendor: %Plugin.providerName
 Bundle-Localization: plugin
