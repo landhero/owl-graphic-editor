@@ -57,6 +57,13 @@
                name="Concept Outline"
                restorable="true">
          </view>
+         <view
+               category="cn.edu.pku.ogeditor.views"
+               class="cn.edu.pku.ogeditor.views.SWRLView"
+               id="cn.edu.pku.ogeditor.views.SWRLView"
+               name="SWRL Rules"
+               restorable="true">
+         </view>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
