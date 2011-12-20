@@ -21,7 +21,7 @@ public class IOTAuto {
 	private static HashMap<String, String> id2type =  new HashMap<String, String>();
 	private static ArrayList<String> ids = new ArrayList<String>();
 	private static boolean SHOULD_RUN = false;
-	public static void run()
+	public static void iotRun()
 	{
 		model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
 
@@ -56,7 +56,7 @@ public class IOTAuto {
 	{
 		while(true)
 		{
-			run();
+			iotRun();
 			try {
 				Thread.sleep(300);
 			} catch (InterruptedException e) {
@@ -67,18 +67,18 @@ public class IOTAuto {
 	}
 	public static void deploy()
 	{
-		SHOULD_RUN = true;
+		setSHOULD_RUN(true);
 		new Thread()
 		{
 
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				while(SHOULD_RUN)
+				while(isSHOULD_RUN())
 				{
-					run();
+					iotRun();
 					try {
-						Thread.sleep(300);
+						Thread.sleep(30000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -90,6 +90,12 @@ public class IOTAuto {
 	}
 	public static void stopDeploy()
 	{
-		SHOULD_RUN = false;
+		setSHOULD_RUN(false);
+	}
+	public static void setSHOULD_RUN(boolean sHOULD_RUN) {
+		SHOULD_RUN = sHOULD_RUN;
+	}
+	public static boolean isSHOULD_RUN() {
+		return SHOULD_RUN;
 	}
 }

@@ -18,11 +18,11 @@ import cn.edu.pku.ogeditor.iot.IOTAuto;
 import cn.edu.pku.ogeditor.parts.DiagramEditPart;
 /**
  * the action used to relocate all the shapes
- * @author Hansheng Zhang
+ * @author Xueyuan Xing
  */
 public class DeployAction extends SelectionAction {
 	private ShapesEditor shapesEdtior;
-	public static final String FILE_PATH = "file:./IOT.owl";
+	public static final String FILE_PATH = "file:IOT.owl";
 	public static final String FILE_EXTENSION = "owl";
 	public DeployAction(ShapesEditor shapesEditor) {
 		super(shapesEditor);
@@ -35,9 +35,13 @@ public class DeployAction extends SelectionAction {
 		List<?> objects = getSelectedObjects();
 	    if (objects.isEmpty())
 	        return false;
+	    if(IOTAuto.isSHOULD_RUN())
+	    {
+	    	return false;
+	    }
 	    for (Iterator<?> iter = objects.iterator(); iter.hasNext();) {
 	    	Object obj = iter.next();
-	    	if (! (obj instanceof DiagramEditPart))
+	    	if (! (obj instanceof DiagramEditPart) && IOTAuto.isSHOULD_RUN())
 	    		return false;
 	    }
 	    return true;

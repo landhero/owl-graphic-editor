@@ -92,6 +92,7 @@ import cn.edu.pku.ogeditor.actions.ConceptFilterAction;
 import cn.edu.pku.ogeditor.actions.DeployAction;
 import cn.edu.pku.ogeditor.actions.RelationFilterAction;
 import cn.edu.pku.ogeditor.actions.RelocateAction;
+import cn.edu.pku.ogeditor.actions.StopDeployAction;
 import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapeProperty;
@@ -162,6 +163,10 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 		getSelectionActions().add(action.getId());
 		action = new DeployAction(this);
 		action.setId(ActionConstant.DEPLOY_ID);
+		getActionRegistry().registerAction(action);
+		getSelectionActions().add(action.getId());
+		action = new StopDeployAction(this);
+		action.setId(ActionConstant.STOP_DEPLOY_ID);
 		getActionRegistry().registerAction(action);
 		getSelectionActions().add(action.getId());
 	}
