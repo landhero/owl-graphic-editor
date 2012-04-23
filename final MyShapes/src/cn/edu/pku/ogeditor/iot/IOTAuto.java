@@ -2,6 +2,8 @@ package cn.edu.pku.ogeditor.iot;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.mindswap.pellet.jena.PelletReasonerFactory;
+
 import cn.edu.pku.ogeditor.actions.DeployAction;
 
 import com.hp.hpl.jena.ontology.Individual;
@@ -23,7 +25,7 @@ public class IOTAuto {
 	private static boolean SHOULD_RUN = false;
 	public static void iotRun()
 	{
-		model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+		model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC,null);
 
 		//model.read("file:./pizza.owl");
 		model.read(DeployAction.FILE_PATH);
