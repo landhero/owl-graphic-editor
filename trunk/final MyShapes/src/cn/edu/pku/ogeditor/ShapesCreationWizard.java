@@ -53,6 +53,7 @@ public void addPages() {
  */
 public void init(IWorkbench workbench, IStructuredSelection selection) {
 	// create pages for this wizard
+	setWindowTitle("OWL Graphic Editor");
 	page1 = new CreationPage(workbench, selection); 
 }
 
