@@ -1,12 +1,4 @@
-/*******************************************************************************
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
-?*******************************************************************************/
-package cn.edu.pku.ogeditor;
+package cn.edu.pku.ogeditor.wizards;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,62 +6,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
 
-import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.INewWizard;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.ide.IDE;
 
+import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
-/**
- * Create new new .ogeditor-file. 
- * Those files can be used with the ShapesEditor (see plugin.xml).
- * @author Xueyuan Xing
- * @author Hansheng Zhang
- * @author Tao Wu
- */
-public class ShapesCreationWizard extends Wizard implements INewWizard {
-
-private static int fileCount = 1;
-private CreationPage page1;
-	
-/* (non-Javadoc)
- * @see org.eclipse.jface.wizard.IWizard#addPages()
- */
-public void addPages() {
-	// add pages to this wizard
-	addPage(page1); 
-}
-
-/* (non-Javadoc)
- * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
- */
-public void init(IWorkbench workbench, IStructuredSelection selection) {
-	// create pages for this wizard
-	setWindowTitle("OWL Graphic Editor");
-	page1 = new CreationPage(workbench, selection); 
-}
-
-/* (non-Javadoc)
- * @see org.eclipse.jface.wizard.IWizard#performFinish()
- */
-public boolean performFinish() {
-	return page1.finish();
-}
 
 /**
  * This WizardPage can create an empty .shapes file for the ShapesEditor.
  */
-private class CreationPage extends WizardNewFileCreationPage {
+class CreationPage extends WizardNewFileCreationPage {
+	private static int fileCount = 1;
 	private static final String DEFAULT_EXTENSION = ".ogeditor";
 	private final IWorkbench workbench;
+	private ShapesDiagram shapeDiagram;
 	
 	/**
 	 * Create a new wizard page instance.
@@ -94,8 +51,9 @@ private class CreationPage extends WizardNewFileCreationPage {
 	}
 	
 	/** Return a new ShapesDiagram instance. */
-	private Object createDefaultContent() {
-		return new ShapesDiagram();
+	public void createDefaultContent() {
+		shapeDiagram = new ShapesDiagram();
+//		return new ShapesDiagram();
 	}
 	
 	/**
@@ -124,11 +82,15 @@ private class CreationPage extends WizardNewFileCreationPage {
 	 * @see org.eclipse.ui.dialogs.WizardNewFileCreationPage#getInitialContents()
 	 */
 	protected InputStream getInitialContents() {
+		if(null == shapeDiagram)
+		{
+			createDefaultContent();
+		}
 		ByteArrayInputStream bais = null;
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(createDefaultContent()); // argument must be Serializable
+			oos.writeObject(shapeDiagram); // argument must be Serializable
 			oos.flush();
 			oos.close();
 			bais = new ByteArrayInputStream(baos.toByteArray());
@@ -155,5 +117,4 @@ private class CreationPage extends WizardNewFileCreationPage {
 	protected boolean validatePage() {
 		return super.validatePage() && validateFilename();
 	}
-}
 }
