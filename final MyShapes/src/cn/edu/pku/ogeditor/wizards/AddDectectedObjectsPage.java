@@ -1,6 +1,5 @@
 package cn.edu.pku.ogeditor.wizards;
 
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -14,9 +13,9 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
-
 public class AddDectectedObjectsPage extends WizardPage {
 	public final static int LABEL_LENGTH = 200;
+	private ObjectsListModel objects;
 
 	public AddDectectedObjectsPage() {
 		super("Add Detectable Objects");
@@ -32,14 +31,14 @@ public class AddDectectedObjectsPage extends WizardPage {
 
 		final Label addL = new Label(container, SWT.NONE);
 		addL.setText("Add A Detectable Object:");
-		
+
 		final Label uris = new Label(container, SWT.BORDER);
 		uris.setText("URIs");
 		final Label rfid = new Label(container, SWT.BORDER);
 		rfid.setText("RFID");
 		final Label type = new Label(container, SWT.BORDER);
 		type.setText("TYPE");
-		
+
 		Text urisText = new Text(container, SWT.BORDER);
 		urisText.setText("http://");
 		Text rfidText = new Text(container, SWT.BORDER);
@@ -47,63 +46,62 @@ public class AddDectectedObjectsPage extends WizardPage {
 		Button addButton = new Button(container, SWT.NONE);
 		addButton.setText("add");
 
-		
 		FormData addLData = new FormData();
 		addLData.left = new FormAttachment(0);
 		addLData.right = new FormAttachment(100);
 		addLData.top = new FormAttachment(0);
 		addL.setLayoutData(addLData);
-		
+
 		FormData urisData = new FormData();
 		urisData.left = new FormAttachment(addL, 0, SWT.LEFT);
 		urisData.right = new FormAttachment(addL, LABEL_LENGTH, SWT.LEFT);
 		urisData.top = new FormAttachment(addL, 0, SWT.BOTTOM);
 		uris.setLayoutData(urisData);
-		
+
 		FormData rfidData = new FormData();
 		rfidData.left = new FormAttachment(uris, 0, SWT.RIGHT);
 		rfidData.right = new FormAttachment(uris, LABEL_LENGTH, SWT.RIGHT);
 		rfidData.top = new FormAttachment(addL, 0, SWT.BOTTOM);
 		rfid.setLayoutData(rfidData);
-		
+
 		FormData typeData = new FormData();
 		typeData.left = new FormAttachment(rfid, 0, SWT.RIGHT);
 		typeData.right = new FormAttachment(rfid, LABEL_LENGTH, SWT.RIGHT);
 		typeData.top = new FormAttachment(addL, 0, SWT.BOTTOM);
 		type.setLayoutData(typeData);
-		
-		
+
 		FormData urisTData = new FormData();
 		urisTData.left = new FormAttachment(uris, 0, SWT.LEFT);
 		urisTData.right = new FormAttachment(uris, 0, SWT.RIGHT);
 		urisTData.top = new FormAttachment(uris, 0, SWT.BOTTOM);
 		urisText.setLayoutData(urisTData);
-		
+
 		FormData rfidTData = new FormData();
 		rfidTData.left = new FormAttachment(rfid, 0, SWT.LEFT);
 		rfidTData.right = new FormAttachment(rfid, 0, SWT.RIGHT);
 		rfidTData.top = new FormAttachment(rfid, 0, SWT.BOTTOM);
 		rfidText.setLayoutData(rfidTData);
-		
+
 		FormData typeTData = new FormData();
 		typeTData.left = new FormAttachment(type, 0, SWT.LEFT);
 		typeTData.right = new FormAttachment(type, 0, SWT.RIGHT);
 		typeTData.top = new FormAttachment(type, 0, SWT.BOTTOM);
 		typeText.setLayoutData(typeTData);
-		
+
 		FormData addButtonData = new FormData();
 		addButtonData.left = new FormAttachment(typeText, 0, SWT.RIGHT);
 		addButtonData.right = new FormAttachment(100);
 		addButtonData.top = new FormAttachment(addL, 0, SWT.BOTTOM);
 		addButton.setLayoutData(addButtonData);
-		
+
 		final Label objectsListLabel = new Label(container, SWT.BORDER);
 		objectsListLabel.setText("List of Detectable Objects:");
-		
+
 		Button delButton = new Button(container, SWT.NONE);
 		delButton.setText("delete");
-		
-		Table table = new Table(container, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+
+		Table table = new Table(container, SWT.BORDER | SWT.MULTI
+				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
 		TableColumn column1 = new TableColumn(table, SWT.NONE);
 		column1.setText("URIs");
 		column1.setWidth(LABEL_LENGTH);
@@ -115,39 +113,36 @@ public class AddDectectedObjectsPage extends WizardPage {
 		column3.setText("TYPE");
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		
 
 		TableViewer viewer = new TableViewer(table);
 		viewer.setContentProvider(new TableContentProvider());
 		viewer.setLabelProvider(new TableLabelProvider());
 
-		ObjectsListModel input = new ObjectsListModel();
-		viewer.setInput(input);
+		objects = new ObjectsListModel();
+		viewer.setInput(objects);
 
-		input.add(new User("http://object1", "001", "light"));
-		input.add(new User("http://object2", "002", "air-conditioning"));
-		input.add(new User("http://object3", "003", "screen"));
-		
+		objects.add(new User("http://object1", "001", "light"));
+		objects.add(new User("http://object2", "002", "air-conditioning"));
+		objects.add(new User("http://object3", "003", "screen"));
+
 		FormData listData = new FormData();
 		listData.left = new FormAttachment(addL, 0, SWT.LEFT);
 		listData.right = new FormAttachment(typeText, 0, SWT.RIGHT);
 		listData.top = new FormAttachment(typeText, 30, SWT.BOTTOM);
 		objectsListLabel.setLayoutData(listData);
-		
+
 		FormData tableData = new FormData();
 		tableData.left = new FormAttachment(addL, 0, SWT.LEFT);
 		tableData.right = new FormAttachment(typeText, 0, SWT.RIGHT);
 		tableData.top = new FormAttachment(objectsListLabel, 0, SWT.BOTTOM);
 		tableData.bottom = new FormAttachment(100);
-
 		table.setLayoutData(tableData);
-		
+
 		FormData delButtonData = new FormData();
 		delButtonData.left = new FormAttachment(table, 0, SWT.RIGHT);
 		delButtonData.right = new FormAttachment(100);
 		delButtonData.top = new FormAttachment(objectsListLabel, 0, SWT.BOTTOM);
 		delButton.setLayoutData(delButtonData);
-		
 
 		// checkboxTableViewer =
 		// CheckboxTableViewer.newCheckList(container, SWT.BORDER);
@@ -179,17 +174,25 @@ public class AddDectectedObjectsPage extends WizardPage {
 	 * Update the content before becoming visible.
 	 */
 	public void setVisible(boolean visible) {
-//		if (visible) {
-//			AddressCategory category = ((NewAddressItemWizardPage) getPreviousPage())
-//					.getSelectedAddressCategory();
-//			String peopleName = ((NewAddressItemWizardPage) getPreviousPage())
-//					.getSelectedName();
-//			item = new AddressItem(peopleName, category);
-//			input = new SimpleFormEditorInput(item.getName());
-//			checkboxTableViewer.setInput(input);
-//			checkboxTableViewer.setAllChecked(true);
-//		}
+		// if (visible) {
+		// AddressCategory category = ((NewAddressItemWizardPage)
+		// getPreviousPage())
+		// .getSelectedAddressCategory();
+		// String peopleName = ((NewAddressItemWizardPage) getPreviousPage())
+		// .getSelectedName();
+		// item = new AddressItem(peopleName, category);
+		// input = new SimpleFormEditorInput(item.getName());
+		// checkboxTableViewer.setInput(input);
+		// checkboxTableViewer.setAllChecked(true);
+		// }
 		super.setVisible(visible);
 	}
 
+	public ObjectsListModel getObjects() {
+		return objects;
+	}
+
+	public void setObjects(ObjectsListModel objects) {
+		this.objects = objects;
+	}
 }

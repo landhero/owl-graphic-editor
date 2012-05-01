@@ -15,7 +15,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.ide.IDE;
 
-import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
 
@@ -27,7 +26,7 @@ class CreationPage extends WizardNewFileCreationPage {
 	private static final String DEFAULT_EXTENSION = ".ogeditor";
 	private final IWorkbench workbench;
 	private ShapesDiagram shapeDiagram;
-	
+
 	/**
 	 * Create a new wizard page instance.
 	 * @param workbench the current workbench
@@ -116,5 +115,13 @@ class CreationPage extends WizardNewFileCreationPage {
 	 */
 	protected boolean validatePage() {
 		return super.validatePage() && validateFilename();
+	}
+	
+	public ShapesDiagram getShapeDiagram() {
+		return shapeDiagram;
+	}
+
+	public void setShapeDiagram(ShapesDiagram shapeDiagram) {
+		this.shapeDiagram = shapeDiagram;
 	}
 }

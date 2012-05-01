@@ -1,6 +1,13 @@
 package cn.edu.pku.ogeditor.wizards;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private String uri;
 
@@ -13,26 +20,21 @@ public class User {
 		this.type = type;
 	}
 
-
 	public void setUri(String uri) {
 		this.uri = uri;
 	}
-
 
 	public String getUri() {
 		return uri;
 	}
 
-
 	public void setRfid(String rfid) {
 		this.rfid = rfid;
 	}
 
-
 	public String getRfid() {
 		return rfid;
 	}
-
 
 	public void setType(String type) {
 		this.type = type;

@@ -1,4 +1,4 @@
-package cn.edu.pku.ogeditor.wizards;
+package cn.edu.pku.ogeditor.properties;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -6,7 +6,9 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.Vector;
 
-public class ObjectsListModel implements Serializable{
+import cn.edu.pku.ogeditor.views.SWRLRule;
+
+public class SWRLListModel implements Serializable{
 
 	/**
 	 * 
@@ -19,10 +21,10 @@ public class ObjectsListModel implements Serializable{
 
 	private PropertyChangeSupport delegate;
 
-	private Vector<User> objects;
+	private Vector<SWRLRule> rules;
 
-	public ObjectsListModel() {
-		objects = new Vector<User>();
+	public SWRLListModel() {
+		rules = new Vector<SWRLRule>();
 		delegate = new PropertyChangeSupport(this);
 	}
 
@@ -38,19 +40,19 @@ public class ObjectsListModel implements Serializable{
 		delegate.removePropertyChangeListener(listener);
 	}
 
-	public void add(User element) {
-		if (objects.add(element))
+	public void add(SWRLRule element) {
+		if (rules.add(element))
 			firePropertyChange(new PropertyChangeEvent(this, ADD_ELEMENT, null,
 					element));
 	}
 
-	public void remove(User element) {
-		if (objects.remove(element))
+	public void remove(SWRLRule element) {
+		if (rules.remove(element))
 			firePropertyChange(new PropertyChangeEvent(this, REMOVE_ELEMENT,
 					null, element));
 	}
 
 	public Object[] elements() {
-		return objects.toArray();
+		return rules.toArray();
 	}
 }
