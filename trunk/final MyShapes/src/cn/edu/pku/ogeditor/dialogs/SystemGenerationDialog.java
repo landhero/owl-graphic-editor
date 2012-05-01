@@ -8,19 +8,25 @@ import java.awt.Toolkit;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-public class OWLGenerationDialog extends Dialog {
+public class SystemGenerationDialog extends Dialog {
 
-	public OWLGenerationDialog(Shell shell) {
+	public SystemGenerationDialog(Shell shell) {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
 		// TODO Auto-generated constructor stub
@@ -41,20 +47,38 @@ public class OWLGenerationDialog extends Dialog {
 		FormData data;
 		
 		final Label genL = new Label(container, SWT.NONE);
-		genL.setText(".owl generation:");
+		genL.setText("Software System");
 		Button genb = new Button(container, SWT.PUSH);
 		genb.setText("Generate");
 		
-		Text owlArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
-		owlArea.setText("owl generation");
+		Text systemArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
+		systemArea.setText("code generation");
 		
-		final Label consistL = new Label(container, SWT.NONE);
-		consistL.setText("Consistency Check:");
-		Button check = new Button(container, SWT.PUSH);
-		check.setText("Check");
+		final Canvas canvas=new Canvas(container ,SWT.BORDER);
 		
-		Text consistArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
-		consistArea.setText("¡­¡­\nConsistency check is over¡­¡­\n");
+		ImageData imageData = new ImageData("D:\\Program Files\\eclipse\\myWorkspace\\OGEditor\\icons\\system.jpg");
+		
+		Image systemImage = new Image(Display.getDefault(), imageData.scaledTo(imageData.width * 2, imageData.height));
+		
+		canvas.addPaintListener(new PaintListener(){
+			 public void paintControl(final PaintEvent event){
+			  Image image=(Image)canvas.getData();
+			  if(image!=null){
+			   event.gc.drawImage(image,135,10);//¶¨Î»Í¼Ïñ×óÉÏ½Ç¾àcanvas×óÉÏ½ÇµÄ¾àÀë
+			  }
+			 }
+			});
+		
+		canvas.setData(systemImage);
+		canvas.redraw();
+			
+//		final Label consistL = new Label(container, SWT.NONE);
+//		consistL.setText("Consistency Check:");
+//		Button check = new Button(container, SWT.PUSH);
+//		check.setText("Check");
+//		
+//		Text consistArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
+
 		
 		data = new FormData();
 		data.left = new FormAttachment(1);
@@ -68,35 +92,22 @@ public class OWLGenerationDialog extends Dialog {
 		data.top = new FormAttachment(genL, 0, SWT.BOTTOM);
 //		data.bottom = new FormAttachment(genL, 300, SWT.BOTTOM);
 		data.bottom = new FormAttachment(70);
-		owlArea.setLayoutData(data);
+		systemArea.setLayoutData(data);
 		
 		data = new FormData();
-		data.left = new FormAttachment(owlArea, 10, SWT.RIGHT);
+		data.left = new FormAttachment(systemArea, 0, SWT.LEFT);
+		data.right = new FormAttachment(systemArea, 0, SWT.RIGHT);
+		data.top = new FormAttachment(systemArea, 0, SWT.BOTTOM);
+//		data.bottom = new FormAttachment(genL, 300, SWT.BOTTOM);
+		data.bottom = new FormAttachment(100);
+		canvas.setLayoutData(data);
+		
+		data = new FormData();
+		data.left = new FormAttachment(systemArea, 10, SWT.RIGHT);
 		data.right = new FormAttachment(genL, 0, SWT.RIGHT);
 		data.top = new FormAttachment(genL, 0, SWT.BOTTOM);
 //		data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
 		genb.setLayoutData(data);
-		
-		data = new FormData();
-		data.left = new FormAttachment(genL, 0, SWT.LEFT);
-		data.right = new FormAttachment(genL, 0, SWT.RIGHT);
-		data.top = new FormAttachment(owlArea, 30, SWT.BOTTOM);
-		consistL.setLayoutData(data);
-		
-		data = new FormData();
-		data.left = new FormAttachment(owlArea, 0, SWT.LEFT);
-		data.right = new FormAttachment(owlArea, 0, SWT.RIGHT);
-		data.top = new FormAttachment(consistL, 0, SWT.BOTTOM);
-//		data.bottom = new FormAttachment(consistL, 300, SWT.BOTTOM);
-		data.bottom = new FormAttachment(100);
-		consistArea.setLayoutData(data);
-		
-		data = new FormData();
-		data.left = new FormAttachment(genb, 0, SWT.LEFT);
-		data.right = new FormAttachment(genb, 0, SWT.RIGHT);
-		data.top = new FormAttachment(consistL, 0, SWT.BOTTOM);
-//		data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
-		check.setLayoutData(data);
 		
 		return container;
 	}

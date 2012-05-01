@@ -100,7 +100,7 @@ public class SWRLSection extends AbstractPropertySection {
 		FormData listLData = new FormData();
 		listLData.left = new FormAttachment(addL, 0, SWT.LEFT);
 		listLData.right = new FormAttachment(addL, 0, SWT.RIGHT);
-		listLData.top = new FormAttachment(ruleText, 15, SWT.BOTTOM);
+		listLData.top = new FormAttachment(ruleText, 5, SWT.BOTTOM);
 		listL.setLayoutData(listLData);
 		
 		FormData listData = new FormData();

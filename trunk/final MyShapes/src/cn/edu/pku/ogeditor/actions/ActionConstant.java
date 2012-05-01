@@ -18,6 +18,8 @@ public class ActionConstant {
 	public final static String DEPLOY_ID = "ogeditor.Deploy";
 	public final static String STOP_DEPLOY_ID = "ogeditor.StopDeploy";
 	public static final String OWLGENERATION_ID = "ogeditor.OWLGeneration";
+	public static final String SYSTEMGENERATION_ID = "ogeditor.SystemGeneration";
+
 
 	
 	public final static String RELOCATE_TEXT = "Relocate";
@@ -26,6 +28,7 @@ public class ActionConstant {
 	public final static String DEPLOY_TEXT = "Deploy to IOT";
 	public final static String STOP_DEPLOY_TEXT = "Stop Deploy Process";
 	public static final String OWLGENERATION_TEXT = "Generate OWL File";
+	public static final String SYSTEMGENERATION_TEXT = "Generate System";
 
 
 }

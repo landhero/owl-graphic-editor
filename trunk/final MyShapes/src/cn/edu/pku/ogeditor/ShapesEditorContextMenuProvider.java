@@ -69,6 +69,7 @@ public void buildContextMenu(IMenuManager menu) {
 	menu.appendToGroup(GEFActionConstants.GROUP_REST, getAction(ActionConstant.CONCEPTFILTER_ID));
 	menu.appendToGroup(GEFActionConstants.GROUP_REST, getAction(ActionConstant.RELATIONFILTER_ID));
 	menu.appendToGroup(GEFActionConstants.GROUP_REST, getAction(ActionConstant.OWLGENERATION_ID));
+	menu.appendToGroup(GEFActionConstants.GROUP_REST, getAction(ActionConstant.SYSTEMGENERATION_ID));
 	menu.appendToGroup(GEFActionConstants.GROUP_REST, getAction(ActionConstant.DEPLOY_ID));
 	menu.appendToGroup(GEFActionConstants.GROUP_REST, getAction(ActionConstant.STOP_DEPLOY_ID));
 }
