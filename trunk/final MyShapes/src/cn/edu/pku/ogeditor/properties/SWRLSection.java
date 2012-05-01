@@ -62,8 +62,8 @@ public class SWRLSection extends AbstractPropertySection {
 		Button addButton = new Button(container, SWT.NONE);
 		addButton.setText("add");
 		
-		final Label listL = new Label(container, SWT.NONE);
-		listL.setText("List of  SWRL Rules");
+		CLabel listL = getWidgetFactory().createCLabel(container, "List of  SWRL Rules"); //$NON-NLS-1$
+
 		Button delButton = new Button(container, SWT.NONE);
 		delButton.setText("delete");
 		
@@ -100,7 +100,7 @@ public class SWRLSection extends AbstractPropertySection {
 		FormData listLData = new FormData();
 		listLData.left = new FormAttachment(addL, 0, SWT.LEFT);
 		listLData.right = new FormAttachment(addL, 0, SWT.RIGHT);
-		listLData.top = new FormAttachment(ruleText, 30, SWT.BOTTOM);
+		listLData.top = new FormAttachment(ruleText, 15, SWT.BOTTOM);
 		listL.setLayoutData(listLData);
 		
 		FormData listData = new FormData();

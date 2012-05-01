@@ -12,8 +12,8 @@ public class TableLabelProvider implements ITableLabelProvider {
 	}
 
 	public String getColumnText(Object element, int columnIndex) {
-		if (element instanceof User) {
-			User user = (User) element;
+		if (element instanceof ObjectInfo) {
+			ObjectInfo user = (ObjectInfo) element;
 			switch (columnIndex) {
 			case 0:
 				return user.getUri();
