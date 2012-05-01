@@ -101,6 +101,9 @@ public class ShapesCreationWizard extends Wizard implements INewWizard {
 				}
 				else if(getContainer().getCurrentPage() == page2)
 				{
+					page1.createDefaultContent();
+					page1.getShapeDiagram().setObjects(page2.getObjects());
+					page1.finish();
 //					input = editListsConfigPage.getEditorInput();
 //					AddressList[] lists = editListsConfigPage.getSelection();
 //					item = editListsConfigPage.getAddressItem();
