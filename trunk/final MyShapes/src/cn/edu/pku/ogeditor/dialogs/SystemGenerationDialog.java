@@ -36,7 +36,7 @@ public class SystemGenerationDialog extends Dialog {
 	protected void configureShell(Shell newShell) {
 		// TODO Auto-generated method stub
 		super.configureShell(newShell);
-	    newShell.setText("OWL Generation");
+	    newShell.setText("System Generation");
 	}
 
 	@Override
@@ -58,13 +58,13 @@ public class SystemGenerationDialog extends Dialog {
 		
 		ImageData imageData = new ImageData("D:\\Program Files\\eclipse\\myWorkspace\\OGEditor\\icons\\system.jpg");
 		
-		Image systemImage = new Image(Display.getDefault(), imageData.scaledTo(imageData.width * 2, imageData.height));
+		Image systemImage = new Image(Display.getDefault(), imageData.scaledTo(imageData.width, imageData.height));
 		
 		canvas.addPaintListener(new PaintListener(){
 			 public void paintControl(final PaintEvent event){
 			  Image image=(Image)canvas.getData();
 			  if(image!=null){
-			   event.gc.drawImage(image,135,10);//定位图像左上角距canvas左上角的距离
+			   event.gc.drawImage(image,40,10);//定位图像左上角距canvas左上角的距离
 			  }
 			 }
 			});

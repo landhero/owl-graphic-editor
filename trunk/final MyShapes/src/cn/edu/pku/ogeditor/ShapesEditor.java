@@ -418,7 +418,7 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 		shOnt.addProperty(RDFS.comment,
 				"This is an ontology for a process-oriented requirement modeling tool.");
 		shOnt.addProperty(RDFS.label, "Concept Ontology");
-		shOnt.addProperty(OWL.versionInfo, "$serialVersionUID:1.0 Dec. 2010$");
+		shOnt.addProperty(OWL.versionInfo, "$serialVersionUID:1.0 Dec. 2012$");
 
 		ShapesDiagram rootDiagram = diagram.getRootDiagram();
 		createOntologyForDiagram(rootDiagram);

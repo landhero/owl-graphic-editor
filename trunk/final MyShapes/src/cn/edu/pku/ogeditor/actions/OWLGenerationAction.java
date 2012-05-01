@@ -12,9 +12,10 @@ import cn.edu.pku.ogeditor.parts.DiagramEditPart;
 
 public class OWLGenerationAction extends SelectionAction {
 
+	private ShapesEditor se;
 	public OWLGenerationAction(ShapesEditor shapesEditor) {
 		super(shapesEditor);
-		//this.shapesEdtior = shapesEditor;
+		this.se = shapesEditor;
 		this.setText(ActionConstant.OWLGENERATION_TEXT);
 	}
 
@@ -26,15 +27,16 @@ public class OWLGenerationAction extends SelectionAction {
 	    for (Iterator<?> iter = objects.iterator(); iter.hasNext();) {
 	    	Object obj = iter.next();
 	    	if (obj instanceof DiagramEditPart)
+	    	{
 	    		return true;
+	    	}
 	    }
 	    return false;
 	}
 
 	@Override
 	public void run(){
-		OWLGenerationDialog dialog = new OWLGenerationDialog(Display.getDefault().getActiveShell());
-
+		OWLGenerationDialog dialog = new OWLGenerationDialog(Display.getDefault().getActiveShell(), se);
 		dialog.open();
 	}
 }
