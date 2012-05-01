@@ -25,6 +25,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
+import cn.edu.pku.ogeditor.dialogs.ObjectEditDialog;
 import cn.edu.pku.ogeditor.parts.DiagramEditPart;
 import cn.edu.pku.ogeditor.wizards.ObjectInfo;
 import cn.edu.pku.ogeditor.wizards.ObjectsListModel;

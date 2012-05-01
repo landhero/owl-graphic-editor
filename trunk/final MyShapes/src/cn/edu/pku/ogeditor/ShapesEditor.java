@@ -90,6 +90,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import cn.edu.pku.ogeditor.actions.ActionConstant;
 import cn.edu.pku.ogeditor.actions.ConceptFilterAction;
 import cn.edu.pku.ogeditor.actions.DeployAction;
+import cn.edu.pku.ogeditor.actions.OWLGenerationAction;
 import cn.edu.pku.ogeditor.actions.RelationFilterAction;
 import cn.edu.pku.ogeditor.actions.RelocateAction;
 import cn.edu.pku.ogeditor.actions.StopDeployAction;
@@ -161,6 +162,12 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 		action.setId(ActionConstant.RELATIONFILTER_ID);
 		getActionRegistry().registerAction(action);
 		getSelectionActions().add(action.getId());
+		
+		action = new OWLGenerationAction(this);
+		action.setId(ActionConstant.OWLGENERATION_ID);
+		getActionRegistry().registerAction(action);
+		getSelectionActions().add(action.getId());
+		
 		action = new DeployAction(this);
 		action.setId(ActionConstant.DEPLOY_ID);
 		getActionRegistry().registerAction(action);

@@ -15,6 +15,7 @@ import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.swt.widgets.Display;
 
 import cn.edu.pku.ogeditor.ShapesEditor;
+import cn.edu.pku.ogeditor.dialogs.RelationFilterDialog;
 import cn.edu.pku.ogeditor.parts.DiagramEditPart;
 /**
  * action used to filter certain relations

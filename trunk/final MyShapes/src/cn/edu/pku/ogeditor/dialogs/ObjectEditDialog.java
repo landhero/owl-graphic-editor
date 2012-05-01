@@ -1,4 +1,4 @@
-package cn.edu.pku.ogeditor.properties;
+package cn.edu.pku.ogeditor.dialogs;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.TableViewer;
@@ -25,9 +25,14 @@ public class ObjectEditDialog extends Dialog{
 	private static final int LABEL_LENGTH = 200;
 	private ObjectsListModel objects;
 	
-	protected ObjectEditDialog(Shell parentShell) {
+	public ObjectEditDialog(Shell parentShell) {
 		super(parentShell);
 		// TODO Auto-generated constructor stub
+	}
+	
+	protected void configureShell(Shell newShell){
+		super.configureShell(newShell);
+		newShell.setText("Edit Detectable Objects List");
 	}
 
 	@Override
@@ -53,9 +58,9 @@ public class ObjectEditDialog extends Dialog{
 		addButton.setText("add");
 
 		FormData addLData = new FormData();
-		addLData.left = new FormAttachment(0);
+		addLData.left = new FormAttachment(1);
 		addLData.right = new FormAttachment(100);
-		addLData.top = new FormAttachment(0);
+		addLData.top = new FormAttachment(1);
 		addL.setLayoutData(addLData);
 
 		FormData urisData = new FormData();
@@ -152,10 +157,5 @@ public class ObjectEditDialog extends Dialog{
 		return container;
 	}
 	
-	protected void configureShell(Shell newShell){
-		super.configureShell(newShell);
-		newShell.setText("Edit Detectable Objects List");
-	}
-
 
 }
