@@ -87,6 +87,7 @@ class CreationPage extends WizardNewFileCreationPage {
 		}
 		ByteArrayInputStream bais = null;
 		try {
+			shapeDiagram.setName(getFileName());
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 			oos.writeObject(shapeDiagram); // argument must be Serializable
