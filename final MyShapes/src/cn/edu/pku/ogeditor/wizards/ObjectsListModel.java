@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Vector;
 
 public class ObjectsListModel implements Serializable{
@@ -48,6 +49,11 @@ public class ObjectsListModel implements Serializable{
 		if (objects.remove(element))
 			firePropertyChange(new PropertyChangeEvent(this, REMOVE_ELEMENT,
 					null, element));
+	}
+	
+	public void removeAll(Collection c)
+	{
+		objects.removeAll(c);
 	}
 
 	public Object[] elements() {

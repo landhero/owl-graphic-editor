@@ -1,8 +1,12 @@
 package cn.edu.pku.ogeditor.dialogs;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -24,9 +28,16 @@ public class ObjectEditDialog extends Dialog{
 
 	private static final int LABEL_LENGTH = 200;
 	private ObjectsListModel objects;
+	private Text urisText;
+	private Text rfidText;
+	private Text typeText;
+	private TableViewer parentViewer;
+	private TableViewer viewer;
 	
-	public ObjectEditDialog(Shell parentShell) {
+	public ObjectEditDialog(Shell parentShell, ObjectsListModel objectsListModel, TableViewer parentViewer) {
 		super(parentShell);
+		objects = objectsListModel;
+		this.parentViewer = parentViewer;
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -50,12 +61,13 @@ public class ObjectEditDialog extends Dialog{
 		final Label type = new Label(container, SWT.BORDER);
 		type.setText("TYPE");
 
-		Text urisText = new Text(container, SWT.BORDER);
+		urisText = new Text(container, SWT.BORDER);
 		urisText.setText("http://");
-		Text rfidText = new Text(container, SWT.BORDER);
-		Text typeText = new Text(container, SWT.BORDER);
+		rfidText = new Text(container, SWT.BORDER);
+		typeText = new Text(container, SWT.BORDER);
 		Button addButton = new Button(container, SWT.NONE);
 		addButton.setText("add");
+		addButton.addSelectionListener(new AddObjectListener());
 
 		FormData addLData = new FormData();
 		addLData.left = new FormAttachment(1);
@@ -110,6 +122,7 @@ public class ObjectEditDialog extends Dialog{
 
 		Button delButton = new Button(container, SWT.NONE);
 		delButton.setText("delete");
+		delButton.addSelectionListener(new DelObjectListener());
 
 		Table table = new Table(container, SWT.BORDER | SWT.MULTI
 				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
@@ -125,16 +138,16 @@ public class ObjectEditDialog extends Dialog{
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
-		TableViewer viewer = new TableViewer(table);
+		viewer = new TableViewer(table);
 		viewer.setContentProvider(new TableContentProvider());
 		viewer.setLabelProvider(new TableLabelProvider());
 
-		objects = new ObjectsListModel();
+//		objects = new ObjectsListModel();
 		viewer.setInput(objects);
-
-		objects.add(new ObjectInfo("http://object1", "001", "light"));
-		objects.add(new ObjectInfo("http://object2", "002", "air-conditioning"));
-		objects.add(new ObjectInfo("http://object3", "003", "screen"));
+//
+//		objects.add(new ObjectInfo("http://object1", "001", "light"));
+//		objects.add(new ObjectInfo("http://object2", "002", "air-conditioning"));
+//		objects.add(new ObjectInfo("http://object3", "003", "screen"));
 
 		FormData listData = new FormData();
 		listData.left = new FormAttachment(addL, 0, SWT.LEFT);
@@ -156,6 +169,39 @@ public class ObjectEditDialog extends Dialog{
 		delButton.setLayoutData(delButtonData);
 		return container;
 	}
-	
+	private class AddObjectListener extends SelectionAdapter {
 
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			ObjectInfo object = new ObjectInfo(urisText.getText(), rfidText.getText(), typeText.getText());
+			objects.add(object);
+			refreshTexts();
+			parentViewer.refresh();
+		}
+
+	}
+	
+	private class DelObjectListener extends SelectionAdapter {
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			int[] indices = viewer.getTable().getSelectionIndices();
+			ArrayList<ObjectInfo> dels = new ArrayList<ObjectInfo>();
+			for(int index : indices)
+			{
+				ObjectInfo object = (ObjectInfo) viewer.getElementAt(index);
+				dels.add(object);
+//				objects.remove(object);
+			}
+			objects.removeAll(dels);
+			viewer.refresh();
+			parentViewer.refresh();
+		}
+	}
+
+	private void refreshTexts() {
+		urisText.setText("http://");
+		rfidText.setText("");
+		typeText.setText("");
+	}
 }
