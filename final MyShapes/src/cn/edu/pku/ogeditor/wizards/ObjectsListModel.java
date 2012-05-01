@@ -19,10 +19,10 @@ public class ObjectsListModel implements Serializable{
 
 	private PropertyChangeSupport delegate;
 
-	private Vector<User> objects;
+	private Vector<ObjectInfo> objects;
 
 	public ObjectsListModel() {
-		objects = new Vector<User>();
+		objects = new Vector<ObjectInfo>();
 		delegate = new PropertyChangeSupport(this);
 	}
 
@@ -38,13 +38,13 @@ public class ObjectsListModel implements Serializable{
 		delegate.removePropertyChangeListener(listener);
 	}
 
-	public void add(User element) {
+	public void add(ObjectInfo element) {
 		if (objects.add(element))
 			firePropertyChange(new PropertyChangeEvent(this, ADD_ELEMENT, null,
 					element));
 	}
 
-	public void remove(User element) {
+	public void remove(ObjectInfo element) {
 		if (objects.remove(element))
 			firePropertyChange(new PropertyChangeEvent(this, REMOVE_ELEMENT,
 					null, element));

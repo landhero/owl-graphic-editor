@@ -2,7 +2,7 @@ package cn.edu.pku.ogeditor.wizards;
 
 import java.io.Serializable;
 
-public class User implements Serializable{
+public class ObjectInfo implements Serializable{
 
 	/**
 	 * 
@@ -14,7 +14,7 @@ public class User implements Serializable{
 	private String rfid;
 	private String type;
 	
-	public User(String uri, String name, String type) {
+	public ObjectInfo(String uri, String name, String type) {
 		this.setUri(uri);
 		this.setRfid(name);
 		this.type = type;

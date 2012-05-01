@@ -1,34 +1,40 @@
-package cn.edu.pku.ogeditor.wizards;
+package cn.edu.pku.ogeditor.properties;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
-public class AddDectectedObjectsPage extends WizardPage {
-	public final static int LABEL_LENGTH = 200;
-	private ObjectsListModel objects;
+import cn.edu.pku.ogeditor.wizards.ObjectInfo;
+import cn.edu.pku.ogeditor.wizards.ObjectsListModel;
+import cn.edu.pku.ogeditor.wizards.TableContentProvider;
+import cn.edu.pku.ogeditor.wizards.TableLabelProvider;
 
-	public AddDectectedObjectsPage() {
-		super("Add Detectable Objects");
-		setTitle("Add Detectable Objects");
-		setDescription("Add Detectable Objects");
+public class ObjectEditDialog extends Dialog{
+
+	private static final int LABEL_LENGTH = 200;
+	private ObjectsListModel objects;
+	
+	protected ObjectEditDialog(Shell parentShell) {
+		super(parentShell);
+		// TODO Auto-generated constructor stub
 	}
 
-	public void createControl(Composite parent) {
-		// TODO 自动生成方法存根
-		Composite container = new Composite(parent, SWT.NULL);
+	@Override
+	protected Control createDialogArea(Composite parent) {
+		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new FormLayout());
-		setControl(container);
-
+		
 		final Label addL = new Label(container, SWT.NONE);
 		addL.setText("Add A Detectable Object:");
 
@@ -135,7 +141,7 @@ public class AddDectectedObjectsPage extends WizardPage {
 		tableData.left = new FormAttachment(addL, 0, SWT.LEFT);
 		tableData.right = new FormAttachment(typeText, 0, SWT.RIGHT);
 		tableData.top = new FormAttachment(objectsListLabel, 0, SWT.BOTTOM);
-		tableData.bottom = new FormAttachment(100);
+		tableData.bottom = new FormAttachment(objectsListLabel, 300, SWT.BOTTOM);
 		table.setLayoutData(tableData);
 
 		FormData delButtonData = new FormData();
@@ -143,56 +149,13 @@ public class AddDectectedObjectsPage extends WizardPage {
 		delButtonData.right = new FormAttachment(100);
 		delButtonData.top = new FormAttachment(objectsListLabel, 0, SWT.BOTTOM);
 		delButton.setLayoutData(delButtonData);
-
-		// checkboxTableViewer =
-		// CheckboxTableViewer.newCheckList(container, SWT.BORDER);
-		// checkboxTableViewer.setContentProvider(
-		// new MasterContentProvider());
-		// checkboxTableViewer.setLabelProvider(
-		// new TableViewerLabelProvider());
-		// final Table table = checkboxTableViewer.getTable();
-		// final FormData formData = new FormData();
-		// formData.bottom = new FormAttachment(100, 0);
-		// formData.right = new FormAttachment(100, 0);
-		// formData.top = new FormAttachment(0, 0);
-		// formData.left = new FormAttachment(0, 0);
-		// table.setLayoutData(formData);
-		// table.setHeaderVisible(true);
-		//
-		// final TableColumn tableColumn =
-		// new TableColumn(table, SWT.NONE);
-		// tableColumn.setWidth(200);
-		// tableColumn.setText("列表名称");
-		//
-		// final TableColumn tableColumn_1 =
-		// new TableColumn(table, SWT.NONE);
-		// tableColumn_1.setWidth(250);
-		// tableColumn_1.setText("列表描述");
+		return container;
+	}
+	
+	protected void configureShell(Shell newShell){
+		super.configureShell(newShell);
+		newShell.setText("Edit Detectable Objects List");
 	}
 
-	/**
-	 * Update the content before becoming visible.
-	 */
-	public void setVisible(boolean visible) {
-		// if (visible) {
-		// AddressCategory category = ((NewAddressItemWizardPage)
-		// getPreviousPage())
-		// .getSelectedAddressCategory();
-		// String peopleName = ((NewAddressItemWizardPage) getPreviousPage())
-		// .getSelectedName();
-		// item = new AddressItem(peopleName, category);
-		// input = new SimpleFormEditorInput(item.getName());
-		// checkboxTableViewer.setInput(input);
-		// checkboxTableViewer.setAllChecked(true);
-		// }
-		super.setVisible(visible);
-	}
 
-	public ObjectsListModel getObjects() {
-		return objects;
-	}
-
-	public void setObjects(ObjectsListModel objects) {
-		this.objects = objects;
-	}
 }

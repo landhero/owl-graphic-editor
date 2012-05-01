@@ -23,14 +23,13 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
-import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import cn.edu.pku.ogeditor.parts.DiagramEditPart;
+import cn.edu.pku.ogeditor.wizards.ObjectInfo;
 import cn.edu.pku.ogeditor.wizards.ObjectsListModel;
 import cn.edu.pku.ogeditor.wizards.TableContentProvider;
 import cn.edu.pku.ogeditor.wizards.TableLabelProvider;
-import cn.edu.pku.ogeditor.wizards.User;
 /**
  * description section in property sheet.
  * @author Xueyuan Xing
@@ -88,9 +87,9 @@ public class ObjectsSection extends AbstractPropertySection {
 		objects = new ObjectsListModel();
 		viewer.setInput(objects);
 
-		objects.add(new User("http://object1", "001", "light"));
-		objects.add(new User("http://object2", "002", "air-conditioning"));
-		objects.add(new User("http://object3", "003", "screen"));
+		objects.add(new ObjectInfo("http://object1", "001", "light"));
+		objects.add(new ObjectInfo("http://object2", "002", "air-conditioning"));
+		objects.add(new ObjectInfo("http://object3", "003", "screen"));
 
 		Button button = getWidgetFactory().createButton(container,
 				"Edit", SWT.PUSH);
@@ -105,6 +104,8 @@ public class ObjectsSection extends AbstractPropertySection {
 		data.left = new FormAttachment(listLabel, 0, SWT.LEFT);
 		data.right = new FormAttachment(90);
 		data.top = new FormAttachment(listLabel, 0, SWT.BOTTOM);
+		data.bottom = new FormAttachment(listLabel, 180, SWT.BOTTOM);
+
 		table.setLayoutData(data);
 		
 		data = new FormData();
@@ -132,6 +133,9 @@ public class ObjectsSection extends AbstractPropertySection {
 //				cep.getCastedModel().setDescription(descriptionText.getText());
 //			ShapesEditor.myselfShapesEditor.doSave(null);
 //			ShapesEditor.myselfShapesEditor.setDirty(false);
+			ObjectEditDialog dialog = new ObjectEditDialog(getPart().getSite().getWorkbenchWindow().getShell());
+			if(dialog.open() != ObjectEditDialog.OK)
+				return;
 		}
 		
 	}
