@@ -19,6 +19,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbenchPart;
@@ -26,6 +27,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import cn.edu.pku.ogeditor.dialogs.ObjectEditDialog;
+import cn.edu.pku.ogeditor.model.ShapesDiagram;
 import cn.edu.pku.ogeditor.parts.DiagramEditPart;
 import cn.edu.pku.ogeditor.wizards.ObjectInfo;
 import cn.edu.pku.ogeditor.wizards.ObjectsListModel;
@@ -44,7 +46,8 @@ public class ObjectsSection extends AbstractPropertySection {
 	}
 
 	private DiagramEditPart dep;
-	private ObjectsListModel objects;
+//	private ObjectsListModel objects;
+	private TableViewer viewer;
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {
 		super.setInput(part, selection);
@@ -81,16 +84,16 @@ public class ObjectsSection extends AbstractPropertySection {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
-		TableViewer viewer = new TableViewer(table);
+		viewer = new TableViewer(table);
 		viewer.setContentProvider(new TableContentProvider());
 		viewer.setLabelProvider(new TableLabelProvider());
 
-		objects = new ObjectsListModel();
-		viewer.setInput(objects);
-
-		objects.add(new ObjectInfo("http://object1", "001", "light"));
-		objects.add(new ObjectInfo("http://object2", "002", "air-conditioning"));
-		objects.add(new ObjectInfo("http://object3", "003", "screen"));
+//		objects = new ObjectsListModel();
+//		viewer.setInput(objects);
+//
+//		objects.add(new ObjectInfo("http://object1", "001", "light"));
+//		objects.add(new ObjectInfo("http://object2", "002", "air-conditioning"));
+//		objects.add(new ObjectInfo("http://object3", "003", "screen"));
 
 		Button button = getWidgetFactory().createButton(container,
 				"Edit", SWT.PUSH);
@@ -118,10 +121,8 @@ public class ObjectsSection extends AbstractPropertySection {
 	}
 
 	public void refresh() {
-//		descriptionText.removeModifyListener(listener);
-//		descriptionText.setText(isSep ? sep.getCastedModel().getDescription()
-//				: cep.getCastedModel().getDescription());
-//		descriptionText.addModifyListener(listener);
+		ShapesDiagram diagram = (ShapesDiagram) dep.getModel();
+		viewer.setInput(diagram.getObjects());
 	}
 
 	private class ButtonListener extends SelectionAdapter {
@@ -134,10 +135,11 @@ public class ObjectsSection extends AbstractPropertySection {
 //				cep.getCastedModel().setDescription(descriptionText.getText());
 //			ShapesEditor.myselfShapesEditor.doSave(null);
 //			ShapesEditor.myselfShapesEditor.setDirty(false);
-			ObjectEditDialog dialog = new ObjectEditDialog(getPart().getSite().getWorkbenchWindow().getShell());
-			if(dialog.open() != ObjectEditDialog.OK)
-				return;
-		}
-		
+			ObjectEditDialog dialog = new ObjectEditDialog(Display.getDefault().getActiveShell(), ((ShapesDiagram) dep.getModel()).getObjects(), viewer);
+			dialog.open();
+//			viewer.refresh();
+//			if(dialog.open() != ObjectEditDialog.OK)
+//				return;
+		}	
 	}
 }

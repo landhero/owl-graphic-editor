@@ -1,8 +1,12 @@
 package cn.edu.pku.ogeditor.wizards;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -16,6 +20,10 @@ import org.eclipse.swt.widgets.Text;
 public class AddDectectedObjectsPage extends WizardPage {
 	public final static int LABEL_LENGTH = 150;
 	private ObjectsListModel objects;
+	private Text urisText;
+	private Text rfidText;
+	private Text typeText;
+	private TableViewer viewer;
 
 	public AddDectectedObjectsPage() {
 		super("Add Detectable Objects");
@@ -39,12 +47,13 @@ public class AddDectectedObjectsPage extends WizardPage {
 		final Label type = new Label(container, SWT.BORDER);
 		type.setText("TYPE");
 
-		Text urisText = new Text(container, SWT.BORDER);
+		urisText = new Text(container, SWT.BORDER);
 		urisText.setText("http://");
-		Text rfidText = new Text(container, SWT.BORDER);
-		Text typeText = new Text(container, SWT.BORDER);
+		rfidText = new Text(container, SWT.BORDER);
+		typeText = new Text(container, SWT.BORDER);
 		Button addButton = new Button(container, SWT.NONE);
 		addButton.setText("add");
+		addButton.addSelectionListener(new AddObjectListener());
 
 		FormData addLData = new FormData();
 		addLData.left = new FormAttachment(0);
@@ -99,6 +108,7 @@ public class AddDectectedObjectsPage extends WizardPage {
 
 		Button delButton = new Button(container, SWT.NONE);
 		delButton.setText("delete");
+		delButton.addSelectionListener(new DelObjectListener());
 
 		Table table = new Table(container, SWT.BORDER | SWT.MULTI
 				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
@@ -114,7 +124,7 @@ public class AddDectectedObjectsPage extends WizardPage {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
-		TableViewer viewer = new TableViewer(table);
+		viewer = new TableViewer(table);
 		viewer.setContentProvider(new TableContentProvider());
 		viewer.setLabelProvider(new TableLabelProvider());
 
@@ -195,4 +205,38 @@ public class AddDectectedObjectsPage extends WizardPage {
 	public void setObjects(ObjectsListModel objects) {
 		this.objects = objects;
 	}
+	
+	private class AddObjectListener extends SelectionAdapter {
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			ObjectInfo object = new ObjectInfo(urisText.getText(), rfidText.getText(), typeText.getText());
+			objects.add(object);
+			refreshTexts();
+		}
+	}
+	
+	private class DelObjectListener extends SelectionAdapter {
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			int[] indices = viewer.getTable().getSelectionIndices();
+			ArrayList<ObjectInfo> dels = new ArrayList<ObjectInfo>();
+			for(int index : indices)
+			{
+				ObjectInfo object = (ObjectInfo) viewer.getElementAt(index);
+				dels.add(object);
+//				objects.remove(object);
+			}
+			objects.removeAll(dels);
+			viewer.refresh();
+		}
+	}
+	private void refreshTexts() {
+		urisText.setText("http://");
+		rfidText.setText("");
+		typeText.setText("");
+	}
 }
+
+

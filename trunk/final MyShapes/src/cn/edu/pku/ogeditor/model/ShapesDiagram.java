@@ -60,7 +60,12 @@ public class ShapesDiagram extends ModelElement {
 		allShapesNames = new ArrayList<Shape>();
 		allConnectionsNames = new ArrayList<Connection>();
 		allConnections = new ArrayList<Connection>();
-//		rules = new ArrayList<SWRLRule>();
+		rules = new SWRLListModel();
+		
+		rules.add(new SWRLRule("Room(?r) … isOccupied(?r, true) … Room_Temperature(?r, ?t) … swrlb:greaterThan(?t, 30.0) … Air_Condition(?x) …  isIn(?x, ?r) ★  isOn(?x, true)"));
+		rules.add(new SWRLRule("Room(?r) … Room_PersonNum(?r, ?n) … swrlb:lessThan(?n, 4) … Air_Condition(?x) … isIn(?x, ?r) … isOn(?x, true) ★  Air_Condition_Temperature(?x, 27)"));
+		rules.add(new SWRLRule("Room(?r) … Room_PersonNum(?r, ?n) … swrlb:greaterThan(?n, 3) … Air_Condition(?x) … isIn(?x, ?r) … isOn(?x, true) ★  Air_Condition_Temperature(?x, 26)"));
+		
 		setName("New Ontology");
 		setFather(null);
 

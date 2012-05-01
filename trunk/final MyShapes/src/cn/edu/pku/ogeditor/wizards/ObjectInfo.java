@@ -17,7 +17,7 @@ public class ObjectInfo implements Serializable{
 	public ObjectInfo(String uri, String name, String type) {
 		this.setUri(uri);
 		this.setRfid(name);
-		this.type = type;
+		this.setType(type);
 	}
 
 	public void setUri(String uri) {
