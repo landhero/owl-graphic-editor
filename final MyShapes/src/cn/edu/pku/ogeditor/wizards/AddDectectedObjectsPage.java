@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 public class AddDectectedObjectsPage extends WizardPage {
-	public final static int LABEL_LENGTH = 200;
+	public final static int LABEL_LENGTH = 150;
 	private ObjectsListModel objects;
 
 	public AddDectectedObjectsPage() {
@@ -33,7 +33,7 @@ public class AddDectectedObjectsPage extends WizardPage {
 		addL.setText("Add A Detectable Object:");
 
 		final Label uris = new Label(container, SWT.BORDER);
-		uris.setText("URIs");
+		uris.setText("URI");
 		final Label rfid = new Label(container, SWT.BORDER);
 		rfid.setText("RFID");
 		final Label type = new Label(container, SWT.BORDER);
@@ -54,7 +54,7 @@ public class AddDectectedObjectsPage extends WizardPage {
 
 		FormData urisData = new FormData();
 		urisData.left = new FormAttachment(addL, 0, SWT.LEFT);
-		urisData.right = new FormAttachment(addL, LABEL_LENGTH, SWT.LEFT);
+		urisData.right = new FormAttachment(addL, 300, SWT.LEFT);
 		urisData.top = new FormAttachment(addL, 0, SWT.BOTTOM);
 		uris.setLayoutData(urisData);
 
@@ -104,7 +104,7 @@ public class AddDectectedObjectsPage extends WizardPage {
 				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
 		TableColumn column1 = new TableColumn(table, SWT.NONE);
 		column1.setText("URIs");
-		column1.setWidth(LABEL_LENGTH);
+		column1.setWidth(300);
 		TableColumn column2 = new TableColumn(table, SWT.NONE);
 		column2.setWidth(LABEL_LENGTH);
 		column2.setText("RFID");
