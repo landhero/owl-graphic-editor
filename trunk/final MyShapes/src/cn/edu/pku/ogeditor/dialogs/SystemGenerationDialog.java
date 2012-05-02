@@ -43,7 +43,6 @@ public class SystemGenerationDialog extends Dialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new FormLayout());
-		container.setSize(1000, 1000);
 		FormData data;
 		
 		final Label genL = new Label(container, SWT.NONE);
