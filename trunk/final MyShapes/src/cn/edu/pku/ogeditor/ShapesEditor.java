@@ -130,13 +130,17 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		// TODO Auto-generated method stub
-		IEditorPart activeEditor = getSite().getPage().getActiveEditor(); 
-		if (activeEditor instanceof MultiPageEditor) { 
-			MultiPageEditor mpe = (MultiPageEditor) activeEditor; 
-		if (mpe.getShapesEditor() == this) 
-		updateActions(ActionConstant.getSelectableActions()); 
-		} 
+		IEditorPart activeEditor = getSite().getPage().getActiveEditor();
+		if (activeEditor instanceof MultiPageEditor) {
+			MultiPageEditor mpe = (MultiPageEditor) activeEditor;
+			if (mpe.getShapesEditor() == this)
+				updateActions(ActionConstant.getSelectableActions());
+		}
 		super.selectionChanged(part, selection);
+//		if (null != propertySheet)
+//		{
+//			propertySheet.
+//		}
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -149,6 +153,7 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 	private String selectedDragSourceToolLabel;
 	private boolean dirty = false;
 	private OntModel ontModel;
+	private TabbedPropertySheetPage propertySheet;
 	public static ShapesEditor myselfShapesEditor;
 
 	/** Create a new ShapesEditor instance. This is called by the Workspace. */
@@ -177,7 +182,7 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 		action.setId(ActionConstant.RELATIONFILTER_ID);
 		getActionRegistry().registerAction(action);
 		getSelectionActions().add(action.getId());
-		
+
 		action = new OWLGenerationAction(this);
 		action.setId(ActionConstant.OWLGENERATION_ID);
 		getActionRegistry().registerAction(action);
@@ -186,7 +191,7 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 		action.setId(ActionConstant.SYSTEMGENERATION_ID);
 		getActionRegistry().registerAction(action);
 		getSelectionActions().add(action.getId());
-		
+
 		action = new DeployAction(this);
 		action.setId(ActionConstant.DEPLOY_ID);
 		getActionRegistry().registerAction(action);
@@ -340,8 +345,8 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 		try {
 			createOutputStream(out);
 			IFile file = ((IFileEditorInput) getEditorInput()).getFile();
-			file.setContents(new ByteArrayInputStream(out.toByteArray()), true, 
-					false, // 
+			file.setContents(new ByteArrayInputStream(out.toByteArray()), true,
+					false, //
 					monitor); // progress monitor
 			getCommandStack().markSaveLocation();
 			setDirty(false);
@@ -353,7 +358,8 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 	}
 
 	/**
-	 * save the current .ogeditor-file as .owl-file.  
+	 * save the current .ogeditor-file as .owl-file.
+	 * 
 	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
 	 */
 	public void doSaveAs() {
@@ -388,7 +394,7 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 					new ProgressMonitorDialog(shell).run(false, // don't fork
 							false, // not cancelable
 							new WorkspaceModifyOperation() { // run this
-																// operation
+								// operation
 								public void execute(
 										final IProgressMonitor monitor) {
 									try {
@@ -434,7 +440,7 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 		shOnt.addProperty(RDFS.label, "Concept Ontology");
 		shOnt.addProperty(OWL.versionInfo, "$serialVersionUID:1.0 Dec. 2012$");
 
-		ShapesDiagram rootDiagram = diagram.getRootDiagram();
+		ShapesDiagram rootDiagram = getDiagram().getRootDiagram();
 		createOntologyForDiagram(rootDiagram);
 
 		/*
@@ -444,7 +450,7 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 
 			FileOutputStream out = new FileOutputStream(filepath);
 			if (fileextension.equals("owl") || fileextension.equals("rdf"))
-				ontModel.write(out,"RDF/XML-ABBREV");
+				ontModel.write(out, "RDF/XML-ABBREV");
 			else if (fileextension.equals("ttl"))
 				ontModel.write(out, "Turtle");
 			System.out.println("has written to " + filepath);
@@ -463,24 +469,20 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 			// 不进行是否有重复的判断的前提是本体中所有类的名字都是唯一的
 			OntClass curClass = ontModel.createClass(NS + curShape.getName());
 			List<ShapeProperty> curPros = curShape.getProperties();
-			for(ShapeProperty pro : curPros)
-			{
-				DatatypeProperty property = ontModel.createDatatypeProperty(NS + pro.getName());
+			for (ShapeProperty pro : curPros) {
+				DatatypeProperty property = ontModel.createDatatypeProperty(NS
+						+ pro.getName());
 				property.setRange(ShapeProperty.type2XSDType(pro.getType()));
-				if(pro.getType().equals(ShapeProperty.BOOLEAN_TYPE))
-				{
-					curClass.addLiteral(property, Boolean.parseBoolean(pro.getValue()));
-				}
-				else if(pro.getType().equals(ShapeProperty.FLOAT_TYPE))
-				{
-					curClass.addLiteral(property, Float.parseFloat(pro.getValue()));
-				}
-				else if(pro.getType().equals(ShapeProperty.INT_TYPE))
-				{
-					curClass.addLiteral(property, Integer.parseInt(pro.getValue()));
-				}
-				else
-				{
+				if (pro.getType().equals(ShapeProperty.BOOLEAN_TYPE)) {
+					curClass.addLiteral(property,
+							Boolean.parseBoolean(pro.getValue()));
+				} else if (pro.getType().equals(ShapeProperty.FLOAT_TYPE)) {
+					curClass.addLiteral(property,
+							Float.parseFloat(pro.getValue()));
+				} else if (pro.getType().equals(ShapeProperty.INT_TYPE)) {
+					curClass.addLiteral(property,
+							Integer.parseInt(pro.getValue()));
+				} else {
 					curClass.addLiteral(property, pro.getValue());
 				}
 			}
@@ -504,28 +506,34 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 				ObjectProperty curOP = ontModel.getObjectProperty(NS
 						+ curCon.getName());
 				if (curOP == null)
-					curOP = ontModel.createObjectProperty(NS + curCon.getName());
-				//curOP.addDomain(srcClass);
-				//curOP.addRange(tarClass);
-				SomeValuesFromRestriction svf = ontModel.createSomeValuesFromRestriction( null, curOP, tarClass );
+					curOP = ontModel
+							.createObjectProperty(NS + curCon.getName());
+				// curOP.addDomain(srcClass);
+				// curOP.addRange(tarClass);
+				SomeValuesFromRestriction svf = ontModel
+						.createSomeValuesFromRestriction(null, curOP, tarClass);
 				srcClass.addSuperClass(svf);
-				System.out.println("svfname:"+svf.getSomeValuesFrom().getLocalName());
-				//System.out.println(curOP.getRange() + " endHolyshit");
+				System.out.println("svfname:"
+						+ svf.getSomeValuesFrom().getLocalName());
+				// System.out.println(curOP.getRange() + " endHolyshit");
 			}
 		}
 		for (int i = 0; i < curDiagram.getLowerLevelDiagrams().size(); i++) {
 			createOntologyForDiagram(curDiagram.getLowerLevelDiagrams().get(i));
 		}
 	}
-/**
- * Provide PropertySheet, Outline and Zoom interface.
- */
+
+	/**
+	 * Provide PropertySheet, Outline and Zoom interface.
+	 */
 	public Object getAdapter(Class type) {
 		myselfShapesEditor = this;
 
-		if (type == IPropertySheetPage.class)
-			return new TabbedPropertySheetPage(this);
-		else if (type == IContentOutlinePage.class)
+		if (type == IPropertySheetPage.class) {
+			if (null == propertySheet)
+				propertySheet = new TabbedPropertySheetPage(this);
+			return propertySheet;
+		} else if (type == IContentOutlinePage.class)
 			return new OutlinePage(new TreeViewer());
 		else if (type == ZoomManager.class)
 			return ((ScalableFreeformRootEditPart) getGraphicalViewer()
@@ -534,7 +542,7 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 	}
 
 	ShapesDiagram getModel() {
-		return diagram;
+		return getDiagram();
 	}
 
 	/*
@@ -553,7 +561,7 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 	private void handleLoadException(Exception e) {
 		System.err.println("** Load failed. Using default model. **");
 		e.printStackTrace();
-		diagram = new ShapesDiagram();
+		setDiagram(new ShapesDiagram());
 	}
 
 	/*
@@ -579,7 +587,7 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 		try {
 			IFile file = ((IFileEditorInput) input).getFile();
 			ObjectInputStream in = new ObjectInputStream(file.getContents());
-			diagram = (ShapesDiagram) in.readObject();
+			setDiagram((ShapesDiagram) in.readObject());
 			in.close();
 			setPartName(file.getName());
 			((ShapesEditorPaletteRoot) getPaletteRoot()).refresh();
@@ -607,11 +615,13 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 
 	/**
 	 * refresh the view with given diagram
-	 * @param diagram the given diagram you want to refresh the view with.
+	 * 
+	 * @param diagram
+	 *            the given diagram you want to refresh the view with.
 	 */
 	public void refreshModel(ShapesDiagram diagram) {
 		// TODO Auto-generated method stub
-		this.diagram = diagram;
+		this.setDiagram(diagram);
 		getGraphicalViewer().setContents(getModel());
 		((ShapesEditorPaletteRoot) getPaletteRoot()).refresh();
 	}
@@ -775,8 +785,12 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 	}
 
 	public String getContributorId() {
-//		return getSite().getId();
+		// return getSite().getId();
 		return "OWL Graphic Editor";
-		
+
+	}
+
+	public void setDiagram(ShapesDiagram diagram) {
+		this.diagram = diagram;
 	}
 }

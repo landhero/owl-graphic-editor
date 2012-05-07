@@ -26,7 +26,7 @@ import cn.edu.pku.ogeditor.wizards.TableLabelProvider;
 
 public class ObjectEditDialog extends Dialog{
 
-	private static final int LABEL_LENGTH = 200;
+	public static final int LABEL_LENGTH = 200;
 	private ObjectsListModel objects;
 	private Text urisText;
 	private Text rfidText;
@@ -169,7 +169,7 @@ public class ObjectEditDialog extends Dialog{
 		delButton.setLayoutData(delButtonData);
 		return container;
 	}
-	private class AddObjectListener extends SelectionAdapter {
+	public class AddObjectListener extends SelectionAdapter {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
@@ -181,7 +181,7 @@ public class ObjectEditDialog extends Dialog{
 
 	}
 	
-	private class DelObjectListener extends SelectionAdapter {
+	public class DelObjectListener extends SelectionAdapter {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {

@@ -25,7 +25,7 @@ class CreationPage extends WizardNewFileCreationPage {
 	private static int fileCount = 1;
 	private static final String DEFAULT_EXTENSION = ".multipage";
 	private final IWorkbench workbench;
-	private ShapesDiagram shapeDiagram;
+	private ShapesDiagram shapesDiagram;
 
 	/**
 	 * Create a new wizard page instance.
@@ -51,7 +51,7 @@ class CreationPage extends WizardNewFileCreationPage {
 	
 	/** Return a new ShapesDiagram instance. */
 	public void createDefaultContent() {
-		shapeDiagram = new ShapesDiagram();
+		shapesDiagram = new ShapesDiagram();
 //		return new ShapesDiagram();
 	}
 	
@@ -81,16 +81,20 @@ class CreationPage extends WizardNewFileCreationPage {
 	 * @see org.eclipse.ui.dialogs.WizardNewFileCreationPage#getInitialContents()
 	 */
 	protected InputStream getInitialContents() {
-		if(null == shapeDiagram)
+		if(null == shapesDiagram)
 		{
 			createDefaultContent();
 		}
+		else
+		{
+			//在diagram中加入objects信息
+		}
 		ByteArrayInputStream bais = null;
 		try {
-			shapeDiagram.setFileName(getFileName());
+			shapesDiagram.setFileName(getFileName());
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(shapeDiagram); // argument must be Serializable
+			oos.writeObject(shapesDiagram); // argument must be Serializable
 			oos.flush();
 			oos.close();
 			bais = new ByteArrayInputStream(baos.toByteArray());
@@ -119,10 +123,10 @@ class CreationPage extends WizardNewFileCreationPage {
 	}
 	
 	public ShapesDiagram getShapeDiagram() {
-		return shapeDiagram;
+		return shapesDiagram;
 	}
 
 	public void setShapeDiagram(ShapesDiagram shapeDiagram) {
-		this.shapeDiagram = shapeDiagram;
+		this.shapesDiagram = shapeDiagram;
 	}
 }
