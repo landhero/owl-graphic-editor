@@ -17,6 +17,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
+import cn.edu.pku.ogeditor.MultiPageEditor;
 import cn.edu.pku.ogeditor.ShapesEditor;
 /**
  * the outline view of the concepts
@@ -43,8 +44,8 @@ public class ConceptOutlineView extends ViewPart implements ISelectionListener {
 	private ShapesEditor getShapesEditor() {
 		// TODO Auto-generated method stub
 		IEditorPart curEditor = getSite().getPage().getActiveEditor();
-		if (curEditor instanceof ShapesEditor)
-			return (ShapesEditor) curEditor;
+		if (curEditor instanceof MultiPageEditor)
+			return ((MultiPageEditor) curEditor).getShapesEditor();
 		else
 			return null;
 	}

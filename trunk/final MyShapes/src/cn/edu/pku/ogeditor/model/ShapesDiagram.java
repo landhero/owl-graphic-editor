@@ -44,7 +44,8 @@ public class ShapesDiagram extends ModelElement {
 	public static final String ALLCHILDREN_RELOCATED_PROP = "ShapesDiagram.AllChildrenRelocated";
 	private static final long serialVersionUID = 1;
 
-	private String name;
+	private String fileName;
+	private String OWLName;
 	private ShapesDiagram father;
 	private List<Shape> allShapes;
 	private List<ShapesDiagram> lowerLevelDiagrams;
@@ -66,7 +67,8 @@ public class ShapesDiagram extends ModelElement {
 		rules.add(new SWRLRule("Room(?r) … Room_PersonNum(?r, ?n) … swrlb:lessThan(?n, 4) … Air_Condition(?x) … isIn(?x, ?r) … isOn(?x, true) ★  Air_Condition_Temperature(?x, 27)"));
 		rules.add(new SWRLRule("Room(?r) … Room_PersonNum(?r, ?n) … swrlb:greaterThan(?n, 3) … Air_Condition(?x) … isIn(?x, ?r) … isOn(?x, true) ★  Air_Condition_Temperature(?x, 26)"));
 		
-		setName("New Ontology");
+		setFileName("New Ontology");
+		setOWLName("New Ontology");
 		setFather(null);
 
 	}
@@ -101,12 +103,7 @@ public class ShapesDiagram extends ModelElement {
 		connectionRouter = router;
 		firePropertyChange(ID_ROUTER, oldConnectionRouter, connectionRouter);
 	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getName() {
-		return name;
-	}
+
 	public void setFather(ShapesDiagram father) {
 		this.father = father;
 	}
@@ -129,7 +126,7 @@ public class ShapesDiagram extends ModelElement {
 		if(lowerLevelDiagrams.remove(childDiagram))
 			childDiagram.setFather(null);
 		else 
-			System.err.println("Can't remove Diagram "+childDiagram.getName());
+			System.err.println("Can't remove Diagram "+childDiagram.getOWLName());
 	}
 
 	public boolean ContainShapeName(String name) {
@@ -442,5 +439,17 @@ public class ShapesDiagram extends ModelElement {
 	}
 	public SWRLListModel getRules() {
 		return rules;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+	public String getFileName() {
+		return fileName;
+	}
+	public void setOWLName(String oWLName) {
+		OWLName = oWLName;
+	}
+	public String getOWLName() {
+		return OWLName;
 	}
 }

@@ -7,8 +7,15 @@
  * Contributors:
 ?*******************************************************************************/
 package cn.edu.pku.ogeditor.actions;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.ui.actions.ActionFactory;
+
 /**
  * Some constants in this package
+ * 
  * @author Xueyuan Xing
  */
 public class ActionConstant {
@@ -20,8 +27,6 @@ public class ActionConstant {
 	public static final String OWLGENERATION_ID = "ogeditor.OWLGeneration";
 	public static final String SYSTEMGENERATION_ID = "ogeditor.SystemGeneration";
 
-
-	
 	public final static String RELOCATE_TEXT = "Relocate";
 	public final static String CONCEPTFILTER_TEXT = "Concept Filter";
 	public final static String RELATIONFILTER_TEXT = "Relation Filter";
@@ -30,5 +35,19 @@ public class ActionConstant {
 	public static final String OWLGENERATION_TEXT = "Generate OWL File";
 	public static final String SYSTEMGENERATION_TEXT = "Generate System";
 
+	public static List<String> getSelectableActions() {
+		List<String> actions = new ArrayList<String>();
+		actions.add(ActionFactory.UNDO.getId());
+		actions.add(ActionFactory.REDO.getId());
+		actions.add(ActionFactory.DELETE.getId());
+
+		actions.add(RELOCATE_ID);
+		actions.add(CONCEPTFILTER_ID);
+		actions.add(RELATIONFILTER_ID);
+		actions.add(STOP_DEPLOY_ID);
+		actions.add(OWLGENERATION_ID);
+		actions.add(SYSTEMGENERATION_ID);
+		return actions;
+	}
 
 }

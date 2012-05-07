@@ -38,6 +38,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
+import cn.edu.pku.ogeditor.MultiPageEditor;
 import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 /**
@@ -90,8 +91,8 @@ public class HierarchyView extends ViewPart implements ISelectionListener {
 	private ShapesEditor getShapesEditor() {
 		// TODO Auto-generated method stub
 		IEditorPart curEditor = getSite().getPage().getActiveEditor();
-		if (curEditor instanceof ShapesEditor)
-			return (ShapesEditor) curEditor;
+		if (curEditor instanceof MultiPageEditor)
+			return ((MultiPageEditor) curEditor).getShapesEditor();
 		else
 			return null;
 	}
@@ -129,7 +130,7 @@ public class HierarchyView extends ViewPart implements ISelectionListener {
 			if (dialog.open() == InputDialog.OK) {
 				String childName = dialog.getValue().trim();
 				ShapesDiagram childDiagram = new ShapesDiagram();
-				childDiagram.setName(childName);
+				childDiagram.setOWLName(childName);
 				childDiagram.setFather(curDiagram);
 				curDiagram.addLowerLevelDiagram(childDiagram);
 				viewer.refresh(curDiagram);
@@ -159,6 +160,9 @@ public class HierarchyView extends ViewPart implements ISelectionListener {
 			IDoubleClickListener {
 		public void widgetSelected(SelectionEvent event) {
 			TreeSelection curSelection = (TreeSelection) viewer.getSelection();
+			TreeItem[] items = viewer.getTree().getSelection();
+			if(0 == items.length)
+				return;
 			final TreeItem item = viewer.getTree().getSelection()[0];
 			final ShapesDiagram curDiagram = (ShapesDiagram) curSelection
 					.getFirstElement();
@@ -212,7 +216,7 @@ public class HierarchyView extends ViewPart implements ISelectionListener {
 							switch (e.detail) {
 							case SWT.TRAVERSE_RETURN:
 								item.setText(text.getText());
-								curDiagram.setName(text.getText());
+								curDiagram.setOWLName(text.getText());
 								// FALL THROUGH
 							case SWT.TRAVERSE_ESCAPE:
 								composite.dispose();

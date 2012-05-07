@@ -23,7 +23,7 @@ import cn.edu.pku.ogeditor.model.ShapesDiagram;
  */
 class CreationPage extends WizardNewFileCreationPage {
 	private static int fileCount = 1;
-	private static final String DEFAULT_EXTENSION = ".ogeditor";
+	private static final String DEFAULT_EXTENSION = ".multipage";
 	private final IWorkbench workbench;
 	private ShapesDiagram shapeDiagram;
 
@@ -87,7 +87,7 @@ class CreationPage extends WizardNewFileCreationPage {
 		}
 		ByteArrayInputStream bais = null;
 		try {
-			shapeDiagram.setName(getFileName());
+			shapeDiagram.setFileName(getFileName());
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 			oos.writeObject(shapeDiagram); // argument must be Serializable

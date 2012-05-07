@@ -131,7 +131,7 @@ public class OWLGenerationDialog extends Dialog {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			owlArea.setText("");
-			String path = "D:\\Program Files\\eclipse\\myWorkspace\\OGEditor\\tmp\\" + se.getDiagram().getName() + ".owl";
+			String path = "D:\\Program Files\\eclipse\\myWorkspace\\OGEditor\\tmp\\" + se.getDiagram().getFileName() + ".owl";
 			se.SaveAsOWL(path, "owl");
 			File file = new File(path);
 			try {
