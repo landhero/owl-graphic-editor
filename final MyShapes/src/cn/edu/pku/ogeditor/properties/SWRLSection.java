@@ -67,13 +67,13 @@ public class SWRLSection extends AbstractPropertySection {
 		ruleText = new Text(container, SWT.BORDER);
 		Button addButton = new Button(container, SWT.NONE);
 		addButton.setText("add");
-		addButton.addSelectionListener(new AddObjectListener());
+		addButton.addSelectionListener(new AddRuleListener());
 		
 		CLabel listL = getWidgetFactory().createCLabel(container, "List of  SWRL Rules"); //$NON-NLS-1$
 
 		Button delButton = new Button(container, SWT.NONE);
 		delButton.setText("delete");
-		delButton.addSelectionListener(new DelObjectListener());
+		delButton.addSelectionListener(new DelRuleListener());
 		
 		viewer = new ListViewer(container, SWT.BORDER | SWT.MULTI);
 
@@ -132,7 +132,7 @@ public class SWRLSection extends AbstractPropertySection {
 		viewer.setInput(rulesModel);
 	}
 
-	private class AddObjectListener extends SelectionAdapter {
+	private class AddRuleListener extends SelectionAdapter {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
@@ -143,7 +143,7 @@ public class SWRLSection extends AbstractPropertySection {
 
 	}
 	
-	private class DelObjectListener extends SelectionAdapter {
+	private class DelRuleListener extends SelectionAdapter {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
