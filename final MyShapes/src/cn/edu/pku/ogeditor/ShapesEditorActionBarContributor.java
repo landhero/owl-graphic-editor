@@ -51,6 +51,8 @@ public void contributeToToolBar(IToolBarManager toolBarManager) {
 	toolBarManager.add(getAction(ActionFactory.UNDO.getId()));
 	toolBarManager.add(getAction(ActionFactory.REDO.getId()));
 	toolBarManager.add(new Separator()); 
+	toolBarManager.add(getAction(ActionFactory.DELETE.getId()));
+	toolBarManager.add(new Separator()); 
     toolBarManager.add(getAction(GEFActionConstants.ZOOM_IN)); 
     toolBarManager.add(getAction(GEFActionConstants.ZOOM_OUT)); 
     toolBarManager.add(new ZoomComboContributionItem(getPage())); 

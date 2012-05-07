@@ -64,6 +64,7 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.TransferDragSourceListener;
 import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.events.DisposeEvent;
@@ -76,6 +77,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.SaveAsDialog;
@@ -125,6 +127,18 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  */
 public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 		Serializable, ITabbedPropertySheetPageContributor {
+	@Override
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		// TODO Auto-generated method stub
+		IEditorPart activeEditor = getSite().getPage().getActiveEditor(); 
+		if (activeEditor instanceof MultiPageEditor) { 
+			MultiPageEditor mpe = (MultiPageEditor) activeEditor; 
+		if (mpe.getShapesEditor() == this) 
+		updateActions(ActionConstant.getSelectableActions()); 
+		} 
+		super.selectionChanged(part, selection);
+	}
+
 	private static final long serialVersionUID = 1L;
 	private static final String NS = "http://odm/concept-ont#";
 	/** This is the root of the editor's model. */
@@ -761,6 +775,8 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 	}
 
 	public String getContributorId() {
-		return getSite().getId();
+//		return getSite().getId();
+		return "OWL Graphic Editor";
+		
 	}
 }

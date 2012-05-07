@@ -24,6 +24,6 @@ public class HierarchyLabelProvider extends LabelProvider {
 
 	public String getText(Object element) {
 		ShapesDiagram diagram = (ShapesDiagram) element;
-		return diagram.getName();
+		return diagram.getOWLName();
 	}
 }
