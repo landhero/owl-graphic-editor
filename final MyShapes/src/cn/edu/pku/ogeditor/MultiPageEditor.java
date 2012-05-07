@@ -24,7 +24,6 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.FormAttachment;
@@ -34,7 +33,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -52,7 +50,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 import cn.edu.pku.ogeditor.properties.ListContentProvider;
@@ -75,6 +72,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		IResourceChangeListener, ISelectionListener {
 
 	private static final int LABEL_LENGTH = 260;
+	private static final int EDITOR_INDEX = 1;
 
 	@Override
 	protected void setInput(IEditorInput input) {
@@ -97,7 +95,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 
 	private TableViewer objectsViewer;
 
-	private ShapesDiagram diagram;
+//	private ShapesDiagram diagram;
 
 	private Text ruleText;
 
@@ -116,10 +114,8 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 
 	}
 	
-	
-	
 	void createPage0() {
-		initDiagram();
+//		initDiagram();
 
 		Composite container = new Composite(getContainer(), SWT.NONE);
 		container.setLayout(new FormLayout());
@@ -222,7 +218,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		objectsViewer.setLabelProvider(new TableLabelProvider());
 
 //		objects = new ObjectsListModel();
-		objectsViewer.setInput(diagram.getRootDiagram().getObjects());
+//		objectsViewer.setInput(diagram.getRootDiagram().getObjects());
 //
 //		objects.add(new ObjectInfo("http://object1", "001", "light"));
 //		objects.add(new ObjectInfo("http://object2", "002", "air-conditioning"));
@@ -253,20 +249,20 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	}
 	
 
-	private void initDiagram() {
-		// TODO Auto-generated method stub
-		IEditorInput input = getEditorInput();
-		try {
-			IFile file = ((IFileEditorInput) input).getFile();
-			ObjectInputStream in = new ObjectInputStream(file.getContents());
-			diagram = (ShapesDiagram) in.readObject();
-			in.close();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
+//	private void initDiagram() {
+//		// TODO Auto-generated method stub
+//		IEditorInput input = getEditorInput();
+//		try {
+//			IFile file = ((IFileEditorInput) input).getFile();
+//			ObjectInputStream in = new ObjectInputStream(file.getContents());
+//			diagram = (ShapesDiagram) in.readObject();
+//			in.close();
+//		}
+//		catch(Exception e)
+//		{
+//			e.printStackTrace();
+//		}
+//	}
 
 	/**
 	 * Creates page 0 of the multi-page editor, which contains a text editor.
@@ -275,7 +271,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		try {
 			editor = new ShapesEditor();
 			int index = addPage(editor, getEditorInput());
-			editor.setDiagram(diagram.getRootDiagram());
+//			editor.setDiagram(diagram.getRootDiagram());
 			setPageText(index, "Editor");
 			setPartName(getEditorInput().getName());
 //			setPageImage(0, getShapesEditor().getEditorInput()
@@ -378,7 +374,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		SWRLViewer.setLabelProvider(new ListLabelProvider());
 		
 //		SWRLListModel input = new SWRLListModel();
-		SWRLViewer.setInput(diagram.getRootDiagram().getRules());
+		SWRLViewer.setInput(editor.getDiagram().getRootDiagram().getRules());
 //		
 //		input.add(new SWRLRule("Room(?r) … isOccupied(?r, true) … Room_Temperature(?r, ?t) … swrlb:greaterThan(?t, 30.0) … Air_Condition(?x) …  isIn(?x, ?r) ★  isOn(?x, true)"));
 //		input.add(new SWRLRule("Room(?r) … Room_PersonNum(?r, ?n) … swrlb:lessThan(?n, 4) … Air_Condition(?x) … isIn(?x, ?r) … isOn(?x, true) ★  Air_Condition_Temperature(?x, 27)"));
@@ -496,6 +492,9 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	protected void createPages() {
 		createPage0();
 		createPage1();
+		
+		objectsViewer.setInput(editor.getDiagram().getRootDiagram().getObjects());
+
 		createPage2();
 		createPage3();
 	}
@@ -518,6 +517,17 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	 */
 	public void doSave(IProgressMonitor monitor) {
 		getShapesEditor().doSave(monitor);
+		try {
+			IFileEditorInput input = (IFileEditorInput) editor.getEditorInput();
+			IFile file = ((IFileEditorInput) input ).getFile();
+			ObjectInputStream in = new ObjectInputStream(file.getContents());
+			ShapesDiagram tmpdiagram = (ShapesDiagram) in.readObject();
+			in.close();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -526,9 +536,9 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	 * correspond to the nested editor's.
 	 */
 	public void doSaveAs() {
-		IEditorPart editor = getEditor(0);
+		IEditorPart editor = getEditor(EDITOR_INDEX);
 		editor.doSaveAs();
-		setPageText(0, editor.getTitle());
+		setPageText(EDITOR_INDEX, editor.getTitle());
 		setInput(editor.getEditorInput());
 	}
 
@@ -536,8 +546,8 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	 * (non-Javadoc) Method declared on IEditorPart
 	 */
 	public void gotoMarker(IMarker marker) {
-		setActivePage(0);
-		IDE.gotoMarker(getEditor(0), marker);
+		setActivePage(EDITOR_INDEX);
+		IDE.gotoMarker(getEditor(EDITOR_INDEX), marker);
 	}
 
 	/**
@@ -566,25 +576,9 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	 * Calculates the contents of page 2 when the it is activated.
 	 */
 	protected void pageChange(int newPageIndex) {
-		super.pageChange(newPageIndex);
-		if(0 == newPageIndex)
-		{
-			updatePropertySheet(getShapesEditor());
-		}
-		if (newPageIndex == 2) {
-			// sortWords();
-		}
-		
+		super.pageChange(newPageIndex);		
 	}
 	
-    private void updatePropertySheet(ShapesEditor part) {
-        if (part != null) {
-        	TabbedPropertySheetPage propertySheetPage = (TabbedPropertySheetPage) part.getAdapter(IPropertySheetPage.class);
-//            propertySheetPage.
-        }
-    }
-
-
 	/**
 	 * Closes all project files on project close.
 	 */
@@ -608,28 +602,12 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		}
 	}
 
-	/**
-	 * Sets the font related data to be applied to the text in page 2.
-	 */
-	void setFont() {
-		FontDialog fontDialog = new FontDialog(getSite().getShell());
-		fontDialog.setFontList(text.getFont().getFontData());
-		FontData fontData = fontDialog.open();
-		if (fontData != null) {
-			if (font != null)
-				font.dispose();
-			font = new Font(text.getDisplay(), fontData);
-			text.setFont(font);
-		}
-	}
-
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		// TODO Auto-generated method stub
 		if (this.equals(getSite().getPage().getActiveEditor())) {
 			if (getShapesEditor().equals(getActiveEditor()))
 			{
-//				pageChange(0);
 				getShapesEditor()
 				.selectionChanged(getActiveEditor(), selection);
 				
@@ -654,7 +632,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			ObjectInfo object = new ObjectInfo(urisText.getText(), rfidText.getText(), typeText.getText());
-			diagram.getObjects().add(object);
+			editor.getDiagram().getRootDiagram().getObjects().add(object);
 			refreshTexts();
 			firePropertyChange(PROP_DIRTY);
 		}
@@ -672,7 +650,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 				dels.add(object);
 //				objects.remove(object);
 			}
-			diagram.getObjects().removeAll(dels);
+			editor.getDiagram().getRootDiagram().getObjects().removeAll(dels);
 			objectsViewer.refresh();
 			firePropertyChange(PROP_DIRTY);
 		}
@@ -689,7 +667,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			SWRLRule rule = new SWRLRule(ruleText.getText());
-			diagram.getRules().add(rule);
+			editor.getDiagram().getRootDiagram().getRules().add(rule);
 			ruleText.setText("");
 			SWRLViewer.refresh();
 		}
@@ -708,7 +686,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 				dels.add(rule);
 //				objects.remove(object);
 			}
-			diagram.getRules().removeAll(dels);
+			editor.getDiagram().getRootDiagram().getRules().removeAll(dels);
 			SWRLViewer.refresh();
 		}
 	}
