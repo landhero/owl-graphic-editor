@@ -11,6 +11,15 @@
               contributorClass="cn.edu.pku.ogeditor.ShapesEditorActionBarContributor"
               id="OWL Graphic Editor">
       </editor>
+      <editor
+            class="cn.edu.pku.ogeditor.MultiPageEditor"
+            contributorClass="cn.edu.pku.ogeditor.MultiPageEditorContributor"
+            default="true"
+            extensions="multipage"
+            icon="icons/sample.gif"
+            id="cn.edu.pku.ogeditor.MultiPageEditor"
+            name="Sample Multi-page Editor">
+      </editor>
    </extension>
    <extension point="org.eclipse.ui.newWizards">
       <category
@@ -19,7 +28,7 @@
       <wizard name="OWL Graphic Editor"
               icon="ogeditor.gif"
               category="cn.edu.pku.ogeditor.newWizard"
-              class="cn.edu.pku.ogeditor.ShapesCreationWizard"
+              class="cn.edu.pku.ogeditor.wizards.ShapesCreationWizard"
               id="cn.edu.pku.ogeditor.ShapesCreationWizard">
          <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>
@@ -100,6 +109,18 @@
                id="descriptionTab"
                label="Descrpition">
          </propertyTab>
+         <propertyTab
+               afterTab="basicTab"
+               category="all"
+               id="objectsTab"
+               label="Objects">
+         </propertyTab>
+         <propertyTab
+               afterTab="objectsTab"
+               category="all"
+               id="SWRLTab"
+               label="SWRL">
+         </propertyTab>
       </propertyTabs>
    </extension>
    <extension
@@ -171,7 +192,23 @@
                   type="cn.edu.pku.ogeditor.parts.ShapeEditPart">
             </input>
             <input
-                  type="cn.edu.pku.ogeditor.parts.ConnectionEditPart">
+                  type="cn.edu.pku.ogeditor.parts.ShapeTreeEditPart">
+            </input>
+         </propertySection>
+         <propertySection
+               class="cn.edu.pku.ogeditor.properties.ObjectsSection"
+               id="objectsSection"
+               tab="objectsTab">
+            <input
+                  type="cn.edu.pku.ogeditor.parts.DiagramEditPart">
+            </input>
+         </propertySection>
+         <propertySection
+               class="cn.edu.pku.ogeditor.properties.SWRLSection"
+               id="SWRLSection"
+               tab="SWRLTab">
+            <input
+                  type="cn.edu.pku.ogeditor.parts.DiagramEditPart">
             </input>
          </propertySection>
       </propertySections>
