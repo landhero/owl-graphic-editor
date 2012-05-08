@@ -517,17 +517,6 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	 */
 	public void doSave(IProgressMonitor monitor) {
 		getShapesEditor().doSave(monitor);
-		try {
-			IFileEditorInput input = (IFileEditorInput) editor.getEditorInput();
-			IFile file = ((IFileEditorInput) input ).getFile();
-			ObjectInputStream in = new ObjectInputStream(file.getContents());
-			ShapesDiagram tmpdiagram = (ShapesDiagram) in.readObject();
-			in.close();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
 	}
 
 	/**

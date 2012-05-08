@@ -452,4 +452,14 @@ public class ShapesDiagram extends ModelElement {
 	public String getOWLName() {
 		return OWLName;
 	}
+	public Shape getShapeByName(String type) {
+		if(null == type)
+			return null;
+		for(Shape shape : allShapes)
+		{
+			if(shape.getName().equals(type))
+				return shape;
+		}
+		return null;
+	}
 }
