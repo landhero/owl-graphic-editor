@@ -15,6 +15,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.ide.IDE;
 
+import cn.edu.pku.ogeditor.MultiPageEditor;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
 
@@ -68,7 +69,8 @@ class CreationPage extends WizardNewFileCreationPage {
 		IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
 		if (newFile != null && page != null) {
 			try {
-				IDE.openEditor(page, newFile, true);
+				MultiPageEditor mpe = (MultiPageEditor) IDE.openEditor(page, newFile, true);
+				mpe.getShapesEditor().getDiagram().fireRelocate();
 			} catch (PartInitException e) {
 				e.printStackTrace();
 				return false;

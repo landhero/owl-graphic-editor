@@ -11,6 +11,9 @@ package cn.edu.pku.ogeditor.wizards;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -18,8 +21,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+
+import cn.edu.pku.ogeditor.model.Connection;
+import cn.edu.pku.ogeditor.model.Shape;
+import cn.edu.pku.ogeditor.model.ShapesDiagram;
 
 /**
  * Create new new .ogeditor-file. Those files can be used with the ShapesEditor
@@ -84,50 +90,86 @@ public class ShapesCreationWizard extends Wizard implements INewWizard {
 
 	protected void doFinish(IProgressMonitor monitor) {
 
-		/*AddressList[] lists = editListsConfigPage.getSelection();*/
+		/* AddressList[] lists = editListsConfigPage.getSelection(); */
 
-		//下面做相应的增加地址项和地址信息列表的操作
-		
+		// 下面做相应的增加地址项和地址信息列表的操作
+
 		Display display = null;
 		Shell shell = getShell();
-		if (shell == null) display = PlatformUI.getWorkbench().getDisplay();
-		else display = shell.getDisplay();
-		display.asyncExec(new Runnable(){
+		if (shell == null)
+			display = PlatformUI.getWorkbench().getDisplay();
+		else
+			display = shell.getDisplay();
+		display.asyncExec(new Runnable() {
 			public void run() {
 
-				if(getContainer().getCurrentPage() == page1)
-				{
+				if (getContainer().getCurrentPage() == page1) {
 					page1.finish();
-				}
-				else if(getContainer().getCurrentPage() == page2)
-				{
+				} else if (getContainer().getCurrentPage() == page2) {
 					page1.createDefaultContent();
 					page1.getShapeDiagram().setObjects(page2.getObjects());
+					initDiagram();
 					page1.finish();
-//					input = editListsConfigPage.getEditorInput();
-//					AddressList[] lists = editListsConfigPage.getSelection();
-//					item = editListsConfigPage.getAddressItem();
-//					
-//					AddressListManager listManager = input.getManager();
-//					listManager.removeAll();
-//					for(int i = 0; i < lists.length; i++){
-//						listManager.add(lists[i], false);
-//					}
 				}
-//				manager.addAddresses(new AddressItem[]{item});
-//				try {
-//					IWorkbenchPage page = PlatformUI.getWorkbench().
-//					getActiveWorkbenchWindow().getActivePage();
-//					page.openEditor(input, "com.plugindev.addressbook.tableEditor");
-//					input.getManager().saveDescriptions();
-//				} 
-//				catch (PartInitException e) {
-//					System.out.println(e);
-//				}
 			}
-			
-		});
-		
-	}
 
+			private void initDiagram() {
+				Shape rootShape = new Shape();
+				rootShape.setRoot(true);	//Thing为根，但从未在Diagram里创建
+				rootShape.setName("Thing");
+				rootShape.setColor(ColorConstants.orange.getRGB());
+				
+				Connection rootConnection = new Connection("ConnectionRoot");
+				rootConnection.setName("Relation");
+				
+				ShapesDiagram diagram = page1.getShapeDiagram();
+				ObjectsListModel objectsModel = diagram.getObjects();
+				if (null == objectsModel)
+					return;
+				Object[] objects = objectsModel.elements();
+				for (Object cur : objects) {
+					ObjectInfo object = (ObjectInfo)cur;
+					Shape parentShape = diagram.getShapeByName(object.getType());
+					if(null == parentShape)
+					{
+						try {
+							parentShape = Shape.class.newInstance();
+							parentShape.setName(object.getType());
+							createShape(parentShape, rootShape, diagram);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					try {
+						Shape shape = Shape.class.newInstance();
+						shape.setName(object.getRfid());
+						createShape(shape, rootShape, diagram);
+						Connection connection = new Connection(shape, parentShape, "instance of");
+
+						connection.setParent(rootConnection);
+						rootConnection.addChild(connection);
+						shape.getDiagram().addConnection(connection);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+
+			private void createShape(Shape shape, Shape parent, ShapesDiagram diagram) {
+				// TODO Auto-generated method stub
+				Rectangle bounds = new Rectangle(0, 0, -1, -1);
+				shape.setLocation(bounds.getLocation());
+				Dimension size = bounds.getSize();
+				if (size.width > 0 && size.height > 0)
+					shape.setSize(size);
+				shape.setColor(ColorConstants.orange.getRGB());
+				parent.addChild(shape);
+				shape.setParent(parent);
+				if(diagram.addChild(shape))
+					shape.setDiagram(diagram);
+			}
+		});
+	}
 }
