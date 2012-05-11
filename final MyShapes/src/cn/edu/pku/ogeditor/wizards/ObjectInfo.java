@@ -13,6 +13,7 @@ public class ObjectInfo implements Serializable{
 
 	private String rfid;
 	private String type;
+	private boolean isOn;
 	
 	public ObjectInfo(String uri, String name, String type) {
 		this.setUri(uri);
@@ -42,6 +43,14 @@ public class ObjectInfo implements Serializable{
 
 	public String getType() {
 		return type;
+	}
+
+	public void setOn(boolean isOn) {
+		this.isOn = isOn;
+	}
+
+	public boolean isOn() {
+		return isOn;
 	}
 
 }

@@ -75,7 +75,7 @@ public class SWRLSection extends AbstractPropertySection {
 		delButton.setText("delete");
 		delButton.addSelectionListener(new DelRuleListener());
 		
-		viewer = new ListViewer(container, SWT.BORDER | SWT.MULTI);
+		viewer = new ListViewer(container, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 
 		viewer.setContentProvider(new ListContentProvider());
 		viewer.setLabelProvider(new ListLabelProvider());
@@ -128,7 +128,7 @@ public class SWRLSection extends AbstractPropertySection {
 
 	public void refresh() {
 		ShapesDiagram diagram = (ShapesDiagram) dep.getModel();
-		rulesModel = diagram.getRules();
+		rulesModel = diagram.getRootDiagram().getRules();
 		viewer.setInput(rulesModel);
 	}
 

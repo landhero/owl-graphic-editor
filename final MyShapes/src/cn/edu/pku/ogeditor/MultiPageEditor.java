@@ -3,10 +3,8 @@ package cn.edu.pku.ogeditor;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -14,16 +12,15 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.FormAttachment;
@@ -34,6 +31,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -51,9 +49,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 
-import cn.edu.pku.ogeditor.model.ShapesDiagram;
-import cn.edu.pku.ogeditor.properties.ListContentProvider;
-import cn.edu.pku.ogeditor.properties.ListLabelProvider;
+import cn.edu.pku.ogeditor.dialogs.ControllerDialog;
 import cn.edu.pku.ogeditor.views.SWRLRule;
 import cn.edu.pku.ogeditor.wizards.ObjectInfo;
 import cn.edu.pku.ogeditor.wizards.TableContentProvider;
@@ -73,37 +69,18 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 
 	private static final int LABEL_LENGTH = 260;
 	private static final int EDITOR_INDEX = 1;
-
-	@Override
-	protected void setInput(IEditorInput input) {
-		// TODO Auto-generated method stub
-		super.setInput(input);
-	}
-
-	/** The text editor used in page 0. */
+	private LongRunningOperation deployThread;
+	private ControllerDialog controllerDialog;
 	private ShapesEditor editor;
-
-	/** The font chosen in page 1. */
-	private Font font;
-
-	/** The text widget used in page 2. */
-	private StyledText text;
-
 	private Text urisText;
 	private Text rfidText;
 	private Text typeText;
-
 	private TableViewer objectsViewer;
-
-//	private ShapesDiagram diagram;
-
 	private Text ruleText;
-
 	private ListViewer SWRLViewer;
-
 	private Text owlArea;
-
 	private Text checkArea;
+	private ProgressBar pb;
 
 	/**
 	 * Creates a multi-page editor example.
@@ -113,13 +90,17 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 
 	}
-	
+
 	void createPage0() {
-//		initDiagram();
+		// initDiagram();
 
 		Composite container = new Composite(getContainer(), SWT.NONE);
 		container.setLayout(new FormLayout());
-		
+
+		Button next = new Button(container, SWT.PUSH);
+		next.setText("Next >>");
+		next.addSelectionListener(new NextListener());
+
 		final Label addL = new Label(container, SWT.NONE);
 		addL.setText("Add A Detectable Object:");
 
@@ -137,32 +118,35 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		Button addButton = new Button(container, SWT.NONE);
 		addButton.setText("add");
 		addButton.addSelectionListener(new AddObjectListener());
-		
+
 		FormData data;
+
+		data = new FormData();
+		data.left = new FormAttachment(addButton, 0, SWT.LEFT);
+		data.right = new FormAttachment(100);
+		data.top = new FormAttachment(1);
+		next.setLayoutData(data);
 
 		data = new FormData();
 		data.left = new FormAttachment(1);
 		data.right = new FormAttachment(100);
-		data.top = new FormAttachment(1);
+		data.top = new FormAttachment(next, 10, SWT.BOTTOM);
 		addL.setLayoutData(data);
 
 		data = new FormData();
 		data.left = new FormAttachment(addL, 0, SWT.LEFT);
-//		urisData.right = new FormAttachment(addL, LABEL_LENGTH, SWT.LEFT);
 		data.right = new FormAttachment(30);
 		data.top = new FormAttachment(addL, 0, SWT.BOTTOM);
 		uris.setLayoutData(data);
 
 		data = new FormData();
 		data.left = new FormAttachment(uris, 0, SWT.RIGHT);
-//		data.right = new FormAttachment(uris, LABEL_LENGTH, SWT.RIGHT);
 		data.right = new FormAttachment(60);
 		data.top = new FormAttachment(addL, 0, SWT.BOTTOM);
 		rfid.setLayoutData(data);
 
 		data = new FormData();
 		data.left = new FormAttachment(rfid, 0, SWT.RIGHT);
-//		data.right = new FormAttachment(rfid, LABEL_LENGTH, SWT.RIGHT);
 		data.right = new FormAttachment(90);
 		data.top = new FormAttachment(addL, 0, SWT.BOTTOM);
 		type.setLayoutData(data);
@@ -186,7 +170,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		typeText.setLayoutData(data);
 
 		data = new FormData();
-//		addButtonData.left = new FormAttachment(typeText, 0, SWT.RIGHT);
+		// addButtonData.left = new FormAttachment(typeText, 0, SWT.RIGHT);
 		data.left = new FormAttachment(typeText, 10, SWT.RIGHT);
 		data.right = new FormAttachment(100);
 		data.top = new FormAttachment(addL, 0, SWT.BOTTOM);
@@ -217,13 +201,6 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		objectsViewer.setContentProvider(new TableContentProvider());
 		objectsViewer.setLabelProvider(new TableLabelProvider());
 
-//		objects = new ObjectsListModel();
-//		objectsViewer.setInput(diagram.getRootDiagram().getObjects());
-//
-//		objects.add(new ObjectInfo("http://object1", "001", "light"));
-//		objects.add(new ObjectInfo("http://object2", "002", "air-conditioning"));
-//		objects.add(new ObjectInfo("http://object3", "003", "screen"));
-
 		FormData listData = new FormData();
 		listData.left = new FormAttachment(addL, 0, SWT.LEFT);
 		listData.right = new FormAttachment(addL, 0, SWT.RIGHT);
@@ -238,218 +215,260 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		table.setLayoutData(tableData);
 
 		FormData delButtonData = new FormData();
-//		delButtonData.left = new FormAttachment(table, 0, SWT.RIGHT);
+		// delButtonData.left = new FormAttachment(table, 0, SWT.RIGHT);
 		delButtonData.left = new FormAttachment(addButton, 0, SWT.LEFT);
 		delButtonData.right = new FormAttachment(addButton, 0, SWT.RIGHT);
 		delButtonData.top = new FormAttachment(objectsListLabel, 0, SWT.BOTTOM);
 		delButton.setLayoutData(delButtonData);
 
 		int index = addPage(container);
-		setPageText(index, "Objects");
+		setPageText(index, "Objects Detecting");
 	}
-	
 
-//	private void initDiagram() {
-//		// TODO Auto-generated method stub
-//		IEditorInput input = getEditorInput();
-//		try {
-//			IFile file = ((IFileEditorInput) input).getFile();
-//			ObjectInputStream in = new ObjectInputStream(file.getContents());
-//			diagram = (ShapesDiagram) in.readObject();
-//			in.close();
-//		}
-//		catch(Exception e)
-//		{
-//			e.printStackTrace();
-//		}
-//	}
-
-	/**
-	 * Creates page 0 of the multi-page editor, which contains a text editor.
-	 */
 	void createPage1() {
 		try {
 			editor = new ShapesEditor();
 			int index = addPage(editor, getEditorInput());
-//			editor.setDiagram(diagram.getRootDiagram());
-			setPageText(index, "Editor");
+			setPageText(index, "Knowledge Module Building");
 			setPartName(getEditorInput().getName());
-//			setPageImage(0, getShapesEditor().getEditorInput()
-//					.getImageDescriptor().createImage());
+			// setPageImage(0, getShapesEditor().getEditorInput()
+			// .getImageDescriptor().createImage());
 		} catch (PartInitException e) {
 			ErrorDialog.openError(getSite().getShell(),
 					"Error creating nested text editor", null, e.getStatus());
 		}
 	}
-	
 
 	private void createPage2() {
 		Composite container = new Composite(getContainer(), SWT.NONE);
 		container.setLayout(new FormLayout());
 		FormData data;
-		
+
+		Button pre = new Button(container, SWT.PUSH);
+		pre.setText("<< Previous");
+		pre.addSelectionListener(new PreListener());
+
 		final Label genL = new Label(container, SWT.NONE);
 		genL.setText(".owl generation:");
 		Button genb = new Button(container, SWT.PUSH);
 		genb.setText("Generate");
 		genb.addSelectionListener(new GenerateListener());
-		
+
 		owlArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
-		
+
 		final Label consistL = new Label(container, SWT.NONE);
 		consistL.setText("Consistency Check:");
 		Button check = new Button(container, SWT.PUSH);
 		check.setText("Check");
 		check.addSelectionListener(new CheckListener());
-		
-		checkArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
-		
+
+		checkArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL
+				| SWT.BORDER);
+
+		Button deploy = new Button(container, SWT.PUSH);
+		deploy.setText("Deploy");
+		deploy.addSelectionListener(new DeployListener());
+
+		Button stop = new Button(container, SWT.PUSH);
+		stop.setText("Stop");
+		stop.addSelectionListener(new StopListener());
+
+		Button viewStatus = new Button(container, SWT.PUSH);
+		viewStatus.setText("View Status");
+		viewStatus.addSelectionListener(new ViewStatusListener());
+
+		pb = new ProgressBar(container, SWT.HORIZONTAL | SWT.SMOOTH);
+		pb.setMinimum(0);
+		pb.setMaximum(0);
+
+		data = new FormData();
+		data.left = new FormAttachment(1);
+		// data.right = new FormAttachment(100);
+		data.top = new FormAttachment(1);
+		pre.setLayoutData(data);
+
 		data = new FormData();
 		data.left = new FormAttachment(1);
 		data.right = new FormAttachment(100);
-		data.top = new FormAttachment(1);
+		data.top = new FormAttachment(pre, 10, SWT.BOTTOM);
 		genL.setLayoutData(data);
-		
+
 		data = new FormData();
 		data.left = new FormAttachment(genL, 0, SWT.LEFT);
 		data.right = new FormAttachment(90);
 		data.top = new FormAttachment(genL, 0, SWT.BOTTOM);
-//		data.bottom = new FormAttachment(genL, 300, SWT.BOTTOM);
-		data.bottom = new FormAttachment(70);
+		// data.bottom = new FormAttachment(genL, 300, SWT.BOTTOM);
+		data.bottom = new FormAttachment(60);
 		owlArea.setLayoutData(data);
-		
+
 		data = new FormData();
 		data.left = new FormAttachment(owlArea, 10, SWT.RIGHT);
 		data.right = new FormAttachment(genL, 0, SWT.RIGHT);
 		data.top = new FormAttachment(genL, 0, SWT.BOTTOM);
-//		data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
+		// data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
 		genb.setLayoutData(data);
-		
+
 		data = new FormData();
 		data.left = new FormAttachment(genL, 0, SWT.LEFT);
 		data.right = new FormAttachment(genL, 0, SWT.RIGHT);
 		data.top = new FormAttachment(owlArea, 30, SWT.BOTTOM);
 		consistL.setLayoutData(data);
-		
+
 		data = new FormData();
 		data.left = new FormAttachment(owlArea, 0, SWT.LEFT);
 		data.right = new FormAttachment(owlArea, 0, SWT.RIGHT);
 		data.top = new FormAttachment(consistL, 0, SWT.BOTTOM);
-//		data.bottom = new FormAttachment(consistL, 300, SWT.BOTTOM);
-		data.bottom = new FormAttachment(100);
+		// data.bottom = new FormAttachment(consistL, 300, SWT.BOTTOM);
+		data.bottom = new FormAttachment(87);
 		checkArea.setLayoutData(data);
-		
+
 		data = new FormData();
 		data.left = new FormAttachment(genb, 0, SWT.LEFT);
 		data.right = new FormAttachment(genb, 0, SWT.RIGHT);
 		data.top = new FormAttachment(consistL, 0, SWT.BOTTOM);
-//		data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
+		// data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
 		check.setLayoutData(data);
-		int index = addPage(container);
-		setPageText(index, "OWL Generation");
-	}
-
-	void createPage4() {
-
-		Composite container = new Composite(getContainer(), SWT.NONE);
-		container.setLayout(new FormLayout());
-
-		FormData data;
-		final Label addL = new Label(container, SWT.NONE);
-		addL.setText("Add a SWRL Rule");
-		ruleText = new Text(container, SWT.BORDER );
-		Button addButton = new Button(container, SWT.NONE);
-		addButton.setText("add");
-		addButton.addSelectionListener(new AddRuleListener());	
-		final Label listL = new Label(container, SWT.NONE);
-		listL.setText("List of  SWRL Rules");
-
-		Button delButton = new Button(container, SWT.NONE);
-		delButton.setText("delete");
-		delButton.addSelectionListener(new DelRuleListener());
-		
-		SWRLViewer = new ListViewer(container, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
-
-		SWRLViewer.setContentProvider(new ListContentProvider());
-		SWRLViewer.setLabelProvider(new ListLabelProvider());
-		
-//		SWRLListModel input = new SWRLListModel();
-		SWRLViewer.setInput(editor.getDiagram().getRootDiagram().getRules());
-//		
-//		input.add(new SWRLRule("Room(?r) ∧ isOccupied(?r, true) ∧ Room_Temperature(?r, ?t) ∧ swrlb:greaterThan(?t, 30.0) ∧ Air_Condition(?x) ∧  isIn(?x, ?r) →  isOn(?x, true)"));
-//		input.add(new SWRLRule("Room(?r) ∧ Room_PersonNum(?r, ?n) ∧ swrlb:lessThan(?n, 4) ∧ Air_Condition(?x) ∧ isIn(?x, ?r) ∧ isOn(?x, true) →  Air_Condition_Temperature(?x, 27)"));
-//		input.add(new SWRLRule("Room(?r) ∧ Room_PersonNum(?r, ?n) ∧ swrlb:greaterThan(?n, 3) ∧ Air_Condition(?x) ∧ isIn(?x, ?r) ∧ isOn(?x, true) →  Air_Condition_Temperature(?x, 26)"));
-		
-		data = new FormData();
-		data.left = new FormAttachment(1);
-		data.right = new FormAttachment(100);
-		data.top = new FormAttachment(1);
-		addL.setLayoutData(data);
-		
-		data = new FormData();
-		data.left = new FormAttachment(addL, 0, SWT.LEFT);
-		data.right = new FormAttachment(90);
-		data.top = new FormAttachment(addL, 0, SWT.BOTTOM);
-		ruleText.setLayoutData(data);
-		
-		data = new FormData();
-		data.left = new FormAttachment(ruleText, 10, SWT.RIGHT);
-		data.right = new FormAttachment(addL, 0, SWT.RIGHT);
-		data.top = new FormAttachment(addL, 0, SWT.BOTTOM);
-		addButton.setLayoutData(data);
 
 		data = new FormData();
-		data.left = new FormAttachment(addL, 0, SWT.LEFT);
-		data.right = new FormAttachment(addL, 0, SWT.RIGHT);
-		data.top = new FormAttachment(ruleText, 5, SWT.BOTTOM);
-		listL.setLayoutData(data);
-		
-		data = new FormData();
-		data.left = new FormAttachment(addL, 0, SWT.LEFT);
-		data.right = new FormAttachment(ruleText, 0, SWT.RIGHT);
-		data.top = new FormAttachment(listL, 0, SWT.BOTTOM);
-		data.bottom = new FormAttachment(100);
-		SWRLViewer.getList().setLayoutData(data);
-		
-		data = new FormData();
-		data.left = new FormAttachment(addButton, 0, SWT.LEFT);
-		data.right = new FormAttachment(addButton, 0, SWT.RIGHT);
-		data.top = new FormAttachment(listL, 0, SWT.BOTTOM);
-		delButton.setLayoutData(data);
+		data.left = new FormAttachment(50, -300);
+		data.right = new FormAttachment(50, -100);
+		data.top = new FormAttachment(checkArea, 15, SWT.BOTTOM);
+		// data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
+		deploy.setLayoutData(data);
 
+		data = new FormData();
+		data.left = new FormAttachment(50, -100);
+		data.right = new FormAttachment(50, 100);
+		data.top = new FormAttachment(deploy, 0, SWT.TOP);
+		// data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
+		stop.setLayoutData(data);
+
+		data = new FormData();
+		data.left = new FormAttachment(50, 100);
+		data.right = new FormAttachment(50, 300);
+		data.top = new FormAttachment(deploy, 0, SWT.TOP);
+		// data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
+		viewStatus.setLayoutData(data);
+
+		data = new FormData();
+		data.left = new FormAttachment(genL, 0, SWT.LEFT);
+		data.right = new FormAttachment(genL, 0, SWT.RIGHT);
+		data.top = new FormAttachment(deploy, 5, SWT.BOTTOM);
+		data.bottom = new FormAttachment(99);
+		pb.setLayoutData(data);
 
 		int index = addPage(container);
-		setPageText(index, "SWRL Rules");
+		setPageText(index, "Correctness Check");
 	}
+
+	// void createPage4() {
+	//
+	// Composite container = new Composite(getContainer(), SWT.NONE);
+	// container.setLayout(new FormLayout());
+	//
+	// FormData data;
+	// final Label addL = new Label(container, SWT.NONE);
+	// addL.setText("Add a SWRL Rule");
+	// ruleText = new Text(container, SWT.BORDER );
+	// Button addButton = new Button(container, SWT.NONE);
+	// addButton.setText("add");
+	// addButton.addSelectionListener(new AddRuleListener());
+	// final Label listL = new Label(container, SWT.NONE);
+	// listL.setText("List of  SWRL Rules");
+	//
+	// Button delButton = new Button(container, SWT.NONE);
+	// delButton.setText("delete");
+	// delButton.addSelectionListener(new DelRuleListener());
+	//
+	// SWRLViewer = new ListViewer(container, SWT.BORDER | SWT.MULTI |
+	// SWT.V_SCROLL | SWT.H_SCROLL);
+	//
+	// SWRLViewer.setContentProvider(new ListContentProvider());
+	// SWRLViewer.setLabelProvider(new ListLabelProvider());
+	//
+	// // SWRLListModel input = new SWRLListModel();
+	// SWRLViewer.setInput(editor.getDiagram().getRootDiagram().getRules());
+	// //
+	// // input.add(new
+	// SWRLRule("Room(?r) ∧ isOccupied(?r, true) ∧ Room_Temperature(?r, ?t) ∧ swrlb:greaterThan(?t, 30.0) ∧ Air_Condition(?x) ∧  isIn(?x, ?r) →  isOn(?x, true)"));
+	// // input.add(new
+	// SWRLRule("Room(?r) ∧ Room_PersonNum(?r, ?n) ∧ swrlb:lessThan(?n, 4) ∧ Air_Condition(?x) ∧ isIn(?x, ?r) ∧ isOn(?x, true) →  Air_Condition_Temperature(?x, 27)"));
+	// // input.add(new
+	// SWRLRule("Room(?r) ∧ Room_PersonNum(?r, ?n) ∧ swrlb:greaterThan(?n, 3) ∧ Air_Condition(?x) ∧ isIn(?x, ?r) ∧ isOn(?x, true) →  Air_Condition_Temperature(?x, 26)"));
+	//
+	// data = new FormData();
+	// data.left = new FormAttachment(1);
+	// data.right = new FormAttachment(100);
+	// data.top = new FormAttachment(1);
+	// addL.setLayoutData(data);
+	//
+	// data = new FormData();
+	// data.left = new FormAttachment(addL, 0, SWT.LEFT);
+	// data.right = new FormAttachment(90);
+	// data.top = new FormAttachment(addL, 0, SWT.BOTTOM);
+	// ruleText.setLayoutData(data);
+	//
+	// data = new FormData();
+	// data.left = new FormAttachment(ruleText, 10, SWT.RIGHT);
+	// data.right = new FormAttachment(addL, 0, SWT.RIGHT);
+	// data.top = new FormAttachment(addL, 0, SWT.BOTTOM);
+	// addButton.setLayoutData(data);
+	//
+	// data = new FormData();
+	// data.left = new FormAttachment(addL, 0, SWT.LEFT);
+	// data.right = new FormAttachment(addL, 0, SWT.RIGHT);
+	// data.top = new FormAttachment(ruleText, 5, SWT.BOTTOM);
+	// listL.setLayoutData(data);
+	//
+	// data = new FormData();
+	// data.left = new FormAttachment(addL, 0, SWT.LEFT);
+	// data.right = new FormAttachment(ruleText, 0, SWT.RIGHT);
+	// data.top = new FormAttachment(listL, 0, SWT.BOTTOM);
+	// data.bottom = new FormAttachment(100);
+	// SWRLViewer.getList().setLayoutData(data);
+	//
+	// data = new FormData();
+	// data.left = new FormAttachment(addButton, 0, SWT.LEFT);
+	// data.right = new FormAttachment(addButton, 0, SWT.RIGHT);
+	// data.top = new FormAttachment(listL, 0, SWT.BOTTOM);
+	// delButton.setLayoutData(data);
+	//
+	//
+	// int index = addPage(container);
+	// setPageText(index, "SWRL Rules");
+	// }
 
 	void createPage3() {
 		Composite container = new Composite(getContainer(), SWT.NONE);
 		container.setLayout(new FormLayout());
 		FormData data;
-		
+
 		final Label genL = new Label(container, SWT.NONE);
 		genL.setText("Software System");
 		Button genb = new Button(container, SWT.PUSH);
 		genb.setText("Generate");
-		
-		Text systemArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
+
+		Text systemArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL
+				| SWT.BORDER);
 		systemArea.setText("code generation");
-		
-		final Canvas canvas=new Canvas(container ,SWT.BORDER);
-		
-		ImageData imageData = new ImageData("D:\\Program Files\\eclipse\\myWorkspace\\OGEditor\\icons\\system.jpg");
-		
-		Image systemImage = new Image(Display.getDefault(), imageData.scaledTo(imageData.width, imageData.height));
-		
-		canvas.addPaintListener(new PaintListener(){
-			 public void paintControl(final PaintEvent event){
-			  Image image=(Image)canvas.getData();
-			  if(image!=null){
-			   event.gc.drawImage(image,40,10);//定位图像左上角距canvas左上角的距离
-			  }
-			 }
-			});
-		
+
+		final Canvas canvas = new Canvas(container, SWT.BORDER);
+
+		ImageData imageData = new ImageData(
+				"D:\\Program Files\\eclipse\\myWorkspace\\OGEditor\\icons\\system.jpg");
+
+		Image systemImage = new Image(Display.getDefault(), imageData.scaledTo(
+				imageData.width, imageData.height));
+
+		canvas.addPaintListener(new PaintListener() {
+			public void paintControl(final PaintEvent event) {
+				Image image = (Image) canvas.getData();
+				if (image != null) {
+					event.gc.drawImage(image, 40, 10);// 定位图像左上角距canvas左上角的距离
+				}
+			}
+		});
+
 		canvas.setData(systemImage);
 		canvas.redraw();
 
@@ -458,28 +477,28 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		data.right = new FormAttachment(100);
 		data.top = new FormAttachment(1);
 		genL.setLayoutData(data);
-		
+
 		data = new FormData();
 		data.left = new FormAttachment(genL, 0, SWT.LEFT);
 		data.right = new FormAttachment(90);
 		data.top = new FormAttachment(genL, 0, SWT.BOTTOM);
-//		data.bottom = new FormAttachment(genL, 300, SWT.BOTTOM);
+		// data.bottom = new FormAttachment(genL, 300, SWT.BOTTOM);
 		data.bottom = new FormAttachment(70);
 		systemArea.setLayoutData(data);
-		
+
 		data = new FormData();
 		data.left = new FormAttachment(systemArea, 0, SWT.LEFT);
 		data.right = new FormAttachment(systemArea, 0, SWT.RIGHT);
 		data.top = new FormAttachment(systemArea, 0, SWT.BOTTOM);
-//		data.bottom = new FormAttachment(genL, 300, SWT.BOTTOM);
+		// data.bottom = new FormAttachment(genL, 300, SWT.BOTTOM);
 		data.bottom = new FormAttachment(100);
 		canvas.setLayoutData(data);
-		
+
 		data = new FormData();
 		data.left = new FormAttachment(systemArea, 10, SWT.RIGHT);
 		data.right = new FormAttachment(genL, 0, SWT.RIGHT);
 		data.top = new FormAttachment(genL, 0, SWT.BOTTOM);
-//		data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
+		// data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
 		genb.setLayoutData(data);
 
 		int index = addPage(container);
@@ -492,15 +511,14 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	protected void createPages() {
 		createPage0();
 		createPage1();
-		
-		objectsViewer.setInput(editor.getDiagram().getRootDiagram().getObjects());
+
+		objectsViewer.setInput(editor.getDiagram().getRootDiagram()
+				.getObjects());
 
 		createPage2();
-		createPage3();
+		// setActivePage(1);
+		// createPage3();
 	}
-
-
-
 
 	/**
 	 * The <code>MultiPageEditorPart</code> implementation of this
@@ -565,9 +583,9 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	 * Calculates the contents of page 2 when the it is activated.
 	 */
 	protected void pageChange(int newPageIndex) {
-		super.pageChange(newPageIndex);		
+		super.pageChange(newPageIndex);
 	}
-	
+
 	/**
 	 * Closes all project files on project close.
 	 */
@@ -595,13 +613,12 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		// TODO Auto-generated method stub
 		if (this.equals(getSite().getPage().getActiveEditor())) {
-			if (getShapesEditor().equals(getActiveEditor()))
-			{
+			if (getShapesEditor().equals(getActiveEditor())) {
 				getShapesEditor()
-				.selectionChanged(getActiveEditor(), selection);
-				
+						.selectionChanged(getActiveEditor(), selection);
+
 			}
-				
+
 		}
 	}
 
@@ -609,9 +626,11 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		// TODO Auto-generated method stub
 		return editor;
 	}
-	
+
 	public Object getAdapter(Class type) {
-		if(type == IPropertySheetPage.class || type == IContentOutlinePage.class || type == ZoomManager.class)
+		if (type == IPropertySheetPage.class
+				|| type == IContentOutlinePage.class
+				|| type == ZoomManager.class)
 			return getShapesEditor().getAdapter(type);
 		return super.getAdapter(type);
 	}
@@ -620,24 +639,25 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			ObjectInfo object = new ObjectInfo(urisText.getText(), rfidText.getText(), typeText.getText());
+			ObjectInfo object = new ObjectInfo(urisText.getText(),
+					rfidText.getText(), typeText.getText());
 			editor.getDiagram().getRootDiagram().getObjects().add(object);
 			refreshTexts();
 			firePropertyChange(PROP_DIRTY);
 		}
 	}
-	
+
 	public class DelObjectListener extends SelectionAdapter {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			int[] indices = objectsViewer.getTable().getSelectionIndices();
 			ArrayList<ObjectInfo> dels = new ArrayList<ObjectInfo>();
-			for(int index : indices)
-			{
-				ObjectInfo object = (ObjectInfo) objectsViewer.getElementAt(index);
+			for (int index : indices) {
+				ObjectInfo object = (ObjectInfo) objectsViewer
+						.getElementAt(index);
 				dels.add(object);
-//				objects.remove(object);
+				// objects.remove(object);
 			}
 			editor.getDiagram().getRootDiagram().getObjects().removeAll(dels);
 			objectsViewer.refresh();
@@ -650,7 +670,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		rfidText.setText("");
 		typeText.setText("");
 	}
-	
+
 	private class AddRuleListener extends SelectionAdapter {
 
 		@Override
@@ -662,18 +682,17 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		}
 
 	}
-	
+
 	private class DelRuleListener extends SelectionAdapter {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			int[] indices = SWRLViewer.getList().getSelectionIndices();
 			ArrayList<SWRLRule> dels = new ArrayList<SWRLRule>();
-			for(int index : indices)
-			{
+			for (int index : indices) {
 				SWRLRule rule = (SWRLRule) SWRLViewer.getElementAt(index);
 				dels.add(rule);
-//				objects.remove(object);
+				// objects.remove(object);
 			}
 			editor.getDiagram().getRootDiagram().getRules().removeAll(dels);
 			SWRLViewer.refresh();
@@ -685,15 +704,15 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			owlArea.setText("");
-			String path = "D:\\Program Files\\eclipse\\myWorkspace\\OGEditor\\tmp\\" + editor.getDiagram().getFileName() + ".owl";
+			String path = "D:\\Program Files\\eclipse\\myWorkspace\\OGEditor\\tmp\\"
+					+ editor.getDiagram().getFileName() + ".owl";
 			editor.SaveAsOWL(path, "owl");
 			File file = new File(path);
 			try {
 				FileReader fr = new FileReader(file);
 				BufferedReader br = new BufferedReader(fr);
 				String line = new String();
-				while(null != (line = br.readLine()))
-				{
+				while (null != (line = br.readLine())) {
 					owlArea.append(line + "\n");
 				}
 				fr.close();
@@ -704,13 +723,116 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 			}
 		}
 	}
-	
+
 	private class CheckListener extends SelectionAdapter {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			checkArea.setText("");
 			checkArea.setText("……\nConsistency check is over……\n");
+		}
+	}
+
+	private class DeployListener extends SelectionAdapter {
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			String path = "D:\\Program Files\\eclipse\\myWorkspace\\OGEditor\\tmp\\"
+					+ editor.getDiagram().getFileName() + ".owl";
+			File file = new File(path);
+			if(!file.exists() || owlArea.getText().equals(""))
+			{
+				MessageDialog.openError(Display.getDefault().getActiveShell(), "Deploy Error", "OWL file hasn't been generated!");
+				return;
+			}
+			if(checkArea.getText().equals(""))
+			{
+				MessageDialog.openError(Display.getDefault().getActiveShell(), "Deploy Error", "Consistency check hasn't been completed!");
+				return;
+			}
+			
+			//部署到系统上
+			pb.setSelection(0);
+			deployThread = new LongRunningOperation(Display.getCurrent(), pb);
+			deployThread.start();
+		}
+	}
+
+	private class StopListener extends SelectionAdapter {
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			if (deployThread.isAlive())
+				deployThread.stop();
+
+			pb.setSelection(0);
+		}
+	}
+
+	private class ViewStatusListener extends SelectionAdapter {
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			// pb.setSelection(0);
+			// new LongRunningOperation(Display.getCurrent(), pb).start();
+			// Display newdisplay = new Display();
+			// Shell shell = new Shell(newdisplay);
+			if (pb.getSelection() < 100) {
+				MessageDialog.openError(Display.getDefault().getActiveShell(),
+						"View Status Error",
+						"System hasn't complete deployment");
+				return;
+			}
+			controllerDialog = new ControllerDialog(Display.getDefault()
+					.getActiveShell(), editor);
+			controllerDialog.open();
+			// controllerDialog.close();
+		}
+	}
+
+	class LongRunningOperation extends Thread {
+		private Display display;
+		private ProgressBar progressBar;
+
+		public LongRunningOperation(Display display, ProgressBar progressBar) {
+			this.display = display;
+			this.progressBar = progressBar;
+		}
+
+		public void run() {
+			// 模仿长时间的任务
+			for (int i = 0; i < 100; i++) {
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					return;
+				}
+				display.asyncExec(new Runnable() {
+					public void run() {
+						if (progressBar.isDisposed())
+							return;
+						// 进度条递增
+						progressBar.setSelection(progressBar.getSelection() + 1);
+					}
+				});
+			}
+		}
+	}
+
+	private class PreListener extends SelectionAdapter {
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			setActivePage(getActivePage() - 1);
+		}
+	}
+
+	private class NextListener extends SelectionAdapter {
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			setActivePage(getActivePage() + 1);
 		}
 	}
 }
