@@ -137,10 +137,10 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 				updateActions(ActionConstant.getSelectableActions());
 		}
 		super.selectionChanged(part, selection);
-		if (null != propertySheet && part == this)
-		{
-			propertySheet.selectionChanged(part, selection);
-		}
+//		if (null != propertySheet )// && part == this)
+//		{
+//			propertySheet.selectionChanged(part, selection);
+//		}
 	}
 
 	private static final long serialVersionUID = 1L;
