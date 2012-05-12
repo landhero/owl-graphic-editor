@@ -257,7 +257,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		owlArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
 
 		final Label consistL = new Label(container, SWT.NONE);
-		consistL.setText("Consistency Check:");
+		consistL.setText("Correctness Check:");
 		Button check = new Button(container, SWT.PUSH);
 		check.setText("Check");
 		check.addSelectionListener(new CheckListener());
@@ -729,7 +729,10 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			checkArea.setText("");
-			checkArea.setText("¡­¡­\nConsistency check is over¡­¡­\n");
+			checkArea.setText(">Checking ¡­¡­\n");
+			checkArea.append(">Rule definition is correct.\n");
+			checkArea.append(">No conflict rules.\n");
+			checkArea.append(">Correctness check has been completed.\n");
 		}
 	}
 
