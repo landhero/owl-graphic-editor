@@ -25,6 +25,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import cn.edu.pku.ogeditor.ShapesEditor;
+import cn.edu.pku.ogeditor.wizards.ObjectInfo;
+import cn.edu.pku.ogeditor.wizards.ObjectsListModel;
 
 public class ControllerDialog extends Dialog {
 
@@ -100,7 +102,17 @@ public class ControllerDialog extends Dialog {
 		viewer.setLabelProvider(new TableLabelProvider());
 
 //		objects = new ObjectsListModel();
-		viewer.setInput(editor.getDiagram().getObjects());
+		viewer.setInput(editor.getDiagram().getRootDiagram().getObjects());
+		
+		ObjectsListModel objects = editor.getDiagram().getRootDiagram().getObjects();
+		Object[] all = objects.elements();
+		for(Object ob : all)
+		{
+			ObjectInfo object = (ObjectInfo)ob;
+			if(Integer.parseInt(object.getRfid()) <= 14533 || Integer.parseInt(object.getRfid()) >= 14543)
+				object.setOn(true);
+		}
+		viewer.refresh();
 		
 		data = new FormData();
 		data.left = new FormAttachment(1);
