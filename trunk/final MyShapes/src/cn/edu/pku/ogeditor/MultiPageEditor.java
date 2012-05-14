@@ -21,6 +21,8 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.FormAttachment;
@@ -81,6 +83,8 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	private Text owlArea;
 	private Text checkArea;
 	private ProgressBar pb;
+	private Font titleFont;
+	private Font textFont;
 
 	/**
 	 * Creates a multi-page editor example.
@@ -88,6 +92,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	public MultiPageEditor() {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+		
 
 	}
 
@@ -96,27 +101,48 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 
 		Composite container = new Composite(getContainer(), SWT.NONE);
 		container.setLayout(new FormLayout());
+		Display display = Display.getDefault();
+		FontData[] fontData = display.getFontList(null, true);
+		for(FontData data : fontData)
+		{
+			System.out.println("font: " + data.getName());
+		}
+		
+		titleFont = new Font(display, "Arial", 12, SWT.BOLD);
+		textFont = new Font(display, "Cambria", 12, SWT.NORMAL);
+
+//		font = display.getSystemFont();
+//		System.out.println("font Height: " + font.getFontData()[0].getHeight());;
 
 		Button next = new Button(container, SWT.PUSH);
 		next.setText("Next >>");
+		next.setFont(titleFont);
 		next.addSelectionListener(new NextListener());
 
 		final Label addL = new Label(container, SWT.NONE);
 		addL.setText("Add A Detectable Object:");
+		addL.setFont(titleFont);
 
 		final Label uris = new Label(container, SWT.BORDER);
 		uris.setText("URIs");
+		uris.setFont(textFont);
 		final Label rfid = new Label(container, SWT.BORDER);
 		rfid.setText("RFID");
+		rfid.setFont(textFont);
 		final Label type = new Label(container, SWT.BORDER);
 		type.setText("TYPE");
+		type.setFont(textFont);
 
 		urisText = new Text(container, SWT.BORDER);
 		urisText.setText("http://");
+		urisText.setFont(textFont);
 		rfidText = new Text(container, SWT.BORDER);
+		rfidText.setFont(textFont);
 		typeText = new Text(container, SWT.BORDER);
+		typeText.setFont(textFont);
 		Button addButton = new Button(container, SWT.NONE);
-		addButton.setText("add");
+		addButton.setText("Add");
+		addButton.setFont(titleFont);
 		addButton.addSelectionListener(new AddObjectListener());
 
 		FormData data;
@@ -178,13 +204,16 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 
 		final Label objectsListLabel = new Label(container, SWT.NONE);
 		objectsListLabel.setText("List of Detectable Objects:");
+		objectsListLabel.setFont(titleFont);
 
 		Button delButton = new Button(container, SWT.NONE);
-		delButton.setText("delete");
+		delButton.setText("Delete");
+		delButton.setFont(titleFont);
 		delButton.addSelectionListener(new DelObjectListener());
 
 		Table table = new Table(container, SWT.BORDER | SWT.MULTI
 				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+		table.setFont(textFont);
 		TableColumn column1 = new TableColumn(table, SWT.NONE);
 		column1.setText("URIs");
 		column1.setWidth(LABEL_LENGTH);
@@ -222,7 +251,8 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		delButton.setLayoutData(delButtonData);
 
 		int index = addPage(container);
-		setPageText(index, "Objects Detecting");
+		setPageText(index, "Objects Detection");
+		
 	}
 
 	void createPage1() {
@@ -246,35 +276,45 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 
 		Button pre = new Button(container, SWT.PUSH);
 		pre.setText("<< Previous");
+		pre.setFont(titleFont);
 		pre.addSelectionListener(new PreListener());
 
 		final Label genL = new Label(container, SWT.NONE);
-		genL.setText(".owl generation:");
+		genL.setText(".OWL Generation:");
+		genL.setFont(titleFont);
 		Button genb = new Button(container, SWT.PUSH);
 		genb.setText("Generate");
+		genb.setFont(titleFont);
 		genb.addSelectionListener(new GenerateListener());
 
 		owlArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
+		owlArea.setFont(textFont);
 
 		final Label consistL = new Label(container, SWT.NONE);
 		consistL.setText("Correctness Check:");
+		consistL.setFont(titleFont);
 		Button check = new Button(container, SWT.PUSH);
 		check.setText("Check");
+		check.setFont(titleFont);
 		check.addSelectionListener(new CheckListener());
 
 		checkArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL
 				| SWT.BORDER);
+		checkArea.setFont(textFont);
 
 		Button deploy = new Button(container, SWT.PUSH);
 		deploy.setText("Deploy");
+		deploy.setFont(titleFont);
 		deploy.addSelectionListener(new DeployListener());
 
 		Button stop = new Button(container, SWT.PUSH);
 		stop.setText("Stop");
+		stop.setFont(titleFont);
 		stop.addSelectionListener(new StopListener());
 
 		Button viewStatus = new Button(container, SWT.PUSH);
 		viewStatus.setText("View Status");
+		viewStatus.setFont(titleFont);
 		viewStatus.addSelectionListener(new ViewStatusListener());
 
 		pb = new ProgressBar(container, SWT.HORIZONTAL | SWT.SMOOTH);
@@ -311,7 +351,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		data = new FormData();
 		data.left = new FormAttachment(genL, 0, SWT.LEFT);
 		data.right = new FormAttachment(genL, 0, SWT.RIGHT);
-		data.top = new FormAttachment(owlArea, 30, SWT.BOTTOM);
+		data.top = new FormAttachment(owlArea, 20, SWT.BOTTOM);
 		consistL.setLayoutData(data);
 
 		data = new FormData();

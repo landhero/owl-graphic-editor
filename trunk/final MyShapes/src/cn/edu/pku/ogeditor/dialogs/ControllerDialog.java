@@ -11,6 +11,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -35,6 +36,7 @@ public class ControllerDialog extends Dialog {
 	private TableViewer viewer;
 	private ShapesEditor editor;
 	private StatusDisplay statusThread;
+	private Font titleFont;
 	public static final String START_MESS = ">control system start ...";
 	public static final String[] STATUS = {">detecting objects' states ...", ">initializing instances ...", ">commiting to reasoner ...", ">carrying out inference ...", ">returning inferred results ...", ">resetting devices' states ..."};
 	private static final int LABEL_LENGTH = 300;
@@ -59,32 +61,46 @@ public class ControllerDialog extends Dialog {
 		container.setLayout(new FormLayout());
 		FormData data;
 		
+		Display display = Display.getDefault();
+		Font bigTitleFont = new Font(display, "Arial", 14, SWT.BOLD);
+		titleFont = new Font(display, "Arial", 12, SWT.BOLD);
+
+		Font textFont = new Font(display, "Cambria", 12, SWT.NORMAL);
+		
 		final Label conL = new Label(container, SWT.SHADOW_OUT | SWT.CENTER);
 		conL.setText("Controller");
+		conL.setFont(bigTitleFont);
 		
 		final Label runningStatusL = new Label(container, SWT.NONE);
 		runningStatusL.setText("Running status");
+		runningStatusL.setFont(titleFont);
 		
 		runningStatusArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
 		runningStatusArea.setText(START_MESS + "\n");
+		runningStatusArea.setFont(textFont);
 		
 		Button start = new Button(container, SWT.PUSH);
 		start.setText("Start");
+		start.setFont(titleFont);
 		start.addSelectionListener(new StartListener());
 		
 		Button pause = new Button(container, SWT.PUSH);
 		pause.setText("Pause");
+		pause.setFont(titleFont);
 		pause.addSelectionListener(new PauseListener());
 
 		Button clear = new Button(container, SWT.PUSH);
 		clear.setText("Clear");
+		clear.setFont(titleFont);
 		clear.addSelectionListener(new ClearListener());
 		
 		final Label DeviceListL = new Label(container, SWT.NONE);
 		DeviceListL.setText("Device List");
+		DeviceListL.setFont(titleFont);
 		
 		Table table = new Table(container, SWT.BORDER | SWT.MULTI
 				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+		table.setFont(textFont);
 		TableColumn column1 = new TableColumn(table, SWT.NONE);
 		column1.setText("RFID");
 		column1.setWidth(LABEL_LENGTH);
@@ -173,7 +189,7 @@ public class ControllerDialog extends Dialog {
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, "close",
-				true);
+				true).setFont(titleFont);
 	}
 	@Override
 	protected void initializeBounds() {

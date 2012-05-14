@@ -17,10 +17,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
@@ -29,7 +32,6 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
 import cn.edu.pku.ogeditor.parts.DiagramEditPart;
 import cn.edu.pku.ogeditor.views.SWRLRule;
-import cn.edu.pku.ogeditor.wizards.ObjectInfo;
 /**
  * description section in property sheet.
  * @author Xueyuan Xing
@@ -62,21 +64,30 @@ public class SWRLSection extends AbstractPropertySection {
 		Composite container = getWidgetFactory()
 				.createFlatFormComposite(parent);
 		FormData data;
+		Display display = Display.getDefault();
+
+		Font titleFont = new Font(display, "Arial", 12, SWT.BOLD);
+		Font textFont = new Font(display, "Cambria", 12, SWT.NORMAL);
+		
 		CLabel addL = getWidgetFactory().createCLabel(container, "Add a SWRL Rule"); //$NON-NLS-1$
-//		addL.setText("Add a SWRL Rule");
+		addL.setFont(titleFont);
 		ruleText = new Text(container, SWT.BORDER);
+		ruleText.setFont(textFont);
 		Button addButton = new Button(container, SWT.NONE);
-		addButton.setText("add");
+		addButton.setText("Add");
+		addButton.setFont(titleFont);
 		addButton.addSelectionListener(new AddRuleListener());
 		
 		CLabel listL = getWidgetFactory().createCLabel(container, "List of  SWRL Rules"); //$NON-NLS-1$
+		listL.setFont(titleFont);
 
 		Button delButton = new Button(container, SWT.NONE);
-		delButton.setText("delete");
+		delButton.setText("Delete");
+		delButton.setFont(titleFont);
 		delButton.addSelectionListener(new DelRuleListener());
 		
 		viewer = new ListViewer(container, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-
+		viewer.getList().setFont(textFont);
 		viewer.setContentProvider(new ListContentProvider());
 		viewer.setLabelProvider(new ListLabelProvider());
 		
@@ -116,7 +127,7 @@ public class SWRLSection extends AbstractPropertySection {
 		data.right = new FormAttachment(ruleText, 0, SWT.RIGHT);
 //		data.right = new FormAttachment(addL, 940, SWT.LEFT);
 		data.top = new FormAttachment(listL, 0, SWT.BOTTOM);
-		data.bottom = new FormAttachment(listL, 100, SWT.BOTTOM);
+		data.bottom = new FormAttachment(listL, 200, SWT.BOTTOM);
 		viewer.getList().setLayoutData(data);
 		
 		data = new FormData();
