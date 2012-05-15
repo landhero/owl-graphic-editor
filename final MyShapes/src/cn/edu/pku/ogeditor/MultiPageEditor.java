@@ -120,7 +120,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		next.addSelectionListener(new NextListener());
 
 		final Label addL = new Label(container, SWT.NONE);
-		addL.setText("Add A Detectable Object:");
+		addL.setText("Device or Sensor:");
 		addL.setFont(titleFont);
 
 		final Label uris = new Label(container, SWT.BORDER);
@@ -203,7 +203,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		addButton.setLayoutData(data);
 
 		final Label objectsListLabel = new Label(container, SWT.NONE);
-		objectsListLabel.setText("List of Detectable Objects:");
+		objectsListLabel.setText("Devices and Sensors:");
 		objectsListLabel.setFont(titleFont);
 
 		Button delButton = new Button(container, SWT.NONE);
@@ -251,7 +251,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		delButton.setLayoutData(delButtonData);
 
 		int index = addPage(container);
-		setPageText(index, "Objects Detection");
+		setPageText(index, "Devices and Sensors Collection");
 		
 	}
 
@@ -259,7 +259,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		try {
 			editor = new ShapesEditor();
 			int index = addPage(editor, getEditorInput());
-			setPageText(index, "Knowledge Module Building");
+			setPageText(index, "CLKM Building");
 			setPartName(getEditorInput().getName());
 			// setPageImage(0, getShapesEditor().getEditorInput()
 			// .getImageDescriptor().createImage());
@@ -398,7 +398,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		pb.setLayoutData(data);
 
 		int index = addPage(container);
-		setPageText(index, "Correctness Check");
+		setPageText(index, "Correctness Check of Control Logic Rules");
 	}
 
 	// void createPage4() {

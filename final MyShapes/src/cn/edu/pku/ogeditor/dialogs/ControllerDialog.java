@@ -52,7 +52,7 @@ public class ControllerDialog extends Dialog {
 		// TODO Auto-generated method stub
 		setRunning(true);
 		super.configureShell(newShell);
-	    newShell.setText("Controller");
+	    newShell.setText("Knowledge Reasoning Part Deployment");
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class ControllerDialog extends Dialog {
 		Font textFont = new Font(display, "Cambria", 12, SWT.NORMAL);
 		
 		final Label conL = new Label(container, SWT.SHADOW_OUT | SWT.CENTER);
-		conL.setText("Controller");
+		conL.setText("Device Control System");
 		conL.setFont(bigTitleFont);
 		
 		final Label runningStatusL = new Label(container, SWT.NONE);
