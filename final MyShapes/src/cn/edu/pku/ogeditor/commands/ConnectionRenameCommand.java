@@ -25,11 +25,11 @@ public class ConnectionRenameCommand extends Command {
 
 	public boolean canExecute()
 	{
-		if(connection.getSource().getDiagram().ContainConnectionName(newName))
-		{
-			connection.setName(connection.getName());
-			return false;
-		}	
+//		if(connection.getSource().getDiagram().ContainConnectionName(newName))
+//		{
+//			connection.setName(connection.getName());
+//			return false;
+//		}	
 		return true;
 	}
     public void execute() {

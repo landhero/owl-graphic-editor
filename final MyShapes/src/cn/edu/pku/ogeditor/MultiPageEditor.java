@@ -1,20 +1,41 @@
 package cn.edu.pku.ogeditor;
 
+import iot.client.ManagerDelegate;
+import iot.client.ManagerService;
+import iot.client.Value;
+import iot.equipment.Equipment;
+import iot.reasoner.Reasoner;
+
+import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.editparts.ZoomManager;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
@@ -22,7 +43,6 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.FormAttachment;
@@ -31,9 +51,11 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ProgressBar;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -50,12 +72,29 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.semanticweb.owlapi.model.AddAxiom;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLLiteral;
+import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.reasoner.InconsistentOntologyException;
+import org.semanticweb.owlapi.reasoner.ReasonerInterruptedException;
 
-import cn.edu.pku.ogeditor.dialogs.ControllerDialog;
-import cn.edu.pku.ogeditor.views.SWRLRule;
-import cn.edu.pku.ogeditor.wizards.ObjectInfo;
+import cn.edu.pku.ogeditor.display.ViewStatusShell;
+import cn.edu.pku.ogeditor.model.Connection;
+import cn.edu.pku.ogeditor.model.Shape;
+import cn.edu.pku.ogeditor.model.ShapesDiagram;
+import cn.edu.pku.ogeditor.wizards.ObjectsListModel;
 import cn.edu.pku.ogeditor.wizards.TableContentProvider;
 import cn.edu.pku.ogeditor.wizards.TableLabelProvider;
+
+import com.clarkparsia.pellet.owlapiv3.PelletReasoner;
+import com.clarkparsia.pellet.owlapiv3.PelletReasonerFactory;
 
 /**
  * An example showing how to create a multi-page editor. This example has 3
@@ -67,24 +106,37 @@ import cn.edu.pku.ogeditor.wizards.TableLabelProvider;
  * </ul>
  */
 public class MultiPageEditor extends MultiPageEditorPart implements
-		IResourceChangeListener, ISelectionListener {
+		IResourceChangeListener, ISelectionListener{
 
-	private static final int LABEL_LENGTH = 260;
+	private static final int LABEL_LENGTH = 300;
 	private static final int EDITOR_INDEX = 1;
+	public static final String TEMP_OWLFILe_PATH = "D:\\Program Files (x86)\\eclipse\\myWorkspace\\OGEditor\\tmp\\";
 	private LongRunningOperation deployThread;
 	private ControllerDialog controllerDialog;
 	private ShapesEditor editor;
-	private Text urisText;
-	private Text rfidText;
-	private Text typeText;
+	private Text wsdlT;
+	private Text runningStatusArea;
+	private TableViewer viewer;
+
+	private OWLOntologyManager ontManager;
+
+	// private Text rfidText;
+	// private Text typeText;
 	private TableViewer objectsViewer;
-	private Text ruleText;
-	private ListViewer SWRLViewer;
 	private Text owlArea;
 	private Text checkArea;
 	private ProgressBar pb;
 	private Font titleFont;
 	private Font textFont;
+
+	private Button check;
+	private Button deploy;
+	private Button stop;
+	private Button viewStatus;
+	public DeployThead deployTh;
+
+	private boolean checkFinish;
+	public boolean deployFinish;
 
 	/**
 	 * Creates a multi-page editor example.
@@ -92,8 +144,46 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	public MultiPageEditor() {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-		
 
+	}
+
+	@Override
+	protected void initializePageSwitching() {
+		// TODO Auto-generated method stub
+		super.initializePageSwitching();
+	}
+	
+
+	@Override
+	protected void handlePropertyChange(int propertyId) {
+		// TODO Auto-generated method stub
+		super.handlePropertyChange(propertyId);
+	}
+
+
+	private void initDB() {
+		if (null != editor.getDiagram().getRootDiagram().getObjects()) {
+			objectsViewer.setInput(editor.getDiagram().getRootDiagram()
+					.getObjects());
+			wsdlT.setText(editor.getDiagram().getRootDiagram().getWsdlUri());
+			objectsViewer.refresh();
+			return;
+		}
+		// ManagerService server = new ManagerService();
+		// ManagerDelegate md = server.getManagerPort();
+		//
+		// List<Value> list = md.getAllProperties();
+		// ObjectsListModel objModel= new ObjectsListModel();
+		// for(Value tmp : list)
+		// {
+		// System.out.println(tmp.getEType()+" "+tmp.getEquipment()+" "+tmp.getProperty()+" "+tmp.getValue());
+		// objModel.add(tmp);
+		// }
+		//
+		// editor.getDiagram().getRootDiagram().setObjects(objModel);
+		// objectsViewer.setInput(editor.getDiagram().getRootDiagram().getObjects());
+		// wsdlT.setText(editor.getDiagram().getRootDiagram().getWsdlUri());
+		editor.getDiagram().getRootDiagram().setWsdlUri(wsdlT.getText());
 	}
 
 	void createPage0() {
@@ -102,53 +192,35 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		Composite container = new Composite(getContainer(), SWT.NONE);
 		container.setLayout(new FormLayout());
 		Display display = Display.getDefault();
-		FontData[] fontData = display.getFontList(null, true);
-		for(FontData data : fontData)
-		{
-			System.out.println("font: " + data.getName());
-		}
-		
+
 		titleFont = new Font(display, "Arial", 12, SWT.BOLD);
 		textFont = new Font(display, "Cambria", 12, SWT.NORMAL);
-
-//		font = display.getSystemFont();
-//		System.out.println("font Height: " + font.getFontData()[0].getHeight());;
 
 		Button next = new Button(container, SWT.PUSH);
 		next.setText("Next >>");
 		next.setFont(titleFont);
 		next.addSelectionListener(new NextListener());
 
-		final Label addL = new Label(container, SWT.NONE);
-		addL.setText("Device or Sensor:");
-		addL.setFont(titleFont);
+		final Label wsL = new Label(container, SWT.NONE);
+		wsL.setText("Web Service Location:");
+		wsL.setFont(titleFont);
 
-		final Label uris = new Label(container, SWT.BORDER);
-		uris.setText("URIs");
-		uris.setFont(textFont);
-		final Label rfid = new Label(container, SWT.BORDER);
-		rfid.setText("RFID");
-		rfid.setFont(textFont);
-		final Label type = new Label(container, SWT.BORDER);
-		type.setText("TYPE");
-		type.setFont(textFont);
+		final Label wsdlL = new Label(container, SWT.BORDER);
+		wsdlL.setText("WSDL URI:");
+		wsdlL.setFont(textFont);
 
-		urisText = new Text(container, SWT.BORDER);
-		urisText.setText("http://");
-		urisText.setFont(textFont);
-		rfidText = new Text(container, SWT.BORDER);
-		rfidText.setFont(textFont);
-		typeText = new Text(container, SWT.BORDER);
-		typeText.setFont(textFont);
-		Button addButton = new Button(container, SWT.NONE);
-		addButton.setText("Add");
-		addButton.setFont(titleFont);
-		addButton.addSelectionListener(new AddObjectListener());
+		wsdlT = new Text(container, SWT.BORDER);
+		wsdlT.setText("http://");
+
+		Button importButton = new Button(container, SWT.NONE);
+		importButton.setText("Import");
+		importButton.setFont(titleFont);
+		importButton.addSelectionListener(new ImportWSDLListener());
 
 		FormData data;
 
 		data = new FormData();
-		data.left = new FormAttachment(addButton, 0, SWT.LEFT);
+		data.left = new FormAttachment(90);
 		data.right = new FormAttachment(100);
 		data.top = new FormAttachment(1);
 		next.setLayoutData(data);
@@ -157,72 +229,55 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		data.left = new FormAttachment(1);
 		data.right = new FormAttachment(100);
 		data.top = new FormAttachment(next, 10, SWT.BOTTOM);
-		addL.setLayoutData(data);
+		wsL.setLayoutData(data);
 
 		data = new FormData();
-		data.left = new FormAttachment(addL, 0, SWT.LEFT);
-		data.right = new FormAttachment(30);
-		data.top = new FormAttachment(addL, 0, SWT.BOTTOM);
-		uris.setLayoutData(data);
+		data.left = new FormAttachment(wsL, 0, SWT.LEFT);
+		data.right = new FormAttachment(next, -10, SWT.LEFT);
+		data.top = new FormAttachment(wsL, 0, SWT.BOTTOM);
+		wsdlL.setLayoutData(data);
 
 		data = new FormData();
-		data.left = new FormAttachment(uris, 0, SWT.RIGHT);
-		data.right = new FormAttachment(60);
-		data.top = new FormAttachment(addL, 0, SWT.BOTTOM);
-		rfid.setLayoutData(data);
+		data.left = new FormAttachment(wsdlL, 0, SWT.LEFT);
+		data.right = new FormAttachment(wsdlL, 0, SWT.RIGHT);
+		data.top = new FormAttachment(wsdlL, 0, SWT.BOTTOM);
+		wsdlT.setLayoutData(data);
 
 		data = new FormData();
-		data.left = new FormAttachment(rfid, 0, SWT.RIGHT);
-		data.right = new FormAttachment(90);
-		data.top = new FormAttachment(addL, 0, SWT.BOTTOM);
-		type.setLayoutData(data);
-
-		data = new FormData();
-		data.left = new FormAttachment(uris, 0, SWT.LEFT);
-		data.right = new FormAttachment(uris, 0, SWT.RIGHT);
-		data.top = new FormAttachment(uris, 0, SWT.BOTTOM);
-		urisText.setLayoutData(data);
-
-		data = new FormData();
-		data.left = new FormAttachment(rfid, 0, SWT.LEFT);
-		data.right = new FormAttachment(rfid, 0, SWT.RIGHT);
-		data.top = new FormAttachment(rfid, 0, SWT.BOTTOM);
-		rfidText.setLayoutData(data);
-
-		data = new FormData();
-		data.left = new FormAttachment(type, 0, SWT.LEFT);
-		data.right = new FormAttachment(type, 0, SWT.RIGHT);
-		data.top = new FormAttachment(type, 0, SWT.BOTTOM);
-		typeText.setLayoutData(data);
-
-		data = new FormData();
-		// addButtonData.left = new FormAttachment(typeText, 0, SWT.RIGHT);
-		data.left = new FormAttachment(typeText, 10, SWT.RIGHT);
-		data.right = new FormAttachment(100);
-		data.top = new FormAttachment(addL, 0, SWT.BOTTOM);
-		addButton.setLayoutData(data);
+		data.left = new FormAttachment(next, 0, SWT.LEFT);
+		data.right = new FormAttachment(next, 0, SWT.RIGHT);
+		data.top = new FormAttachment(wsL, 0, SWT.BOTTOM);
+		importButton.setLayoutData(data);
 
 		final Label objectsListLabel = new Label(container, SWT.NONE);
-		objectsListLabel.setText("Devices and Sensors:");
+		objectsListLabel.setText("Properties of Devices and Sensors:");
 		objectsListLabel.setFont(titleFont);
 
-		Button delButton = new Button(container, SWT.NONE);
-		delButton.setText("Delete");
-		delButton.setFont(titleFont);
-		delButton.addSelectionListener(new DelObjectListener());
+		Button refButton = new Button(container, SWT.NONE);
+		refButton.setText("Refresh");
+		refButton.setFont(titleFont);
+		refButton.addSelectionListener(new ImportWSDLListener());
 
 		Table table = new Table(container, SWT.BORDER | SWT.MULTI
 				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
 		table.setFont(textFont);
 		TableColumn column1 = new TableColumn(table, SWT.NONE);
-		column1.setText("URIs");
+		column1.setText("Equipment");
 		column1.setWidth(LABEL_LENGTH);
 		TableColumn column2 = new TableColumn(table, SWT.NONE);
 		column2.setWidth(LABEL_LENGTH);
-		column2.setText("RFID");
+		column2.setText("Property");
 		TableColumn column3 = new TableColumn(table, SWT.NONE);
 		column3.setWidth(LABEL_LENGTH);
-		column3.setText("TYPE");
+		column3.setText("Value");
+		
+		TableColumn column4 = new TableColumn(table, SWT.NONE);
+		column4.setWidth(LABEL_LENGTH);
+		column4.setText("Value Type");
+		
+		TableColumn column5 = new TableColumn(table, SWT.NONE);
+		column5.setWidth(LABEL_LENGTH);
+		column5.setText("Equipment Type");
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
@@ -231,35 +286,35 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		objectsViewer.setLabelProvider(new TableLabelProvider());
 
 		FormData listData = new FormData();
-		listData.left = new FormAttachment(addL, 0, SWT.LEFT);
-		listData.right = new FormAttachment(addL, 0, SWT.RIGHT);
-		listData.top = new FormAttachment(typeText, 30, SWT.BOTTOM);
+		listData.left = new FormAttachment(wsL, 0, SWT.LEFT);
+		listData.right = new FormAttachment(wsL, 0, SWT.RIGHT);
+		listData.top = new FormAttachment(wsdlT, 30, SWT.BOTTOM);
 		objectsListLabel.setLayoutData(listData);
 
 		FormData tableData = new FormData();
-		tableData.left = new FormAttachment(addL, 0, SWT.LEFT);
-		tableData.right = new FormAttachment(typeText, 0, SWT.RIGHT);
+		tableData.left = new FormAttachment(wsL, 0, SWT.LEFT);
+		tableData.right = new FormAttachment(wsdlT, 0, SWT.RIGHT);
 		tableData.top = new FormAttachment(objectsListLabel, 0, SWT.BOTTOM);
 		tableData.bottom = new FormAttachment(100);
 		table.setLayoutData(tableData);
 
-		FormData delButtonData = new FormData();
+		FormData refButtonData = new FormData();
 		// delButtonData.left = new FormAttachment(table, 0, SWT.RIGHT);
-		delButtonData.left = new FormAttachment(addButton, 0, SWT.LEFT);
-		delButtonData.right = new FormAttachment(addButton, 0, SWT.RIGHT);
-		delButtonData.top = new FormAttachment(objectsListLabel, 0, SWT.BOTTOM);
-		delButton.setLayoutData(delButtonData);
+		refButtonData.left = new FormAttachment(importButton, 0, SWT.LEFT);
+		refButtonData.right = new FormAttachment(importButton, 0, SWT.RIGHT);
+		refButtonData.top = new FormAttachment(objectsListLabel, 0, SWT.BOTTOM);
+		refButton.setLayoutData(refButtonData);
 
 		int index = addPage(container);
-		setPageText(index, "Devices and Sensors Collection");
-		
+		setPageText(index, "Collecting Devices and Sensors");
+
 	}
 
 	void createPage1() {
 		try {
 			editor = new ShapesEditor();
 			int index = addPage(editor, getEditorInput());
-			setPageText(index, "CLKM Building");
+			setPageText(index, "Defining Control Rules");
 			setPartName(getEditorInput().getName());
 			// setPageImage(0, getShapesEditor().getEditorInput()
 			// .getImageDescriptor().createImage());
@@ -275,7 +330,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		FormData data;
 
 		Button pre = new Button(container, SWT.PUSH);
-		pre.setText("<< Previous");
+		pre.setText("Back");
 		pre.setFont(titleFont);
 		pre.addSelectionListener(new PreListener());
 
@@ -291,46 +346,52 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		owlArea.setFont(textFont);
 
 		final Label consistL = new Label(container, SWT.NONE);
-		consistL.setText("Correctness Check:");
+		consistL.setText("Checking Correctness");
 		consistL.setFont(titleFont);
-		Button check = new Button(container, SWT.PUSH);
+		check = new Button(container, SWT.PUSH);
 		check.setText("Check");
 		check.setFont(titleFont);
 		check.addSelectionListener(new CheckListener());
+		check.setEnabled(false);
+
+		// Button = new Button(container, SWT.PUSH);
+		// check.setText("Check");
+		// check.setFont(titleFont);
+		// check.addSelectionListener(new CheckListener());
+		// check.setEnabled(false);
 
 		checkArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL
 				| SWT.BORDER);
 		checkArea.setFont(textFont);
 
-		Button deploy = new Button(container, SWT.PUSH);
+		deploy = new Button(container, SWT.PUSH);
 		deploy.setText("Deploy");
 		deploy.setFont(titleFont);
 		deploy.addSelectionListener(new DeployListener());
+		deploy.setEnabled(false);
 
-		Button stop = new Button(container, SWT.PUSH);
+		stop = new Button(container, SWT.PUSH);
 		stop.setText("Stop");
 		stop.setFont(titleFont);
 		stop.addSelectionListener(new StopListener());
+		stop.setEnabled(false);
 
-		Button viewStatus = new Button(container, SWT.PUSH);
+		viewStatus = new Button(container, SWT.PUSH);
 		viewStatus.setText("View Status");
 		viewStatus.setFont(titleFont);
 		viewStatus.addSelectionListener(new ViewStatusListener());
+		viewStatus.setEnabled(false);
 
 		pb = new ProgressBar(container, SWT.HORIZONTAL | SWT.SMOOTH);
 		pb.setMinimum(0);
 		pb.setMaximum(0);
 
-		data = new FormData();
-		data.left = new FormAttachment(1);
-		// data.right = new FormAttachment(100);
-		data.top = new FormAttachment(1);
-		pre.setLayoutData(data);
+
 
 		data = new FormData();
 		data.left = new FormAttachment(1);
 		data.right = new FormAttachment(100);
-		data.top = new FormAttachment(pre, 10, SWT.BOTTOM);
+		data.top = new FormAttachment(2);
 		genL.setLayoutData(data);
 
 		data = new FormData();
@@ -358,7 +419,6 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		data.left = new FormAttachment(owlArea, 0, SWT.LEFT);
 		data.right = new FormAttachment(owlArea, 0, SWT.RIGHT);
 		data.top = new FormAttachment(consistL, 0, SWT.BOTTOM);
-		// data.bottom = new FormAttachment(consistL, 300, SWT.BOTTOM);
 		data.bottom = new FormAttachment(87);
 		checkArea.setLayoutData(data);
 
@@ -366,28 +426,30 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		data.left = new FormAttachment(genb, 0, SWT.LEFT);
 		data.right = new FormAttachment(genb, 0, SWT.RIGHT);
 		data.top = new FormAttachment(consistL, 0, SWT.BOTTOM);
-		// data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
 		check.setLayoutData(data);
+		
+		data = new FormData();
+		data.left = new FormAttachment(check, 0, SWT.LEFT);
+		data.right = new FormAttachment(check, 0, SWT.RIGHT);
+		data.top = new FormAttachment(check, 0, SWT.BOTTOM);
+		pre.setLayoutData(data);
 
 		data = new FormData();
 		data.left = new FormAttachment(50, -300);
 		data.right = new FormAttachment(50, -100);
 		data.top = new FormAttachment(checkArea, 15, SWT.BOTTOM);
-		// data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
 		deploy.setLayoutData(data);
 
 		data = new FormData();
 		data.left = new FormAttachment(50, -100);
 		data.right = new FormAttachment(50, 100);
 		data.top = new FormAttachment(deploy, 0, SWT.TOP);
-		// data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
 		stop.setLayoutData(data);
 
 		data = new FormData();
 		data.left = new FormAttachment(50, 100);
 		data.right = new FormAttachment(50, 300);
 		data.top = new FormAttachment(deploy, 0, SWT.TOP);
-		// data.bottom = new FormAttachment(genL, 0, SWT.BOTTOM);
 		viewStatus.setLayoutData(data);
 
 		data = new FormData();
@@ -398,85 +460,8 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		pb.setLayoutData(data);
 
 		int index = addPage(container);
-		setPageText(index, "Correctness Check of Control Logic Rules");
+		setPageText(index, "Checking Correctness");
 	}
-
-	// void createPage4() {
-	//
-	// Composite container = new Composite(getContainer(), SWT.NONE);
-	// container.setLayout(new FormLayout());
-	//
-	// FormData data;
-	// final Label addL = new Label(container, SWT.NONE);
-	// addL.setText("Add a SWRL Rule");
-	// ruleText = new Text(container, SWT.BORDER );
-	// Button addButton = new Button(container, SWT.NONE);
-	// addButton.setText("add");
-	// addButton.addSelectionListener(new AddRuleListener());
-	// final Label listL = new Label(container, SWT.NONE);
-	// listL.setText("List of  SWRL Rules");
-	//
-	// Button delButton = new Button(container, SWT.NONE);
-	// delButton.setText("delete");
-	// delButton.addSelectionListener(new DelRuleListener());
-	//
-	// SWRLViewer = new ListViewer(container, SWT.BORDER | SWT.MULTI |
-	// SWT.V_SCROLL | SWT.H_SCROLL);
-	//
-	// SWRLViewer.setContentProvider(new ListContentProvider());
-	// SWRLViewer.setLabelProvider(new ListLabelProvider());
-	//
-	// // SWRLListModel input = new SWRLListModel();
-	// SWRLViewer.setInput(editor.getDiagram().getRootDiagram().getRules());
-	// //
-	// // input.add(new
-	// SWRLRule("Room(?r) ∧ isOccupied(?r, true) ∧ Room_Temperature(?r, ?t) ∧ swrlb:greaterThan(?t, 30.0) ∧ Air_Condition(?x) ∧  isIn(?x, ?r) →  isOn(?x, true)"));
-	// // input.add(new
-	// SWRLRule("Room(?r) ∧ Room_PersonNum(?r, ?n) ∧ swrlb:lessThan(?n, 4) ∧ Air_Condition(?x) ∧ isIn(?x, ?r) ∧ isOn(?x, true) →  Air_Condition_Temperature(?x, 27)"));
-	// // input.add(new
-	// SWRLRule("Room(?r) ∧ Room_PersonNum(?r, ?n) ∧ swrlb:greaterThan(?n, 3) ∧ Air_Condition(?x) ∧ isIn(?x, ?r) ∧ isOn(?x, true) →  Air_Condition_Temperature(?x, 26)"));
-	//
-	// data = new FormData();
-	// data.left = new FormAttachment(1);
-	// data.right = new FormAttachment(100);
-	// data.top = new FormAttachment(1);
-	// addL.setLayoutData(data);
-	//
-	// data = new FormData();
-	// data.left = new FormAttachment(addL, 0, SWT.LEFT);
-	// data.right = new FormAttachment(90);
-	// data.top = new FormAttachment(addL, 0, SWT.BOTTOM);
-	// ruleText.setLayoutData(data);
-	//
-	// data = new FormData();
-	// data.left = new FormAttachment(ruleText, 10, SWT.RIGHT);
-	// data.right = new FormAttachment(addL, 0, SWT.RIGHT);
-	// data.top = new FormAttachment(addL, 0, SWT.BOTTOM);
-	// addButton.setLayoutData(data);
-	//
-	// data = new FormData();
-	// data.left = new FormAttachment(addL, 0, SWT.LEFT);
-	// data.right = new FormAttachment(addL, 0, SWT.RIGHT);
-	// data.top = new FormAttachment(ruleText, 5, SWT.BOTTOM);
-	// listL.setLayoutData(data);
-	//
-	// data = new FormData();
-	// data.left = new FormAttachment(addL, 0, SWT.LEFT);
-	// data.right = new FormAttachment(ruleText, 0, SWT.RIGHT);
-	// data.top = new FormAttachment(listL, 0, SWT.BOTTOM);
-	// data.bottom = new FormAttachment(100);
-	// SWRLViewer.getList().setLayoutData(data);
-	//
-	// data = new FormData();
-	// data.left = new FormAttachment(addButton, 0, SWT.LEFT);
-	// data.right = new FormAttachment(addButton, 0, SWT.RIGHT);
-	// data.top = new FormAttachment(listL, 0, SWT.BOTTOM);
-	// delButton.setLayoutData(data);
-	//
-	//
-	// int index = addPage(container);
-	// setPageText(index, "SWRL Rules");
-	// }
 
 	void createPage3() {
 		Composite container = new Composite(getContainer(), SWT.NONE);
@@ -552,12 +537,10 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		createPage0();
 		createPage1();
 
-		objectsViewer.setInput(editor.getDiagram().getRootDiagram()
-				.getObjects());
-
 		createPage2();
-		// setActivePage(1);
-		// createPage3();
+		initDB();
+		wsdlT.setText(editor.getDiagram().getRootDiagram().getWsdlUri());
+
 	}
 
 	/**
@@ -652,14 +635,20 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		// TODO Auto-generated method stub
-		if (this.equals(getSite().getPage().getActiveEditor())) {
-			if (getShapesEditor().equals(getActiveEditor())) {
-				getShapesEditor()
-						.selectionChanged(getActiveEditor(), selection);
-
-			}
-
+//		if (this.equals(getSite().getPage().getActiveEditor())) {
+//			if (getShapesEditor().equals(getActiveEditor())) {
+//				getShapesEditor()
+//						.selectionChanged(getActiveEditor(), selection);
+//
+//			}
+//
+//		}
+		if(this.getActivePage() == 1)
+		{
+			editor.selectionChanged(part, selection);
+//			editor.getPropertySheet().selectionChanged(part, selection);
 		}
+		
 	}
 
 	public ShapesEditor getShapesEditor() {
@@ -675,67 +664,78 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		return super.getAdapter(type);
 	}
 
-	public class AddObjectListener extends SelectionAdapter {
+	public class ImportWSDLListener extends SelectionAdapter {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			ObjectInfo object = new ObjectInfo(urisText.getText(),
-					rfidText.getText(), typeText.getText());
-			editor.getDiagram().getRootDiagram().getObjects().add(object);
-			refreshTexts();
-			firePropertyChange(PROP_DIRTY);
-		}
-	}
-
-	public class DelObjectListener extends SelectionAdapter {
-
-		@Override
-		public void widgetSelected(SelectionEvent e) {
-			int[] indices = objectsViewer.getTable().getSelectionIndices();
-			ArrayList<ObjectInfo> dels = new ArrayList<ObjectInfo>();
-			for (int index : indices) {
-				ObjectInfo object = (ObjectInfo) objectsViewer
-						.getElementAt(index);
-				dels.add(object);
-				// objects.remove(object);
+			if (!wsdlT.getText().equals(ShapesDiagram.STAND_WSDL)) {
+				editor.getDiagram().getRootDiagram().setObjects(null);
+				editor.getDiagram().getRootDiagram()
+						.setWsdlUri(wsdlT.getText());
+				objectsViewer.setInput(editor.getDiagram().getRootDiagram()
+						.getObjects());
+				objectsViewer.refresh();
+				return;
 			}
-			editor.getDiagram().getRootDiagram().getObjects().removeAll(dels);
+			ManagerService server = new ManagerService();
+			ManagerDelegate md = server.getManagerPort();
+			// Manager m = gson.fromJson(md.getManager(), Manager.class);
+
+			// Value v = md.getProperty("a1", "temperature");
+			// if(null != v)
+			// System.out.println(v.getValue());
+			List<Value> list = md.getAllProperties();
+			ObjectsListModel objModel = new ObjectsListModel();
+			for (Value tmp : list) {
+				System.out.println(tmp.getEquipment() + " " + tmp.getProperty()
+						+ " " + tmp.getValue());
+				objModel.add(tmp);
+			}
+
+			editor.getDiagram().getRootDiagram().setObjects(objModel);
+			editor.getDiagram().getRootDiagram().setWsdlUri(wsdlT.getText());
+			objectsViewer.setInput(editor.getDiagram().getRootDiagram()
+					.getObjects());
 			objectsViewer.refresh();
 			firePropertyChange(PROP_DIRTY);
 		}
+
 	}
 
-	private void refreshTexts() {
-		urisText.setText("http://");
-		rfidText.setText("");
-		typeText.setText("");
-	}
-
-	private class AddRuleListener extends SelectionAdapter {
+	public class RefreshTableListener extends SelectionAdapter {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			SWRLRule rule = new SWRLRule(ruleText.getText());
-			editor.getDiagram().getRootDiagram().getRules().add(rule);
-			ruleText.setText("");
-			SWRLViewer.refresh();
-		}
-
-	}
-
-	private class DelRuleListener extends SelectionAdapter {
-
-		@Override
-		public void widgetSelected(SelectionEvent e) {
-			int[] indices = SWRLViewer.getList().getSelectionIndices();
-			ArrayList<SWRLRule> dels = new ArrayList<SWRLRule>();
-			for (int index : indices) {
-				SWRLRule rule = (SWRLRule) SWRLViewer.getElementAt(index);
-				dels.add(rule);
-				// objects.remove(object);
+			if (!wsdlT.getText().equals(ShapesDiagram.STAND_WSDL)) {
+				editor.getDiagram().getRootDiagram().setObjects(null);
+				editor.getDiagram().getRootDiagram()
+						.setWsdlUri(wsdlT.getText());
+				objectsViewer.setInput(editor.getDiagram().getRootDiagram()
+						.getObjects());
+				objectsViewer.refresh();
+				return;
 			}
-			editor.getDiagram().getRootDiagram().getRules().removeAll(dels);
-			SWRLViewer.refresh();
+			ManagerService server = new ManagerService();
+			ManagerDelegate md = server.getManagerPort();
+			// Manager m = gson.fromJson(md.getManager(), Manager.class);
+
+			// Value v = md.getProperty("a1", "temperature");
+			// if(null != v)
+			// System.out.println(v.getValue());
+			List<Value> list = md.getAllProperties();
+			ObjectsListModel objModel = new ObjectsListModel();
+			for (Value tmp : list) {
+				System.out.println(tmp.getEquipment() + " " + tmp.getProperty()
+						+ " " + tmp.getValue());
+				objModel.add(tmp);
+			}
+
+			editor.getDiagram().getRootDiagram().setObjects(objModel);
+			editor.getDiagram().getRootDiagram().setWsdlUri(wsdlT.getText());
+			objectsViewer.setInput(editor.getDiagram().getRootDiagram()
+					.getObjects());
+			objectsViewer.refresh();
+			firePropertyChange(PROP_DIRTY);
 		}
 	}
 
@@ -744,10 +744,25 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			owlArea.setText("");
-			String path = "D:\\Program Files\\eclipse\\myWorkspace\\OGEditor\\tmp\\"
+			String path = "D:\\Program Files (x86)\\eclipse\\myWorkspace\\OGEditor\\tmp\\"
 					+ editor.getDiagram().getFileName() + ".owl";
-			editor.SaveAsOWL(path, "owl");
+			path = "./tmp/";
 			File file = new File(path);
+			if (!file.exists())
+				file.mkdirs();
+
+			String fileName = editor.getDiagram().getFileName() + ".owl";
+			path += fileName;
+			file = new File(path);
+			if (!file.exists())
+				try {
+					file.createNewFile();
+				} catch (IOException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+			editor.SaveAsOWL(path, "owl");
+
 			try {
 				FileReader fr = new FileReader(file);
 				BufferedReader br = new BufferedReader(fr);
@@ -757,56 +772,399 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 				}
 				fr.close();
 				br.close();
+				check.setEnabled(true);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
+
 	}
 
 	private class CheckListener extends SelectionAdapter {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			checkArea.setText("");
-			checkArea.setText(">Checking ……\n");
-			checkArea.append(">Rule definition is correct.\n");
-			checkArea.append(">No conflict rules.\n");
-			checkArea.append(">Correctness check has been completed.\n");
+//			String path = "D:\\Program Files (x86)\\eclipse\\myWorkspace\\OGEditor\\tmp\\"
+//					+ editor.getDiagram().getFileName() + ".owl";
+//			path = "tmp\\";
+
+			// String fileName = editor.getDiagram().getFileName() + ".owl";
+			// path += fileName;
+
+			String path = "D:\\Program Files (x86)\\eclipse\\tmp/room.owl";
+			checkFinish = false;
+
+			CheckThread c = new CheckThread(path);
+
+			CheckDisplayThread d = new CheckDisplayThread();
+
+			checkArea.append(">Checking ");
+			c.start();
+			d.start();
+
+			// else if check not ok, sysout something
 		}
+
+		private class CheckDisplayThread extends Thread {
+
+			@Override
+			public void run() {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						while (!checkFinish) {
+							checkArea.append(". ");
+							try {
+								sleep(1000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						checkArea.append("\n");
+					}
+				});
+				// TODO Auto-generated method stub
+
+			}
+
+		}
+
+		private class CheckThread extends Thread {
+			private String path;
+
+			public CheckThread(String path) {
+				// TODO Auto-generated constructor stub
+				this.path = path;
+			}
+
+			@Override
+			public void run() {
+				try {
+					ontManager = Reasoner.testConsistent(path);
+
+				} catch (InconsistentOntologyException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ReasonerInterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OWLOntologyCreationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				checkFinish = true;
+
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+
+						if (null == ontManager) {
+							System.out.println("\nERROR: inconsistent");
+							checkArea
+									.append("\n>Correctness check has been completed.\n");
+							checkArea
+									.append(">The Ontology is inconsistent.\n");
+
+							deploy.setEnabled(false);
+							stop.setEnabled(false);
+							viewStatus.setEnabled(false);
+						} else {
+							checkArea
+									.append(">Correctness check has been completed.\n");
+							checkArea.append(">The Ontology is consistent.\n");
+
+							deploy.setEnabled(true);
+							stop.setEnabled(true);
+							viewStatus.setEnabled(true);
+						}
+
+					}
+				});
+			}
+		}
+
 	}
 
 	private class DeployListener extends SelectionAdapter {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			String path = "D:\\Program Files\\eclipse\\myWorkspace\\OGEditor\\tmp\\"
-					+ editor.getDiagram().getFileName() + ".owl";
-			File file = new File(path);
-			if(!file.exists() || owlArea.getText().equals(""))
-			{
-				MessageDialog.openError(Display.getDefault().getActiveShell(), "Deploy Error", "OWL file hasn't been generated!");
-				return;
-			}
-			if(checkArea.getText().equals(""))
-			{
-				MessageDialog.openError(Display.getDefault().getActiveShell(), "Deploy Error", "Consistency check hasn't been completed!");
-				return;
-			}
-			
-			//部署到系统上
+//			String path = "D:\\Program Files\\eclipse\\myWorkspace\\OGEditor\\tmp\\"
+//					+ editor.getDiagram().getFileName() + ".owl";
+//			// path = "tmp\\" +
+//			// editor.getDiagram().getRootDiagram().getFileName() + ".owl";
+//			path = "tmp\\room.owl";
+			if (null != deployTh)
+				deployTh.stop();
+			deployTh = new DeployThead();
+			deployFinish = false;
+			deployTh.start();
+			// if(!canDeploy(file))
+			// return;
+
 			pb.setSelection(0);
-			deployThread = new LongRunningOperation(Display.getCurrent(), pb);
-			deployThread.start();
+
+			while (!deployFinish && pb.getSelection() < 90)
+				pb.setSelection(pb.getSelection() + 1);
+			pb.setSelection(100);
+			// deployThread = new LongRunningOperation(Display.getCurrent(),
+			// pb);
+			// deployThread.start();
 		}
+
+		// private boolean canDeploy(File file) {
+		// if (!file.exists()) {
+		// MessageDialog.openError(Display.getDefault().getActiveShell(),
+		// "Deploy Error", "OWL file hasn't been generated!");
+		// return false;
+		// }
+		// if (checkArea.getText().equals("")) {
+		// MessageDialog.openError(Display.getDefault().getActiveShell(),
+		// "Deploy Error",
+		// "Consistency check hasn't been completed!");
+		// return false;
+		// }
+		// return true;
+		// }
+	}
+
+	private class DeployThead extends Thread {
+
+		// private OWLOntologyManager man;
+		// private Object[] values;
+		private ManagerDelegate md;
+		private OWLOntology ont;
+		private PelletReasoner reasoner;
+		private ObjectsListModel objModel;
+
+		public DeployThead() {
+
+			if (null == ontManager)
+				return;
+			ont = ontManager.getOntology(IRI
+					.create("http://www.owl-ontologies.com/Ontology_IOT.owl"));
+			if (null == ont)
+				return;
+
+			ManagerService server = new ManagerService();
+			md = server.getManagerPort();
+			objModel = editor.getDiagram().getRootDiagram().getObjects();
+
+			reasoner = PelletReasonerFactory.getInstance().createReasoner(ont);
+		}
+
+		@Override
+		public void run() {
+			if (null == ontManager || null == ont)
+				return;
+			try {
+				OWLDataFactory dfac = ontManager.getOWLDataFactory();
+				IRI docIRI = ontManager.getOntologyDocumentIRI(ont);
+				String prefix = ont.getOntologyID().getOntologyIRI() + "#";
+				System.out.println("\ndocIRI: " + docIRI + "\nprefix: "
+						+ prefix);
+				deployFinish = true;
+				while (deployFinish) {
+					// >detecting objects' states ...
+					// >initializing instances ...
+					// >commiting to reasoner ...
+					// >carrying out inference ...
+					// >returning inferred results ...
+					// >resetting devices' states ...
+					Display display= Display.getDefault();
+					display.asyncExec(new Runnable() {
+						public void run() {
+							if (runningStatusArea != null
+									&& !runningStatusArea.isDisposed())
+								runningStatusArea
+										.append(">detecting objects' states ...\n");
+						}
+					});
+					sleep(1000);
+							
+					display.asyncExec(new Runnable() {
+						public void run() {
+							if (runningStatusArea != null
+									&& !runningStatusArea.isDisposed())
+								runningStatusArea
+										.append(">initializing instances ...\n");
+						}
+					});
+					sleep(1000);
+					
+					display.asyncExec(new Runnable() {
+						public void run() {
+							if (runningStatusArea != null
+									&& !runningStatusArea.isDisposed())
+								runningStatusArea
+										.append(">commiting to reasoner ...\n");
+						}
+					});
+					sleep(1000);
+					
+					display.asyncExec(new Runnable() {
+						public void run() {
+							if (runningStatusArea != null
+									&& !runningStatusArea.isDisposed())
+								runningStatusArea
+										.append(">carrying out inference ...\n");
+						}
+					});
+					sleep(1000);
+
+					reasoner.refresh();
+					reasoner.getKB().realize();
+					
+					
+					Object[] values = objModel.elements();
+
+					display.asyncExec(new Runnable() {
+						public void run() {
+							if (runningStatusArea != null
+									&& !runningStatusArea.isDisposed())
+								runningStatusArea
+										.append(">returning inferred results ...\n");
+						}
+					});
+					sleep(1000);
+					
+					display.asyncExec(new Runnable() {
+						public void run() {
+							if (runningStatusArea != null
+									&& !runningStatusArea.isDisposed())
+								runningStatusArea
+										.append(">resetting devices' states ...\n");
+						}
+					});
+					sleep(1000);
+
+
+					for (Object o : values) {
+						Value cur = (Value) o;
+						String e = cur.getEquipment();
+						String p = cur.getProperty();
+
+						if (null == p || p.equals(""))
+							continue;
+
+						OWLNamedIndividual ind = dfac.getOWLNamedIndividual(IRI
+								.create(prefix + e));
+						OWLDataProperty prop = dfac.getOWLDataProperty(IRI
+								.create(prefix + p));
+
+
+						System.out.println("\n" + e + " " + p + ": ##########################################");
+						
+						
+						Set<OWLLiteral> infer = getNewValue(ont, ind, prop,
+								reasoner);
+						
+						
+						System.out.println("\nend" + e + " " + p + ": ##########################################\n\n");
+
+						if (!infer.isEmpty()) {
+							Set<OWLLiteral> t = ind.getDataPropertyValues(prop,
+									ont);
+							System.out.println("begin old value: ---------------------------------------------------------");
+							for (Iterator<OWLLiteral> it = t.iterator(); it
+									.hasNext();) {
+								OWLLiteral l = it.next();
+								System.out.println(e + " " + p + " " + l.getLiteral());
+								OWLAxiom remove = dfac
+										.getOWLDataPropertyAssertionAxiom(prop,
+												ind, l);
+								ontManager.removeAxiom(ont, remove);
+								
+							}
+							System.out.println("end old value: ---------------------------------------------------------");
+
+							System.out.println("begin new value: ---------------------------------------------------------");
+
+							Iterator<OWLLiteral> iter = infer.iterator();
+							while(iter.hasNext()) {
+								
+								OWLLiteral li = iter.next();
+								System.out.println(e + " " + p + " " + li.getLiteral());
+								ontManager.applyChange(new AddAxiom(ont, dfac
+										.getOWLDataPropertyAssertionAxiom(prop,
+												ind, li)));
+								
+								
+								md.setProperty(e, p, li.getLiteral());
+								
+								cur.setValue(li.getLiteral());
+								objModel.add(cur);
+							}
+						}
+
+					}
+					if(viewer != null )	
+					{
+						display.asyncExec(new Runnable() {
+							public void run() {
+							viewer.refresh();
+							}
+						});
+					}
+					objModel.toStream();
+					sleep(3000);
+				}
+
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				System.out.println("Error in DeployListener!");
+				return;
+			}
+
+		}
+
+		public Set<OWLLiteral> getNewValue(OWLOntology ont,
+				OWLNamedIndividual ind, OWLDataProperty dpro,
+				PelletReasoner reasoner) {
+			// System.out.print("\n" + ind.getIRI().getFragment() + "--"
+			// + dpro.getIRI().getFragment() + ":");
+
+			Set<OWLLiteral> origin = ind.getDataPropertyValues(dpro, ont);
+			Set<OWLLiteral> infer = reasoner.getDataPropertyValues(ind, dpro);
+			System.out.println("before remove:--------------------------------------------------------");
+			System.out.println(infer);
+
+			for (Iterator<OWLLiteral> it = origin.iterator(); it.hasNext();) {
+				OWLLiteral temp = it.next();
+//				temp.getLiteral();
+				if (infer.contains(temp)) {
+					infer.remove(temp);
+				}
+			}
+			System.out.println("end before remove:--------------------------------------------------------");
+
+			System.out.println("after remove:--------------------------------------------------------");
+			System.out.println(infer);
+			System.out.println("end after remove:--------------------------------------------------------");
+
+			return infer;
+
+		}
+
+		// private Value getWebServiceValue(String e, String p) {
+		// // TODO Auto-generated method stub
+		// ManagerService server = new ManagerService();
+		// ManagerDelegate md = server.getManagerPort();
+		// // Manager m = gson.fromJson(md.getManager(), Manager.class);
+		//
+		// Value v = md.getProperty(e, p);
+		// return v;
+		// }
 	}
 
 	private class StopListener extends SelectionAdapter {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			if (deployThread.isAlive())
+			if (null != deployThread && deployThread.isAlive())
 				deployThread.stop();
+			deployFinish = false;
 
 			pb.setSelection(0);
 		}
@@ -816,20 +1174,302 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			// pb.setSelection(0);
-			// new LongRunningOperation(Display.getCurrent(), pb).start();
-			// Display newdisplay = new Display();
-			// Shell shell = new Shell(newdisplay);
+
 			if (pb.getSelection() < 100) {
 				MessageDialog.openError(Display.getDefault().getActiveShell(),
 						"View Status Error",
 						"System hasn't complete deployment");
 				return;
 			}
-			controllerDialog = new ControllerDialog(Display.getDefault()
-					.getActiveShell(), editor);
+			String path = "tmp/output.txt";
+			new ViewStatusShell(path, ontManager);
+
+			// application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+			// pb.setSelection(0);
+			// new LongRunningOperation(Display.getCurrent(), pb).start();
+			Display display = Display.getDefault();
+			Shell shell = new Shell(display);
+			controllerDialog = new ControllerDialog(shell, editor);
 			controllerDialog.open();
-			// controllerDialog.close();
+			viewer = null;
+			controllerDialog.close();
+		}
+	}
+
+	public class ControllerDialog extends Dialog {
+
+		private boolean isRunning;
+		
+		private ShapesEditor editor;
+		private StatusDisplay statusThread;
+		private Font titleFont;
+		public static final String START_MESS = ">control system start ...";
+		public final String[] STATUS = { ">detecting objects' states ...",
+				">initializing instances ...", ">commiting to reasoner ...",
+				">carrying out inference ...",
+				">returning inferred results ...",
+				">resetting devices' states ..." };
+		private static final int LABEL_LENGTH = 150;
+
+		public ControllerDialog(Shell shell, ShapesEditor editor) {
+			super(shell);
+			setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
+			this.editor = editor;
+			// this.runningStatusArea = text;
+		}
+
+		@Override
+		protected void configureShell(Shell newShell) {
+			// TODO Auto-generated method stub
+			setRunning(true);
+			super.configureShell(newShell);
+			newShell.setText("Knowledge Reasoning Part Deployment");
+		}
+
+		@Override
+		protected Control createDialogArea(Composite parent) {
+			Composite container = (Composite) super.createDialogArea(parent);
+			container.setLayout(new FormLayout());
+			FormData data;
+
+			Display display = Display.getDefault();
+			Font bigTitleFont = new Font(display, "Arial", 12, SWT.BOLD);
+			titleFont = new Font(display, "Arial", 10, SWT.BOLD);
+
+			Font textFont = new Font(display, "Cambria", 10, SWT.NORMAL);
+
+			final Label conL = new Label(container, SWT.SHADOW_OUT | SWT.CENTER);
+			conL.setText("Device Control System");
+			conL.setFont(bigTitleFont);
+
+			final Label runningStatusL = new Label(container, SWT.NONE);
+			runningStatusL.setText("Running status");
+			runningStatusL.setFont(titleFont);
+
+			runningStatusArea = new Text(container, SWT.V_SCROLL | SWT.H_SCROLL
+					| SWT.BORDER);
+			runningStatusArea.setText(START_MESS + "\n");
+			runningStatusArea.setFont(textFont);
+
+			Button start = new Button(container, SWT.PUSH);
+			start.setText("Start");
+			start.setFont(titleFont);
+			start.addSelectionListener(new StartListener());
+
+			Button pause = new Button(container, SWT.PUSH);
+			pause.setText("Pause");
+			pause.setFont(titleFont);
+			pause.addSelectionListener(new PauseListener());
+
+			Button clear = new Button(container, SWT.PUSH);
+			clear.setText("Clear");
+			clear.setFont(titleFont);
+			clear.addSelectionListener(new ClearListener());
+
+			final Label DeviceListL = new Label(container, SWT.NONE);
+			DeviceListL.setText("Properties of Devices and Sensors:");
+			DeviceListL.setFont(titleFont);
+
+			Table table = new Table(container, SWT.BORDER | SWT.MULTI
+					| SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+			table.setFont(textFont);
+
+			TableColumn column1 = new TableColumn(table, SWT.NONE);
+			column1.setText("Equipment");
+			column1.setWidth(LABEL_LENGTH);
+			TableColumn column2 = new TableColumn(table, SWT.NONE);
+			column2.setWidth(LABEL_LENGTH);
+			column2.setText("Property");
+			TableColumn column3 = new TableColumn(table, SWT.NONE);
+			column3.setWidth(LABEL_LENGTH);
+			column3.setText("Value");
+			
+			TableColumn column4 = new TableColumn(table, SWT.NONE);
+			column4.setWidth(LABEL_LENGTH);
+			column4.setText("Value Type");
+			
+			TableColumn column5 = new TableColumn(table, SWT.NONE);
+			column5.setWidth(LABEL_LENGTH);
+			column5.setText("Equipment Type");
+
+			table.setHeaderVisible(true);
+			table.setLinesVisible(true);
+
+			viewer = new TableViewer(table);
+			viewer.setContentProvider(new TableContentProvider());
+			viewer.setLabelProvider(new TableLabelProvider());
+
+			// objects = new ObjectsListModel();
+			viewer.setInput(editor.getDiagram().getRootDiagram().getObjects());
+
+			// ObjectsListModel objects =
+			// editor.getDiagram().getRootDiagram().getObjects();
+			// Object[] all = objects.elements();
+			// for(Object ob : all)
+			// {
+			// ObjectInfo object = (ObjectInfo)ob;
+			// if(Integer.parseInt(object.getRfid()) <= 14533 ||
+			// Integer.parseInt(object.getRfid()) >= 14543)
+			// object.setOn(true);
+			// }
+			viewer.refresh();
+
+			data = new FormData();
+			data.left = new FormAttachment(1);
+			data.right = new FormAttachment(100);
+			data.top = new FormAttachment(1, 10);
+			conL.setLayoutData(data);
+
+			data = new FormData();
+			data.left = new FormAttachment(conL, 0, SWT.LEFT);
+			data.right = new FormAttachment(conL, -100, SWT.RIGHT);
+			data.top = new FormAttachment(conL, 10, SWT.BOTTOM);
+			runningStatusL.setLayoutData(data);
+
+			data = new FormData();
+			data.left = new FormAttachment(runningStatusL, 0, SWT.LEFT);
+			data.right = new FormAttachment(runningStatusL, 0, SWT.RIGHT);
+			data.top = new FormAttachment(runningStatusL, 0, SWT.BOTTOM);
+			data.bottom = new FormAttachment(60);
+			runningStatusArea.setLayoutData(data);
+
+			data = new FormData();
+			data.left = new FormAttachment(runningStatusArea, 10, SWT.RIGHT);
+			data.right = new FormAttachment(100);
+			data.top = new FormAttachment(runningStatusL, 0, SWT.BOTTOM);
+			start.setLayoutData(data);
+
+			data = new FormData();
+			data.left = new FormAttachment(runningStatusArea, 10, SWT.RIGHT);
+			data.right = new FormAttachment(100);
+			data.top = new FormAttachment(start, 0, SWT.BOTTOM);
+			pause.setLayoutData(data);
+
+			data = new FormData();
+			data.left = new FormAttachment(runningStatusArea, 10, SWT.RIGHT);
+			data.right = new FormAttachment(100);
+			data.top = new FormAttachment(pause, 0, SWT.BOTTOM);
+			clear.setLayoutData(data);
+
+			data = new FormData();
+			data.left = new FormAttachment(runningStatusL, 0, SWT.LEFT);
+			data.right = new FormAttachment(runningStatusL, 0, SWT.RIGHT);
+			data.top = new FormAttachment(runningStatusArea, 20, SWT.BOTTOM);
+			DeviceListL.setLayoutData(data);
+
+			FormData tableData = new FormData();
+			tableData.left = new FormAttachment(DeviceListL, 0, SWT.LEFT);
+			tableData.right = new FormAttachment(DeviceListL, 0, SWT.RIGHT);
+			tableData.top = new FormAttachment(DeviceListL, 0, SWT.BOTTOM);
+			tableData.bottom = new FormAttachment(100);
+			table.setLayoutData(tableData);
+
+			// statusThread = new StatusDisplay(Display.getCurrent());
+			// statusThread.start();
+
+			return container;
+		}
+		
+
+		@Override
+		protected void createButtonsForButtonBar(Composite parent) {
+			createButton(parent, IDialogConstants.OK_ID, "close", true)
+					.setFont(titleFont);
+		}
+
+		@Override
+		protected void initializeBounds() {
+			Shell shell = getShell();
+			java.awt.Dimension scrSize = Toolkit.getDefaultToolkit()
+					.getScreenSize();
+			Insets scrInsets = Toolkit.getDefaultToolkit()
+					.getScreenInsets(
+							GraphicsEnvironment.getLocalGraphicsEnvironment()
+									.getDefaultScreenDevice()
+									.getDefaultConfiguration());
+			shell.setBounds(scrInsets.left + 1500, scrInsets.top,
+					scrSize.width - scrInsets.left - scrInsets.right - 1200,
+					scrSize.height - scrInsets.top - scrInsets.bottom - 200);
+			super.initializeBounds();
+		}
+
+		public void setRunning(boolean isRunning) {
+			this.isRunning = isRunning;
+		}
+
+		public boolean isRunning() {
+			return isRunning;
+		}
+
+		private class StartListener extends SelectionAdapter {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setRunning(false);
+				while (statusThread.isAlive()) {
+					statusThread.stop();
+				}
+				setRunning(true);
+				statusThread = new StatusDisplay(Display.getCurrent());
+				statusThread.start();
+			}
+		}
+
+		private class PauseListener extends SelectionAdapter {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setRunning(false);
+			}
+		}
+
+		private class ClearListener extends SelectionAdapter {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				runningStatusArea.setText("");
+			}
+		}
+
+		class StatusDisplay extends Thread {
+			private Display display;
+			private int count;
+
+			public StatusDisplay(Display display) {
+				this.display = display;
+				count = -1;
+			}
+
+			public void run() {
+				// 模仿长时间的任务
+				while (isRunning()) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					count++;
+					if (count >= STATUS.length) {
+						count = 0;
+						try {
+							Thread.sleep(2000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					display.asyncExec(new Runnable() {
+						public void run() {
+							if (runningStatusArea.isDisposed()) {
+								setRunning(false);
+								return;
+							}
+							runningStatusArea.append(STATUS[count] + "\n");
+						}
+					});
+				}
+			}
 		}
 	}
 
@@ -876,6 +1516,96 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			setActivePage(getActivePage() + 1);
+			initDiagram();
+			editor.getDiagram().getRootDiagram().fireRelocate();
 		}
 	}
+
+	private void initDiagram() {
+		Shape rootShape = new Shape();
+		rootShape.setRoot(true); // Thing为根，但从未在Diagram里创建
+		rootShape.setName("Thing");
+		rootShape.setColor(ColorConstants.orange.getRGB());
+
+		Connection rootConnection = new Connection("ConnectionRoot");
+		rootConnection.setName("Relation");
+
+		ShapesDiagram diagram = editor.getDiagram().getRootDiagram();
+		ObjectsListModel objectsModel = diagram.getObjects();
+		if (null == objectsModel)
+			return;
+		HashMap<String, ArrayList<Equipment>> allEquipments = objectsModel
+				.getEquipments();
+		Iterator<Entry<String, ArrayList<Equipment>>> iter = allEquipments
+				.entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<String, ArrayList<Equipment>> curEType = iter.next();
+			String type = curEType.getKey();
+			Shape parentShape = diagram.getShapeByName(type);
+			if (null == parentShape) {
+				try {
+					parentShape = Shape.class.newInstance();
+					parentShape.setName(type);
+					createShape(parentShape, rootShape, diagram);
+
+					ArrayList<Equipment> curEList = curEType.getValue();
+					for (Equipment e : curEList) {
+						Shape shape = Shape.class.newInstance();
+						shape.setName(e.getName());
+						shape.setClass(false);
+						shape.setInstanceType(parentShape);
+						createShape(shape, rootShape, diagram);
+						Connection connection = new Connection(shape,
+								parentShape, "instanceOf");
+
+						connection.setParent(rootConnection);
+						rootConnection.addChild(connection);
+						shape.getDiagram().addConnection(connection);
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				try {
+
+					ArrayList<Equipment> curEList = curEType.getValue();
+					for (Equipment e : curEList) {
+						Shape shape = diagram.getShapeByName(e.getName());
+						if (null != shape)
+							continue;
+						shape = Shape.class.newInstance();
+						shape.setName(e.getName());
+						shape.setClass(false);
+						shape.setInstanceType(parentShape);
+						createShape(shape, rootShape, diagram);
+						Connection connection = new Connection(shape,
+								parentShape, "instanceOf");
+
+						connection.setParent(rootConnection);
+						rootConnection.addChild(connection);
+						shape.getDiagram().addConnection(connection);
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	private void createShape(Shape shape, Shape parent, ShapesDiagram diagram) {
+		// TODO Auto-generated method stub
+		Rectangle bounds = new Rectangle(0, 0, -1, -1);
+		shape.setLocation(bounds.getLocation());
+		Dimension size = bounds.getSize();
+		if (size.width > 0 && size.height > 0)
+			shape.setSize(size);
+		shape.setColor(ColorConstants.orange.getRGB());
+		parent.addChild(shape);
+		shape.setParent(parent);
+		if (diagram.addChild(shape))
+			shape.setDiagram(diagram);
+	}
+
 }

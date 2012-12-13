@@ -17,13 +17,13 @@ import cn.edu.pku.ogeditor.ShapesEditor;
 import cn.edu.pku.ogeditor.iot.IOTAuto;
 import cn.edu.pku.ogeditor.parts.DiagramEditPart;
 /**
- * the action used to relocate all the shapes
+ * the action used to deploy the iot
  * @author Xueyuan Xing
  */
 public class DeployAction extends SelectionAction {
 	private ShapesEditor shapesEdtior;
-	public static final String FILE_PATH = "file:IOT.owl";
-	public static final String FILE_EXTENSION = "owl";
+	public static String filePath = "tmp\\" + ShapesEditor.myselfShapesEditor.getDiagram().getRootDiagram().getFileName()+".owl";
+	public String fileExtention = "owl";
 	public DeployAction(ShapesEditor shapesEditor) {
 		super(shapesEditor);
 		this.shapesEdtior = shapesEditor;
@@ -48,7 +48,7 @@ public class DeployAction extends SelectionAction {
 	}
 	@Override
 	public void run(){
-		shapesEdtior.SaveAsOWL(FILE_PATH, FILE_EXTENSION);
+		shapesEdtior.SaveAsOWL(filePath, fileExtention);
 		IOTAuto.deploy();
 	}
 }

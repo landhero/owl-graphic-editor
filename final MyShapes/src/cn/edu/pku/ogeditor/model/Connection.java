@@ -60,7 +60,7 @@ public class Connection extends ModelElement {
 		children=new ArrayList<Connection>();
 		bendpoints = new ArrayList<ConnectionBendpoint>();
 		if(!string.equals("ConnectionRoot")
-				&&!string.equals("Seperator"))
+				&&!string.equals("Seperator") && !string.equals("subClassOf"))
 			System.err.println("Construct an incorrect connection!");
 		setRoot(true);
 	}

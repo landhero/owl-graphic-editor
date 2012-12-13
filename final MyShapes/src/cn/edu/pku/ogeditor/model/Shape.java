@@ -44,6 +44,8 @@ public class Shape extends ModelElement {
 	public static final String VISIBLE_PROP = "Shape.Visible";
 
 	private boolean isVisible = true;
+	private boolean isClass = true;
+	private Shape instanceType;
 	// private Font font;
 	private RGB color;
 	/** Location of this shape. */
@@ -302,7 +304,20 @@ public class Shape extends ModelElement {
 		if (color != null) {
 			this.color = color;
 			refreshChildrenColor();
+			refreshInstanceColor();
+
 			firePropertyChange(COLOR_PROP, null, color);
+		}
+	}
+
+	private void refreshInstanceColor() {
+		List<Connection> conns = getTargetConnections();
+		for(Connection c : conns)
+		{
+			if(!(c.getName().equals("subClassOf") || c.getName().equals("instanceOf")))
+				continue;
+			Shape src = c.getSource();
+			src.setColor(color);
 		}
 	}
 
@@ -376,5 +391,21 @@ public class Shape extends ModelElement {
 
 	public boolean isVisible() {
 		return isVisible;
+	}
+
+	public void setClass(boolean isClass) {
+		this.isClass = isClass;
+	}
+
+	public boolean isClass() {
+		return isClass;
+	}
+
+	public void setInstanceType(Shape instanceType) {
+		this.instanceType = instanceType;
+	}
+
+	public Shape getInstanceType() {
+		return instanceType;
 	}
 }

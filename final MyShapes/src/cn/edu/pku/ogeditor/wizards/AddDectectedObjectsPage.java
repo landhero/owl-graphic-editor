@@ -131,9 +131,9 @@ public class AddDectectedObjectsPage extends WizardPage {
 		objects = new ObjectsListModel();
 		viewer.setInput(objects);
 
-		objects.add(new ObjectInfo("http://object1", "001", "light"));
-		objects.add(new ObjectInfo("http://object2", "002", "air-conditioning"));
-		objects.add(new ObjectInfo("http://object3", "003", "screen"));
+//		objects.add(new ObjectInfo("http://object1", "001", "light"));
+//		objects.add(new ObjectInfo("http://object2", "002", "air-conditioning"));
+//		objects.add(new ObjectInfo("http://object3", "003", "screen"));
 
 		FormData listData = new FormData();
 		listData.left = new FormAttachment(addL, 0, SWT.LEFT);
@@ -210,9 +210,9 @@ public class AddDectectedObjectsPage extends WizardPage {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			ObjectInfo object = new ObjectInfo(urisText.getText(), rfidText.getText(), typeText.getText());
-			objects.add(object);
-			refreshTexts();
+//			ObjectInfo object = new ObjectInfo(urisText.getText(), rfidText.getText(), typeText.getText());
+//			objects.add(object);
+//			refreshTexts();
 		}
 	}
 	
@@ -220,16 +220,16 @@ public class AddDectectedObjectsPage extends WizardPage {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			int[] indices = viewer.getTable().getSelectionIndices();
-			ArrayList<ObjectInfo> dels = new ArrayList<ObjectInfo>();
-			for(int index : indices)
-			{
-				ObjectInfo object = (ObjectInfo) viewer.getElementAt(index);
-				dels.add(object);
-//				objects.remove(object);
-			}
-			objects.removeAll(dels);
-			viewer.refresh();
+//			int[] indices = viewer.getTable().getSelectionIndices();
+//			ArrayList<ObjectInfo> dels = new ArrayList<ObjectInfo>();
+//			for(int index : indices)
+//			{
+//				ObjectInfo object = (ObjectInfo) viewer.getElementAt(index);
+//				dels.add(object);
+////				objects.remove(object);
+//			}
+//			objects.removeAll(dels);
+//			viewer.refresh();
 		}
 	}
 	private void refreshTexts() {

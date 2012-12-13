@@ -36,6 +36,7 @@ public class ShapesDiagram extends ModelElement {
 	public static String PropertyDescriptor_LogicDiagram_Manual="Manual";
 	public static String PropertyDescriptor_LogicDiagram_Manhattan="Manhattan";
 	public static String PropertyDescriptor_LogicDiagram_ShortestPath="Shortest Path";
+	public static final String STAND_WSDL = "http://localhost:8080/IOTWeb/ManagerPort?wsdl";
 	protected Integer connectionRouter = null;
 	/** Property ID to use when a child is added to this diagram. */
 	public static final String CHILD_ADDED_PROP = "ShapesDiagram.ChildAdded";
@@ -54,8 +55,10 @@ public class ShapesDiagram extends ModelElement {
 	private List<Connection> allConnections;
 	private SWRLListModel rules;
 	private ObjectsListModel objects;
+	private String wsdlUri;
 
 	public ShapesDiagram(){
+//		wsdlUri = new String(STAND_WSDL);
 		allShapes=new ArrayList<Shape>();
 		lowerLevelDiagrams = new ArrayList<ShapesDiagram>();
 		allShapesNames = new ArrayList<Shape>();
@@ -63,9 +66,9 @@ public class ShapesDiagram extends ModelElement {
 		allConnections = new ArrayList<Connection>();
 		rules = new SWRLListModel();
 		
-		rules.add(new SWRLRule("Room(?r) … isOccupied(?r, true) … Room_Temperature(?r, ?t) … swrlb:greaterThan(?t, 30.0) … Air_Condition(?x) …  isIn(?x, ?r) ★  isOn(?x, true)"));
-		rules.add(new SWRLRule("Room(?r) … Room_PersonNum(?r, ?n) … swrlb:lessThan(?n, 4) … Air_Condition(?x) … isIn(?x, ?r) … isOn(?x, true) ★  Air_Condition_Temperature(?x, 27)"));
-		rules.add(new SWRLRule("Room(?r) … Room_PersonNum(?r, ?n) … swrlb:greaterThan(?n, 3) … Air_Condition(?x) … isIn(?x, ?r) … isOn(?x, true) ★  Air_Condition_Temperature(?x, 26)"));
+//		rules.add(new SWRLRule("Room(?r) … isOccupied(?r, true) … Room_Temperature(?r, ?t) … swrlb:greaterThan(?t, 30.0) … Air_Condition(?x) …  isIn(?x, ?r) ★  isOn(?x, true)"));
+//		rules.add(new SWRLRule("Room(?r) … Room_PersonNum(?r, ?n) … swrlb:lessThan(?n, 4) … Air_Condition(?x) … isIn(?x, ?r) … isOn(?x, true) ★  Air_Condition_Temperature(?x, 27)"));
+//		rules.add(new SWRLRule("Room(?r) … Room_PersonNum(?r, ?n) … swrlb:greaterThan(?n, 3) … Air_Condition(?x) … isIn(?x, ?r) … isOn(?x, true) ★  Air_Condition_Temperature(?x, 26)"));
 		
 		setFileName("New Ontology");
 		setOWLName("New Ontology");
@@ -245,6 +248,8 @@ public class ShapesDiagram extends ModelElement {
 	}
 	public void relocatedAll(Rectangle rect){
 		int size = allShapes.size();
+		if(size == 0)
+			return;
 		int sides[][] = new int[size][size];
 		boolean used[] = new boolean[size];
 		int allocated[] = new int[size];
@@ -461,5 +466,11 @@ public class ShapesDiagram extends ModelElement {
 				return shape;
 		}
 		return null;
+	}
+	public String getWsdlUri() {
+		return wsdlUri;
+	}
+	public void setWsdlUri(String wsdlUri) {
+		this.wsdlUri = wsdlUri;
 	}
 }

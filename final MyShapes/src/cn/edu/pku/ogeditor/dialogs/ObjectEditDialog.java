@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
-import cn.edu.pku.ogeditor.wizards.ObjectInfo;
 import cn.edu.pku.ogeditor.wizards.ObjectsListModel;
 import cn.edu.pku.ogeditor.wizards.TableContentProvider;
 import cn.edu.pku.ogeditor.wizards.TableLabelProvider;
@@ -173,8 +172,8 @@ public class ObjectEditDialog extends Dialog{
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			ObjectInfo object = new ObjectInfo(urisText.getText(), rfidText.getText(), typeText.getText());
-			objects.add(object);
+//			ObjectInfo object = new ObjectInfo(urisText.getText(), rfidText.getText(), typeText.getText());
+//			objects.add(object);
 			refreshTexts();
 			parentViewer.refresh();
 		}
@@ -185,15 +184,15 @@ public class ObjectEditDialog extends Dialog{
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			int[] indices = viewer.getTable().getSelectionIndices();
-			ArrayList<ObjectInfo> dels = new ArrayList<ObjectInfo>();
-			for(int index : indices)
-			{
-				ObjectInfo object = (ObjectInfo) viewer.getElementAt(index);
-				dels.add(object);
-//				objects.remove(object);
-			}
-			objects.removeAll(dels);
+//			int[] indices = viewer.getTable().getSelectionIndices();
+//			ArrayList<ObjectInfo> dels = new ArrayList<ObjectInfo>();
+//			for(int index : indices)
+//			{
+//				ObjectInfo object = (ObjectInfo) viewer.getElementAt(index);
+//				dels.add(object);
+////				objects.remove(object);
+//			}
+//			objects.removeAll(dels);
 			viewer.refresh();
 			parentViewer.refresh();
 		}

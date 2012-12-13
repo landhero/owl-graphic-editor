@@ -63,13 +63,14 @@ public class ShapeEditPart extends AbstractGraphicalEditPart implements
 		if (!isActive()) {
 			super.activate();
 			((ModelElement) getModel()).addPropertyChangeListener(this);
-			//refreshVisibility();
+			// refreshVisibility();
 		}
 	}
-//
-//	private void refreshVisibility() {
-//		getCastedModel().setVisible(getCastedModel().isVisible());
-//	}
+
+	//
+	// private void refreshVisibility() {
+	// getCastedModel().setVisible(getCastedModel().isVisible());
+	// }
 
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
@@ -236,12 +237,11 @@ public class ShapeEditPart extends AbstractGraphicalEditPart implements
 					getCastedModel().getName());
 		} else if (Shape.COLOR_PROP.equals(prop)) {
 			// 加一个对话框
-			boolean confirm = MessageDialog.openConfirm(Display.getDefault()
-					.getActiveShell(), "提示", "确实要改变该类及其所有子类颜色吗？");
-			if (confirm)
-				((ShapeFigure) getFigure()).getEllipseFigure()
-						.setBackgroundColor(
-								new Color(null, getCastedModel().getColor()));
+			// boolean confirm = MessageDialog.openConfirm(Display.getDefault()
+			// .getActiveShell(), "提示", "确实要改变该类及其所有子类颜色吗？");
+			// if (confirm)
+			((ShapeFigure) getFigure()).getEllipseFigure().setBackgroundColor(
+					new Color(null, getCastedModel().getColor()));
 
 			// getCastedModel().refreshChildrenColor();
 		} else if (Shape.VISIBLE_PROP.equals(prop)) {
