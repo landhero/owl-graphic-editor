@@ -8,9 +8,14 @@
 ?*******************************************************************************/
 package cn.edu.pku.ogeditor;
 
+import iot.reasoner.MergeOwlAndSWRL;
+
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -101,17 +106,20 @@ import cn.edu.pku.ogeditor.model.Connection;
 import cn.edu.pku.ogeditor.model.Shape;
 import cn.edu.pku.ogeditor.model.ShapeProperty;
 import cn.edu.pku.ogeditor.model.ShapesDiagram;
+import cn.edu.pku.ogeditor.parts.DiagramEditPart;
+import cn.edu.pku.ogeditor.parts.ShapeEditPart;
 import cn.edu.pku.ogeditor.parts.ShapesEditPartFactory;
 import cn.edu.pku.ogeditor.parts.ShapesTreeEditPartFactory;
 import cn.edu.pku.ogeditor.views.DecriptionView;
+import cn.edu.pku.ogeditor.views.SWRLRule;
 
 import com.hp.hpl.jena.ontology.DatatypeProperty;
+import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.ontology.Ontology;
-import com.hp.hpl.jena.ontology.SomeValuesFromRestriction;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -137,10 +145,12 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 				updateActions(ActionConstant.getSelectableActions());
 		}
 		super.selectionChanged(part, selection);
-//		if (null != propertySheet )// && part == this)
-//		{
-//			propertySheet.selectionChanged(part, selection);
-//		}
+		
+		 if (null != propertySheet && !selection.isEmpty())// && part == this)
+		 {
+//			 selection.
+			 propertySheet.selectionChanged(part, selection);
+		 }
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -443,19 +453,72 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 		ShapesDiagram rootDiagram = getDiagram().getRootDiagram();
 		createOntologyForDiagram(rootDiagram);
 
+		String tmpOwlPath = filepath + ".tmpowl";
+		String tmpSwrlPath = filepath + ".tmprule";
+
 		/*
 		 * Save OntModel ontM to the OWL file
 		 */
 		try {
+			// tmpowl
+			File file = new File(tmpOwlPath);
+			System.out.println(file.getAbsolutePath());
+			if (file.exists())
+				file.delete();
 
-			FileOutputStream out = new FileOutputStream(filepath);
+			file.createNewFile();
+			FileOutputStream out = new FileOutputStream(tmpOwlPath);
 			if (fileextension.equals("owl") || fileextension.equals("rdf"))
 				ontModel.write(out, "RDF/XML-ABBREV");
 			else if (fileextension.equals("ttl"))
 				ontModel.write(out, "Turtle");
-			System.out.println("has written to " + filepath);
+			out.close();
+			System.out.println("has written to " + tmpOwlPath);
 
-		} catch (IOException e) {
+			// tmpswrl
+			file = new File(tmpSwrlPath);
+			if (!file.exists())
+				file.createNewFile();
+			// next, save rules;
+			Object[] rules = getDiagram().getRootDiagram().getRules()
+					.elements();
+			saveRulesFile(tmpSwrlPath, rules);
+			System.out.println("has written to " + tmpSwrlPath);
+
+			MergeOwlAndSWRL.merge(tmpOwlPath, tmpSwrlPath, filepath);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private void saveRulesFile(String path, Object[] rules) {
+		File f = new File(path);
+		try {
+			if (f.exists())
+				f.delete();
+
+			f.createNewFile();
+
+			FileWriter fw = new FileWriter(f);
+			BufferedWriter bw = new BufferedWriter(fw);
+			int len = rules.length;
+			if (len > 0) {
+				Object o = rules[0];
+				SWRLRule r = (SWRLRule) o;
+				bw.write(r.getExpression());
+				for (int i = 1;i < len; i++) {
+					bw.newLine();
+					r = (SWRLRule) rules[i];
+					bw.write(r.getExpression());
+				}
+			}
+			bw.close();
+			fw.close();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -466,25 +529,31 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 		// String std = "http://www.w3.org/2001/XMLSchema";
 		for (int i = 0; i < curShapes.size(); i++) {
 			Shape curShape = curShapes.get(i);
+			if (!curShape.isClass())
+				continue;
 			// 不进行是否有重复的判断的前提是本体中所有类的名字都是唯一的
 			OntClass curClass = ontModel.createClass(NS + curShape.getName());
+
+			// property part, need modified
 			List<ShapeProperty> curPros = curShape.getProperties();
 			for (ShapeProperty pro : curPros) {
 				DatatypeProperty property = ontModel.createDatatypeProperty(NS
 						+ pro.getName());
 				property.setRange(ShapeProperty.type2XSDType(pro.getType()));
-				if (pro.getType().equals(ShapeProperty.BOOLEAN_TYPE)) {
-					curClass.addLiteral(property,
-							Boolean.parseBoolean(pro.getValue()));
-				} else if (pro.getType().equals(ShapeProperty.FLOAT_TYPE)) {
-					curClass.addLiteral(property,
-							Float.parseFloat(pro.getValue()));
-				} else if (pro.getType().equals(ShapeProperty.INT_TYPE)) {
-					curClass.addLiteral(property,
-							Integer.parseInt(pro.getValue()));
-				} else {
-					curClass.addLiteral(property, pro.getValue());
-				}
+				curClass.addProperty(property, pro.getValue());
+				// if (pro.getType().equals(ShapeProperty.BOOLEAN_TYPE)) {
+				//
+				// curClass.addLiteral(property,
+				// Boolean.parseBoolean(pro.getValue()));
+				// } else if (pro.getType().equals(ShapeProperty.FLOAT_TYPE)) {
+				// curClass.addLiteral(property,
+				// Float.parseFloat(pro.getValue()));
+				// } else if (pro.getType().equals(ShapeProperty.INT_TYPE)) {
+				// curClass.addLiteral(property,
+				// Integer.parseInt(pro.getValue()));
+				// } else {
+				// curClass.addLiteral(property, pro.getValue());
+				// }
 			}
 			Shape parentShape = curShape.getParent();
 			OntClass parentClass = ontModel.getOntClass(NS
@@ -493,8 +562,48 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 				continue;
 			parentClass.addSubClass(curClass);
 		}
+
+		// create instances
 		for (int i = 0; i < curShapes.size(); i++) {
 			Shape curShape = curShapes.get(i);
+			if (curShape.isClass())
+				continue;
+			Shape parType = curShape.getInstanceType();
+			OntClass parTypeClass = ontModel
+					.getOntClass(NS + parType.getName());
+			if (null == parTypeClass)
+				continue;
+			// 不进行是否有重复的判断的前提是本体中所有类的名字都是唯一的
+			Individual curInstance = parTypeClass.createIndividual(NS
+					+ curShape.getName());
+
+			// property part, need modified
+			List<ShapeProperty> curPros = curShape.getProperties();
+			for (ShapeProperty pro : curPros) {
+				DatatypeProperty property = ontModel.getDatatypeProperty(NS
+						+ pro.getName());
+				// property.setRange(ShapeProperty.type2XSDType(pro.getType()));
+				if (pro.getType().equals(ShapeProperty.BOOLEAN_TYPE)) {
+
+					curInstance.addLiteral(property,
+							Boolean.parseBoolean(pro.getValue()));
+				} else if (pro.getType().equals(ShapeProperty.FLOAT_TYPE)) {
+					curInstance.addLiteral(property,
+							Float.parseFloat(pro.getValue()));
+				} else if (pro.getType().equals(ShapeProperty.INT_TYPE)) {
+					curInstance.addLiteral(property,
+							Integer.parseInt(pro.getValue()));
+				} else {
+					curInstance.addLiteral(property, pro.getValue());
+				}
+			}
+
+		}
+
+		for (int i = 0; i < curShapes.size(); i++) {
+			Shape curShape = curShapes.get(i);
+			if (!curShape.isClass())
+				continue;
 			OntClass srcClass = ontModel.getOntClass(NS + curShape.getName());
 			OntClass tarClass;
 			List<Connection> sCons = curShape.getSourceConnections();
@@ -508,13 +617,13 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 				if (curOP == null)
 					curOP = ontModel
 							.createObjectProperty(NS + curCon.getName());
-				// curOP.addDomain(srcClass);
-				// curOP.addRange(tarClass);
-				SomeValuesFromRestriction svf = ontModel
-						.createSomeValuesFromRestriction(null, curOP, tarClass);
-				srcClass.addSuperClass(svf);
-				System.out.println("svfname:"
-						+ svf.getSomeValuesFrom().getLocalName());
+				curOP.addDomain(srcClass);
+				curOP.addRange(tarClass);
+				// SomeValuesFromRestriction svf = ontModel
+				// .createSomeValuesFromRestriction(null, curOP, tarClass);
+				// srcClass.addSuperClass(svf);
+				// System.out.println("svfname:"
+				// + svf.getSomeValuesFrom().getLocalName());
 				// System.out.println(curOP.getRange() + " endHolyshit");
 			}
 		}
@@ -530,9 +639,9 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 		myselfShapesEditor = this;
 
 		if (type == IPropertySheetPage.class) {
-			if (null == propertySheet)
-				propertySheet = new TabbedPropertySheetPage(this);
-			return propertySheet;
+			if (null == getPropertySheet())
+				setPropertySheet(new TabbedPropertySheetPage(this));
+			return getPropertySheet();
 		} else if (type == IContentOutlinePage.class)
 			return new OutlinePage(new TreeViewer());
 		else if (type == ZoomManager.class)
@@ -792,5 +901,13 @@ public class ShapesEditor extends GraphicalEditorWithFlyoutPalette implements
 
 	public void setDiagram(ShapesDiagram diagram) {
 		this.diagram = diagram;
+	}
+
+	public void setPropertySheet(TabbedPropertySheetPage propertySheet) {
+		this.propertySheet = propertySheet;
+	}
+
+	public TabbedPropertySheetPage getPropertySheet() {
+		return propertySheet;
 	}
 }

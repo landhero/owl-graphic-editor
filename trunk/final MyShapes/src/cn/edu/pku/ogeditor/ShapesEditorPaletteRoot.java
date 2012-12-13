@@ -45,6 +45,7 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 	private Connection rootConnection;
 	private Shape separatorShape;
 	private Connection separatorConnection;
+	private Connection subClassConnection;
 
 	public ShapesEditorPaletteRoot(){
 		super();
@@ -132,6 +133,12 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 		rootConnection.setName("Relation");
 		rootConnection.setRequired(true);
 		addConnectionTool(rootConnection);
+//		addConnectionTool(separatorConnection);
+		
+		subClassConnection = new Connection("subClassOf");
+		subClassConnection.setName("subClassOf");
+		subClassConnection.setRequired(true);
+		addConnectionTool(subClassConnection);
 		addConnectionTool(separatorConnection);
 
 	}
@@ -210,6 +217,9 @@ public class ShapesEditorPaletteRoot extends PaletteRoot {
 			addShapeTool(separatorShape);
 
 			addConnectionTool(rootConnection);
+//			addConnectionTool(separatorConnection);
+			
+			addConnectionTool(subClassConnection);
 			addConnectionTool(separatorConnection);
 			return;
 		}

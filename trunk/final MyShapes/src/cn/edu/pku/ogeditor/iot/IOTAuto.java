@@ -9,7 +9,6 @@ import cn.edu.pku.ogeditor.actions.DeployAction;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
@@ -28,7 +27,7 @@ public class IOTAuto {
 		model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC,null);
 
 		//model.read("file:./pizza.owl");
-		model.read(DeployAction.FILE_PATH);
+		model.read(DeployAction.filePath);
 
 		System.out.println("start");
 		for(String id : ids)

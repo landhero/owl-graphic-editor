@@ -1,7 +1,14 @@
 package cn.edu.pku.ogeditor.wizards;
 
+import iot.client.Value;
+import iot.equipment.Equipment;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;

@@ -38,7 +38,7 @@ import cn.edu.pku.ogeditor.model.ShapesDiagram;
 public class ShapesCreationWizard extends Wizard implements INewWizard {
 
 	private CreationPage page1;
-	private AddDectectedObjectsPage page2;
+//	private AddDectectedObjectsPage page2;
 
 	/*
 	 * (non-Javadoc)
@@ -48,7 +48,7 @@ public class ShapesCreationWizard extends Wizard implements INewWizard {
 	public void addPages() {
 		// add pages to this wizard
 		addPage(page1);
-		addPage(page2);
+//		addPage(page2);
 	}
 
 	/*
@@ -61,7 +61,7 @@ public class ShapesCreationWizard extends Wizard implements INewWizard {
 		// create pages for this wizard
 		setWindowTitle("OWL Graphic Editor");
 		page1 = new CreationPage(workbench, selection);
-		page2 = new AddDectectedObjectsPage();
+//		page2 = new AddDectectedObjectsPage();
 	}
 
 	/*
@@ -103,14 +103,16 @@ public class ShapesCreationWizard extends Wizard implements INewWizard {
 		display.asyncExec(new Runnable() {
 			public void run() {
 
-				if (getContainer().getCurrentPage() == page1) {
-					page1.finish();
-				} else if (getContainer().getCurrentPage() == page2) {
-					page1.createDefaultContent();
-					page1.getShapeDiagram().setObjects(page2.getObjects());
-					initDiagram();
-					page1.finish();
-				}
+				page1.finish();
+
+//				if (getContainer().getCurrentPage() == page1) {
+//					page1.finish();
+//				} else if (getContainer().getCurrentPage() == page2) {
+//					page1.createDefaultContent();
+//					page1.getShapeDiagram().setObjects(page2.getObjects());
+//					initDiagram();
+//					page1.finish();
+//				}
 			}
 
 			private void initDiagram() {
@@ -127,34 +129,34 @@ public class ShapesCreationWizard extends Wizard implements INewWizard {
 				if (null == objectsModel)
 					return;
 				Object[] objects = objectsModel.elements();
-				for (Object cur : objects) {
-					ObjectInfo object = (ObjectInfo)cur;
-					Shape parentShape = diagram.getShapeByName(object.getType());
-					if(null == parentShape)
-					{
-						try {
-							parentShape = Shape.class.newInstance();
-							parentShape.setName(object.getType());
-							createShape(parentShape, rootShape, diagram);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					try {
-						Shape shape = Shape.class.newInstance();
-						shape.setName(object.getRfid());
-						createShape(shape, rootShape, diagram);
-						Connection connection = new Connection(shape, parentShape, "instance of");
-
-						connection.setParent(rootConnection);
-						rootConnection.addChild(connection);
-						shape.getDiagram().addConnection(connection);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+//				for (Object cur : objects) {
+//					ObjectInfo object = (ObjectInfo)cur;
+//					Shape parentShape = diagram.getShapeByName(object.getType());
+//					if(null == parentShape)
+//					{
+//						try {
+//							parentShape = Shape.class.newInstance();
+//							parentShape.setName(object.getType());
+//							createShape(parentShape, rootShape, diagram);
+//						} catch (Exception e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					}
+//					try {
+//						Shape shape = Shape.class.newInstance();
+//						shape.setName(object.getRfid());
+//						createShape(shape, rootShape, diagram);
+//						Connection connection = new Connection(shape, parentShape, "instance of");
+//
+//						connection.setParent(rootConnection);
+//						rootConnection.addChild(connection);
+//						shape.getDiagram().addConnection(connection);
+//					} catch (Exception e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
 			}
 
 			private void createShape(Shape shape, Shape parent, ShapesDiagram diagram) {

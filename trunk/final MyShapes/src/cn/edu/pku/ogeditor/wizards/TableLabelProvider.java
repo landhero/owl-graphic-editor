@@ -1,5 +1,7 @@
 package cn.edu.pku.ogeditor.wizards;
 
+import iot.client.Value;
+
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -12,15 +14,19 @@ public class TableLabelProvider implements ITableLabelProvider {
 	}
 
 	public String getColumnText(Object element, int columnIndex) {
-		if (element instanceof ObjectInfo) {
-			ObjectInfo user = (ObjectInfo) element;
+		if (element instanceof Value) {
+			Value v = (Value) element;
 			switch (columnIndex) {
 			case 0:
-				return user.getUri();
+				return v.getEquipment();
 			case 1:
-				return user.getRfid();
+				return v.getProperty();
 			case 2:
-				return user.getType();
+				return v.getValue();
+			case 3:
+				return v.getType();
+			case 4:
+				return v.getEType();
 			}
 		}
 		return null;

@@ -26,6 +26,7 @@ public class ShapeRenameCommand extends Command {
 		if(shape.getDiagram().ContainShapeName(newText))
 		{
 			//弹出对话框之类
+			System.out.println("ShapeRename!!!");
 			shape.setName(shape.getName());
 			return false;
 		}	

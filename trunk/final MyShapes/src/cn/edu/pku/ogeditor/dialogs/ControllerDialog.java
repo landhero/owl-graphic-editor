@@ -26,8 +26,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import cn.edu.pku.ogeditor.ShapesEditor;
-import cn.edu.pku.ogeditor.wizards.ObjectInfo;
-import cn.edu.pku.ogeditor.wizards.ObjectsListModel;
+import cn.edu.pku.ogeditor.wizards.TableContentProvider;
+import cn.edu.pku.ogeditor.wizards.TableLabelProvider;
 
 public class ControllerDialog extends Dialog {
 
@@ -41,10 +41,11 @@ public class ControllerDialog extends Dialog {
 	public static final String[] STATUS = {">detecting objects' states ...", ">initializing instances ...", ">commiting to reasoner ...", ">carrying out inference ...", ">returning inferred results ...", ">resetting devices' states ..."};
 	private static final int LABEL_LENGTH = 300;
 	
-	public ControllerDialog(Shell shell, ShapesEditor editor) {
+	public ControllerDialog(Shell shell, ShapesEditor editor, Text text) {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
 		this.editor = editor;
+		this.runningStatusArea = text;
 	}
 	
 	@Override
@@ -95,21 +96,27 @@ public class ControllerDialog extends Dialog {
 		clear.addSelectionListener(new ClearListener());
 		
 		final Label DeviceListL = new Label(container, SWT.NONE);
-		DeviceListL.setText("Device List");
+		DeviceListL.setText("Properties of Devices and Sensors:");
 		DeviceListL.setFont(titleFont);
 		
 		Table table = new Table(container, SWT.BORDER | SWT.MULTI
 				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
 		table.setFont(textFont);
+		TableColumn column0 = new TableColumn(table, SWT.NONE);
+		column0.setText("Equipment Type");
+		column0.setWidth(LABEL_LENGTH);
 		TableColumn column1 = new TableColumn(table, SWT.NONE);
-		column1.setText("RFID");
+		column1.setText("Equipment");
 		column1.setWidth(LABEL_LENGTH);
 		TableColumn column2 = new TableColumn(table, SWT.NONE);
 		column2.setWidth(LABEL_LENGTH);
-		column2.setText("TYPE");
+		column2.setText("Property");
 		TableColumn column3 = new TableColumn(table, SWT.NONE);
 		column3.setWidth(LABEL_LENGTH);
-		column3.setText("STATUS");
+		column3.setText("Type");
+		TableColumn column4 = new TableColumn(table, SWT.NONE);
+		column4.setWidth(LABEL_LENGTH);
+		column4.setText("Value");
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
@@ -120,14 +127,14 @@ public class ControllerDialog extends Dialog {
 //		objects = new ObjectsListModel();
 		viewer.setInput(editor.getDiagram().getRootDiagram().getObjects());
 		
-		ObjectsListModel objects = editor.getDiagram().getRootDiagram().getObjects();
-		Object[] all = objects.elements();
-		for(Object ob : all)
-		{
-			ObjectInfo object = (ObjectInfo)ob;
-			if(Integer.parseInt(object.getRfid()) <= 14533 || Integer.parseInt(object.getRfid()) >= 14543)
-				object.setOn(true);
-		}
+//		ObjectsListModel objects = editor.getDiagram().getRootDiagram().getObjects();
+//		Object[] all = objects.elements();
+//		for(Object ob : all)
+//		{
+//			ObjectInfo object = (ObjectInfo)ob;
+//			if(Integer.parseInt(object.getRfid()) <= 14533 || Integer.parseInt(object.getRfid()) >= 14543)
+//				object.setOn(true);
+//		}
 		viewer.refresh();
 		
 		data = new FormData();

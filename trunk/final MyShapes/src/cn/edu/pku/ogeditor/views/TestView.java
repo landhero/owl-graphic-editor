@@ -8,10 +8,14 @@
 ?*******************************************************************************/
 package cn.edu.pku.ogeditor.views;
 
+import javax.swing.JFrame;
+
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
@@ -28,13 +32,15 @@ ScrollingGraphicalViewer graphicalViewer;
 FigureCanvas canvas;
 ShapesDiagram diagram;
 public void createPartControl(Composite parent) {
-    graphicalViewer = new ScrollingGraphicalViewer();
-    canvas = (FigureCanvas) graphicalViewer.createControl(parent);
-    ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
-    graphicalViewer.setRootEditPart(root);
-    graphicalViewer.setEditDomain(new EditDomain());
-    graphicalViewer.setEditPartFactory(new ShapesEditPartFactory());
-    graphicalViewer.setContents(ShapesEditor.myselfShapesEditor.getDiagram());
+	Composite a = new Composite(parent, 0);
+	Button b = new Button(parent, SWT.PUSH);
+//    graphicalViewer = new ScrollingGraphicalViewer();
+//    canvas = (FigureCanvas) graphicalViewer.createControl(parent);
+//    ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
+//    graphicalViewer.setRootEditPart(root);
+//    graphicalViewer.setEditDomain(new EditDomain());
+//    graphicalViewer.setEditPartFactory(new ShapesEditPartFactory());
+//    graphicalViewer.setContents(ShapesEditor.myselfShapesEditor.getDiagram());
 }
 
 @Override
